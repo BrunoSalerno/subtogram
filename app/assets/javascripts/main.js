@@ -29,10 +29,10 @@
     var data = {station:null,line:null};
     var project_data = {stations:null,lines:null};
 
-    $.when($.getJSON('geojson/estaciones.geojson'),
-           $.getJSON('geojson/subte.geojson'),
-           $.getJSON('geojson/projects-lines.geojson'),
-           $.getJSON('geojson/projects-stations.geojson'))
+    $.when($.getJSON('/geojson/estaciones.geojson'),
+           $.getJSON('/geojson/subte.geojson'),
+           $.getJSON('/geojson/projects-lines.geojson'),
+           $.getJSON('/geojson/projects-stations.geojson'))
     .then(function(stations,lines,p_lines,p_stations){
       data.station = stations[0];
       data.line = lines[0];
@@ -56,7 +56,7 @@
   var ConfigLoader = function(){
     this.deferred = $.Deferred();
     var self = this;
-    $.getJSON('config.json', function(json){
+    $.getJSON('/config.json', function(json){
         self.deferred.resolve(json);
     });
   }
