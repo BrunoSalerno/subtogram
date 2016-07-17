@@ -4,6 +4,10 @@ require 'sinatra/asset_pipeline'
 class App < Sinatra::Base
     set :public_folder, './public'
     set :assets_prefix, %w(assets assets/vendor)
+    
+    configure do
+        set :title, 'Subtogram'
+    end
  
     register Sinatra::AssetPipeline
 
@@ -11,7 +15,7 @@ class App < Sinatra::Base
         erb :index
     end
 
-    get '/:city' do
+    get '/:url_name' do
         erb :city    
     end
 end
