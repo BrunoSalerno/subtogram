@@ -1,0 +1,8 @@
+# user subtogram must exist
+alter user subtogram with password 'subtogram';
+create database subtogram
+# inside subtogram db
+create extension postgis;
+grant  CREATE,CONNECT on database subtogram to subtogram;
+create schema subtogram;
+grant SELECT,INSERT,UPDATE on all tables in schema subtogram to subtogram;

@@ -19,6 +19,7 @@ GEM
       rack
     rake (10.5.0)
     sass (3.4.22)
+    sequel (4.36.0)
     sinatra (1.4.7)
       rack (~> 1.5)
       rack-protection (~> 1.4)
@@ -50,8 +51,6 @@ PLATFORMS
 DEPENDENCIES
   pry
   rake
+  sequel
   sinatra
   sinatra-asset-pipeline
-
-BUNDLED WITH
-   1.12.5

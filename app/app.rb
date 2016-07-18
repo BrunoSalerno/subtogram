@@ -1,5 +1,7 @@
 require 'sinatra'
 require 'sinatra/asset_pipeline'
+require 'sequel'
+require_relative 'config/database.rb'
 
 class App < Sinatra::Base
     set :public_folder, './public'
