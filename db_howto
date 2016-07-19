@@ -1,3 +1,5 @@
+# In pg_hba.conf file, I added the following line
+# host    subtogram       subtogram       127.0.0.1/5432          md5
 # user subtogram must exist
 alter user subtogram with password 'subtogram';
 create database subtogram
