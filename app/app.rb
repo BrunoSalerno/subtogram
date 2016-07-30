@@ -1,7 +1,6 @@
 require 'sinatra'
 require 'sinatra/asset_pipeline'
-require 'sequel'
-require_relative 'config/database.rb'
+Dir['./app/models/*.rb'].each {|file| require file}
 
 class App < Sinatra::Base
     set :public_folder, './public'
