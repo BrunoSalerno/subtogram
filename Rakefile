@@ -14,3 +14,8 @@ namespace :db do
         puts "=> db:migrate executed"
     end
 end
+
+task :console do
+    require 'pry'
+    binding.pry
+end
