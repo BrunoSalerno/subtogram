@@ -1,6 +1,4 @@
-require 'sequel'
 require 'sinatra/asset_pipeline/task'
-require './app/config/database.rb'
 require './app/app'
 
 Sinatra::AssetPipeline::Task.define! App

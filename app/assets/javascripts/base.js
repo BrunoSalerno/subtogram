@@ -8,4 +8,3 @@
 //= require "layers_control.js"
 //= require "mouse_events.js"
 //= require "app.js"
-//= require "main.js"

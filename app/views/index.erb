@@ -1,2 +1,7 @@
 <h2><%= settings.title %></h2>
-<p><a href="/buenos-aires">Buenos Aires</a>
+
+<% City.each do |city| %>
+<% city_name = city.name
+   city_name << " (#{city.system_name})" if city.system_name %>
+<p><a href="<%= city.url %>"><%= city_name %></a>
+<% end %>

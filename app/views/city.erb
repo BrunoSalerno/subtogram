@@ -5,7 +5,7 @@
     
     <div class="current-year-container">
         <div class="city-container">
-            <div class="city">Buenos Aires</div><input class="current-year" type="number" />
+            <div class="city"><%= @city.system_name || @city.name %></div><input class="current-year" type="number" />
         </div>
         <div class="information"> 
         </div>
@@ -56,3 +56,89 @@
     </div>
     </footer>
 </div>
+
+<script>
+    (function(){
+      var MapLoader = function(config){
+        this.deferred = new $.Deferred();
+        var self = this;
+          mapboxgl.accessToken = <%= MAPBOX_ACCESS_TOKEN.to_json %>;
+          var map = new mapboxgl.Map({
+            container: 'map',
+            style: <%= MAPBOX_STYLE.to_json %>,
+            center: config.coords,
+            zoom: config.zoom,
+            bearing: config.bearing
+          });
+
+          map.addControl(new mapboxgl.Navigation()); 
+          map.on('load',function(){
+            self.deferred.resolve(map);
+          });
+
+          map.on('moveend',function(){
+            save_params(null,map);
+          });
+      };
+
+      var DataLoader = function(){
+        this.deferred = new $.Deferred();
+        var self = this;
+        var data = {station:null,line:null};
+        var project_data = {stations:null,lines:null};
+
+        $.when($.getJSON('/geojson/estaciones.geojson'),
+               $.getJSON('/geojson/subte.geojson'),
+               $.getJSON('/geojson/projects-lines.geojson'),
+               $.getJSON('/geojson/projects-stations.geojson'))
+        .then(function(stations,lines,p_lines,p_stations){
+          data.station = stations[0];
+          data.line = lines[0];
+          project_data.lines = p_lines[0];
+          project_data.stations = p_stations[0];
+          
+          self.deferred.resolve([data,project_data])  
+        });
+      };
+
+      // Styles loader
+      var StyleLoader = function(){
+        this.deferred = $.Deferred();
+        var self = this;
+        $.getJSON('styles.json', function(json){
+            self.deferred.resolve(json);
+        });
+      };
+
+      $(document).ready(function(){
+        $(".spinner-container").show().addClass('spinner');
+
+        var config = <%= @config.to_json %>;;
+
+        var params = getSearchParameters();
+        if (params.coords) {
+          config.coords = [params.coords.lon,params.coords.lat];
+          config.zoom = params.coords.z;
+          config.bearing = params.coords.bearing;
+        }
+
+        var m = new MapLoader(config);
+        var d = new DataLoader();
+        var s = new StyleLoader();
+
+        $.when(m.deferred,d.deferred,s.deferred)
+        .then(function(map,ddata,style){
+          var app = new App(config,
+                            ddata[0],
+                            ddata[1],
+                            map,
+                            style,
+                            params, function(){
+              $(".spinner-container").fadeOut();
+              $(".footer").show();
+              $(".current-year-container").fadeIn();
+          });
+        });
+      });
+    })();
+</script>

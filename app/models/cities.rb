@@ -16,6 +16,10 @@ class City < Sequel::Model(:cities)
         self.url_name = self.name.gsub(' ','-').downcase
     end
 
+    def url
+        "/#{self.url_name}"
+    end
+
     dataset_module do
         def geojson(column)
             self.get(Sequel.function :ST_AsGeoJSON, column)
