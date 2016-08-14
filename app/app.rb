@@ -5,6 +5,8 @@ require 'sinatra/asset_pipeline'
 require './app/config/database.rb'
 require './app/config/mapbox.rb'
 
+require './app/lib/sequel/gis'
+
 Dir['./app/models/*.rb'].each {|file| require file}
 
 DEFAULT_ZOOM = 12

@@ -1,14 +1,14 @@
 require 'json'
 
 class City < Sequel::Model(:cities)
-    SRID = 4326
+    plugin :gis
 
     def set_coords(lat,lon)
-        self.coords = Sequel.lit("ST_GeomFromText('POINT(#{lon} #{lat})', #{SRID})")
+        self.coords = self.wkt("POINT(#{lon} #{lat})")
     end
 
     def geojson_coords
-        point = self.class.dataset.where(id: self.id).geojson(:coords)
+        point = self.geojson_geometry(:coords)
         JSON.parse(point, :symbolize_names => true)[:coordinates]
     end
 
@@ -20,9 +20,4 @@ class City < Sequel::Model(:cities)
         "/#{self.url_name}"
     end
 
-    dataset_module do
-        def geojson(column)
-            self.get(Sequel.function :ST_AsGeoJSON, column)
-        end
-    end
 end
