@@ -1,6 +1,8 @@
 require 'json'
 
 class City < Sequel::Model(:cities)
+    one_to_many :lines
+
     plugin :gis
 
     def set_coords(lat,lon)
@@ -19,5 +21,4 @@ class City < Sequel::Model(:cities)
     def url
         "/#{self.url_name}"
     end
-
 end

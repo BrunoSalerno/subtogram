@@ -4,6 +4,10 @@ module Sequel
             SRID = 4326
 
             module InstanceMethods
+                def set_geometry_from_wkt(geometry, column = :geometry)
+                    self[column] = wkt(geometry)
+                end
+
                 def wkt(geometry)
                     Sequel.lit("ST_GeomFromText('#{geometry}', #{SRID})")
                 end
