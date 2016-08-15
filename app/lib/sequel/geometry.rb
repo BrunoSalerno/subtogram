@@ -1,6 +1,6 @@
 module Sequel
     module Plugins
-        module Gis
+        module Geometry
             SRID = 4326
 
             module InstanceMethods

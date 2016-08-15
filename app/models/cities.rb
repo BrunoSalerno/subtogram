@@ -3,7 +3,7 @@ require 'json'
 class City < Sequel::Model(:cities)
     one_to_many :lines
 
-    plugin :gis
+    plugin :geometry
 
     def set_coords(lat,lon)
         self.coords = self.wkt("POINT(#{lon} #{lat})")
