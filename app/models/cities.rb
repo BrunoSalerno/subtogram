@@ -22,7 +22,7 @@ class City < Sequel::Model(:cities)
         "/#{self.url_name}"
     end
 
-    def years
+    def line_features_by_year
         hash = {}
         self.lines.map{|line|
             [:sections, :stations].map {|category|
