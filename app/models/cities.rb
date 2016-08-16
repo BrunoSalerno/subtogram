@@ -29,10 +29,9 @@ class City < Sequel::Model(:cities)
                 line.send(category).map {|feature|
                     [:buildstart, :opening, :closure].each do |k|
                         year = feature[k]
-                        unless hash[year]
-                            hash[year] = {line: {buildstart:[],opening:[],closure:[]},
-                                          station: {buildstart:[],opening:[],closure:[]}}
-                        end
+                        hash[year] = {} unless hash[year]
+                        hash[year][category] = {} unless hash[year][category]
+                        hash[year][category][k] = [] unless hash[year][category][k]
                         hash[year][category][k].push(feature.feature)
                     end
                 }
