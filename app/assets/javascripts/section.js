@@ -21,7 +21,7 @@ var Section = function(map, feature, style, type){
         return;
     else if (self.status=='buildstart')
         str += self.status;
-    else if (self.status=='opening' && self.__type == 'station')
+    else if (self.status=='opening' && self.__type == 'stations')
         str += 'opening';
     else // line cases FIXME: it has to disappear with data-driven styles.
         str += self.properties.line;
@@ -31,7 +31,7 @@ var Section = function(map, feature, style, type){
 
   this.before_layer = function(){
     var b = STATION_BUILDSTART_LAYER;
-    if (self.__type == 'station' || !self.map.getLayer(b)) b = STATION_TOP_LAYER;
+    if (self.__type == 'stations' || !self.map.getLayer(b)) b = STATION_TOP_LAYER;
     if (!self.map.getLayer(b)) b = STATION_INNER_LAYER;
     return b;
   }
@@ -86,7 +86,7 @@ var Section = function(map, feature, style, type){
             beforeLayer: self.before_layer()
         }));
 
-        if (self.type() == 'station' && (!previousStatus || previousStatus == 'closure')) {
+        if (self.type() == 'stations' && (!previousStatus || previousStatus == 'closure')) {
             changes.add.push(self.buildChange({
             layerName: STATION_INNER_LAYER,
             feature: self.raw_feature,
@@ -96,7 +96,7 @@ var Section = function(map, feature, style, type){
         }
     }
 
-    if (newStatus == 'closure' && self.type() == 'station'){
+    if (newStatus == 'closure' && self.type() == 'stations'){
         changes.remove.push(self.buildChange({
             layerName: STATION_INNER_LAYER,
             feature: self.raw_feature}));

@@ -106,7 +106,7 @@ var Timeline = function(data,map,years,style){
         current_year_data = self.data[year]
         if (!current_year_data) continue;
         
-        ['station','line'].forEach(function(category){
+        ['stations','sections'].forEach(function(category){
             for (var c in current_year_data[category]){
                 current_year_data[category][c].forEach(function(obj){
                     if (lines.indexOf(obj.properties.line) == -1) return;
@@ -168,7 +168,7 @@ var Timeline = function(data,map,years,style){
         current_year_data = self.data[year];
         if (!current_year_data) continue;
 
-        ['station','line'].forEach(function(category){
+        ['stations','sections'].forEach(function(category){
             for (var c in current_year_data[category]){
                 current_year_data[category][c].forEach(function(obj){
                     if (lines.indexOf(obj.properties.line) == -1) return;
