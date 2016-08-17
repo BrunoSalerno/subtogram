@@ -13,18 +13,19 @@ var MouseEvents = function(map,style,planification,timeline){
     var STATION_HOVER_LAYER = 'station_hover';
 
     function layers(){
-        l = ['station_opening','station_buildstart','line_buildstart'];
+        l = ['stations_opening','stations_buildstart','sections_buildstart'];
         
         // FIXME: simplify this when
         // - 1) planification uses same layers than regular lines
         // - 2) data-driven styles for lines are implemented
         var lines = self.timeline.lines();
         for (var line in lines){
-            ['line'].forEach(function(el){
+            ['sections'].forEach(function(el){
                 l.push(el+'_'+line);
             })
         }
         
+        // FIXME: Fix names when making that plans use server data        
         self.planification.plans().forEach(function(plan){
             for (var line in plan.lines){
                 ['line','station'].forEach(function(el){
@@ -84,14 +85,14 @@ var MouseEvents = function(map,style,planification,timeline){
         hoverActions = [];
 
         features.forEach(function(f){
-            var type = f.layer.type == 'circle'? 'station' : 'line';
+            var type = f.layer.type == 'circle'? 'stations' : 'sections';
             var id = type +'_' + f.properties.id + '_' + f.properties.line + '_' + f.properties.plan;
 
             ids.push(id);
 
             if (!self.features[id]){
                var style = self.style.hover(type);
-               var beforeLayer = (type == 'station')? STATION_INNER_LAYER : STATION_HOVER_LAYER;
+               var beforeLayer = (type == 'stations')? STATION_INNER_LAYER : STATION_HOVER_LAYER;
 
                var hoverFeature = {layerName: type + '_hover',
                                    type: type,
