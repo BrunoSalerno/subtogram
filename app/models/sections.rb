@@ -11,6 +11,11 @@ class Section < Sequel::Model(:sections)
     end
 
     def feature
-        super.merge({properties: {length: self.length, line: self.line.name, id: self.id}})
+        super.merge({properties: {length: self.length,
+                                  line: self.line.name,
+                                  id: self.id,
+                                  opening: self.opening,
+                                  buildstart: self.buildstart,
+                                  closure: self.closure}})
     end
 end
