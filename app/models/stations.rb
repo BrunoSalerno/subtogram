@@ -5,6 +5,6 @@ class Station < Sequel::Model(:stations)
 
 
     def feature
-        super.merge({properties: {line: self.line.name}})
+        super.merge({properties: {line: self.line.name, id: self.id}})
     end
 end
