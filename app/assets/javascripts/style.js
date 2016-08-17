@@ -12,7 +12,7 @@ Style.prototype = {
             return opts.source_name;
 
         var key = type + '-' + operation;
-        if (type != 'station' && operation != 'buildstart')
+        if (type != 'stations' && operation != 'buildstart')
             key += '-'+ line;
 
         return key;    
@@ -26,7 +26,7 @@ Style.prototype = {
     
         var style;
         switch (type){
-          case 'line':
+          case 'sections':
             style = (operation == 'opening') ?
               $.extend(true,{},this.__styles.line[operation]["default"],this.__styles.line[operation][line]) :
               $.extend(true,{},this.__styles.line[operation]);
@@ -34,7 +34,7 @@ Style.prototype = {
             style["line-color"] = style["color"];
             break;
           
-          case 'station':
+          case 'stations':
             if (operation == 'opening'){
               style = $.extend(true,{},this.__styles.point[operation])
               var stops = [];
@@ -73,7 +73,7 @@ Style.prototype = {
         return style;
     },
     hover: function(type){
-        var str_type = (type == 'station')? 'point' : type;
+        var str_type = (type == 'stations')? 'point' : 'line';
         return this.__styles[str_type]["hover"]; 
     },
     lineColor: function(line){

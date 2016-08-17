@@ -20,11 +20,11 @@ LayerUpdate.prototype = {
                 id: this.layerName,
                 source: this.layerName,
                 interactive: true,
-                type: (this.type =='line') ? this.type : 'circle',
+                type: (this.type =='sections') ? 'line' : 'circle',
                 paint:$.extend(true, {}, this.style)
             };
 
-        if (this.type == 'line'){
+        if (this.type == 'sections'){
 
             $.extend(layer,{"layout": {
                     "line-join": "round",
