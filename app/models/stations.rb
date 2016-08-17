@@ -1,5 +1,10 @@
 class Station < Sequel::Model(:stations)
-    many_to_one :lines
+    many_to_one :line
 
     plugin :geometry
+
+
+    def feature
+        super.merge({properties: {line: self.line.name}})
+    end
 end

@@ -1,5 +1,5 @@
 class Section < Sequel::Model(:sections)
-    many_to_one :lines
+    many_to_one :line
 
     plugin :geometry
 
@@ -11,6 +11,6 @@ class Section < Sequel::Model(:sections)
     end
 
     def feature
-        super.merge({properties: {length: self.length}})
+        super.merge({properties: {length: self.length, line: self.line.name}})
     end
 end
