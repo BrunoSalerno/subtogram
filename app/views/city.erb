@@ -87,17 +87,12 @@
         var data = {station:null,line:null};
         var project_data = {stations:null,lines:null};
 
-        $.when($.getJSON('/geojson/estaciones.geojson'),
-               $.getJSON('/geojson/subte.geojson'),
-               $.getJSON('/geojson/projects-lines.geojson'),
+        $.when($.getJSON('/geojson/projects-lines.geojson'),
                $.getJSON('/geojson/projects-stations.geojson'))
-        .then(function(stations,lines,p_lines,p_stations){
-          data.station = stations[0];
-          data.line = lines[0];
+        .then(function(p_lines,p_stations){
           project_data.lines = p_lines[0];
           project_data.stations = p_stations[0];
-          
-          self.deferred.resolve([data,project_data])  
+          self.deferred.resolve(project_data);
         });
       };
 
@@ -126,11 +121,21 @@
         var d = new DataLoader();
         var s = new StyleLoader();
 
+        <%
+            lines = {}
+            @city.lines.each do |line|
+                lines[line.name] = {show: true}
+            end
+        %>
+        var lines = <%= lines.to_json %>;
+        var lineFeaturesByYear = <%= @city.line_features_by_year.to_json %>;
+
         $.when(m.deferred,d.deferred,s.deferred)
-        .then(function(map,ddata,style){
+        .then(function(map,proyects_data,style){
           var app = new App(config,
-                            ddata[0],
-                            ddata[1],
+                            lines,
+                            lineFeaturesByYear,
+                            proyects_data,
                             map,
                             style,
                             params, function(){

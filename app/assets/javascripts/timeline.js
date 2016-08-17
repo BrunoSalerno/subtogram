@@ -1,13 +1,14 @@
-var Timeline = function(data,map,years,style){
+var Timeline = function(lines,data,map,years,style){
   var self = this;
 
   this.__busy = false;
-  this.__lines = {};
+  this.__lines = lines;
 
   this.map = map;
   this.years = years;
   this.style = style;
   this.sections = {};
+  this.data = data;
 
   this.busy = function(){
     return self.__busy;
@@ -54,43 +55,6 @@ var Timeline = function(data,map,years,style){
 
   this.starting_year = function(){
     return years.start;
-  };
-
-  this.__init_year = function(){
-    return {
-      station: {buildstart:[],opening:[],closure:[]},
-      line: {buildstart:[],opening:[],closure:[]}
-    }
-  };
-
-  this.__load_data = function(data){
-    var t = {};
-
-    for (var category in data){
-
-      if (!data[category]) continue;
-
-      data[category].features.forEach(function(element){
-        for (var y in element.properties){
-          if (!(y == 'buildstart' || y=='opening' || y=='closure')) continue;
-
-          year = element.properties[y];
-
-          if (year){
-            if (!t[year]) t[year] = self.__init_year();
-            t[year][category][y].push(element)
-
-            if (category == 'line'){
-              if (!self.__lines[element.properties.line]){
-                self.__lines[element.properties.line]={show:true}
-              }
-            }
-          }
-        }
-      })
-    }
-
-    return t;
   };
 
   this.down_to_year = function(start_year,end_year,lines){
@@ -164,7 +128,7 @@ var Timeline = function(data,map,years,style){
     
     var current_year_data;
     
-    for (var year = year_start + 1; year <= year_end;year++){    
+    for (var year = year_start + 1; year <= year_end;year++){
         current_year_data = self.data[year];
         if (!current_year_data) continue;
 
@@ -240,7 +204,7 @@ var Timeline = function(data,map,years,style){
     for (var s in self.sections){
       var section = self.sections[s];
       switch (section.type()){
-        case 'line':
+        case 'sections':
             if (section.status == 'opening'){
                 information.km_operating += section.length();
                 information.km_operating = round(information.km_operating);
@@ -249,7 +213,7 @@ var Timeline = function(data,map,years,style){
                 information.km_under_construction = round(information.km_under_construction);
             }
         break;
-        case 'station':
+        case 'stations':
             if (section.status == 'opening'){
                 information.stations += 1;
             }
@@ -259,7 +223,5 @@ var Timeline = function(data,map,years,style){
     
     return information;
   };
-
-  this.data = this.__load_data(data);
 
 };
