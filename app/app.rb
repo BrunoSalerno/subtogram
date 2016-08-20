@@ -37,7 +37,30 @@ class App < Sinatra::Base
             zoom: DEFAULT_ZOOM,
             bearing: DEFAULT_BEARING,
             speed: DEFAULT_SPEED,
-            years:{start: @city.start_year, end: Date.today.year, current: nil, previous: nil}}
+            years: { start: @city.start_year,
+                     end: Date.today.year,
+                     current: nil,
+                     previous: nil,
+                     default: params[:year] ? params[:year].to_i : nil
+            }
+        }
+
+        if params[:geo]
+           geo = params[:geo].split(',')
+           @config[:coords] = geo[0..1].reverse
+           @config[:zoom], @config[:bearing] = geo[2..3]
+        end
+
+        param_lines = if params[:lines]
+            params[:lines].split(',')
+        end
+
+        @lines = {}
+        @city.lines.each { |line|
+            @lines[line.name] = {show: param_lines && !param_lines.include?(line.name) ? false : true}
+        }
+
+        #TODO: plan_lines
 
         erb :city    
     end

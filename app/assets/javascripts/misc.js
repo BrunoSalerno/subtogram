@@ -13,25 +13,7 @@ function transformToAssocArray( prmstr ) {
   var prmarr = prmstr.split("&");
   for ( var i = 0; i < prmarr.length; i++) {
     var tmparr = prmarr[i].split("=");
-
-    if (tmparr[0] == 'coords'){
-
-      var splitted = tmparr[1].split(",");
-      params[tmparr[0]] = { lat:parseFloat(splitted[0]),
-        lon:parseFloat(splitted[1]),
-        z:parseFloat(splitted[2]),
-        bearing:parseFloat(splitted[3] || 0)};
-
-    } else if (tmparr[0] == 'year') {
-      params[tmparr[0]] = parseInt(tmparr[1]);
-    } else if (tmparr[0] == 'lines'){
-      params[tmparr[0]] = tmparr[1].split(',')
-    } else if (tmparr[0] == 'plans'){
-      params[tmparr[0]] = tmparr[1].split(',')
-    }else{
-      params[tmparr[0]] = tmparr[1];
-    }
-
+    params[tmparr[0]] = tmparr[1];
   }
   return params;
 }
@@ -46,21 +28,21 @@ function save_params(year,map,lines,plans){
 
   if (map){
     var center = map.getCenter();
-    url += '&coords=' + center.lat.toFixed(6) + ',' + center.lng.toFixed(6) + ',' + map.getZoom().toFixed(2) + ',' + map.getBearing().toFixed(2);
-  } else if (current_params.coords) {
-    url += '&coords=' + current_params.coords.lat + ',' + current_params.coords.lon + ',' + current_params.coords.z + ',' + current_params.coords.bearing;
+    url += '&geo=' + center.lat.toFixed(6) + ',' + center.lng.toFixed(6) + ',' + map.getZoom().toFixed(2) + ',' + map.getBearing().toFixed(2);
+  } else if (current_params.geo) {
+    url += '&geo=' + current_params.geo;
   }
 
   if (lines){
     url += '&lines=' + (lines.join(',') || 0)
   } else if (current_params.lines){
-    url += '&lines=' + current_params.lines.join(',')
+    url += '&lines=' + current_params.lines;
   }
 
   if (plans){
     url += '&plans=' + (plans.join(',') || 0)
   } else if (current_params.plans){
-    url += '&plans=' + current_params.plans.join(',')
+    url += '&plans=' + current_params.plans;
   }
 
   history.pushState(document.title + ' ' + year ,document.title,url);

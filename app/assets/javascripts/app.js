@@ -1,11 +1,7 @@
-var App = function(defaults,lines,data,projects_data,map,styles,params,callback){
+var App = function(config,lines,data,projects_data,map,styles,callback){
     this.interval = null;
     var self = this;
-    this.years = defaults.years;
-
-    var starting_year = params.year;
-    var starting_lines = params.lines;
-    var starting_plans = params.plans;
+    this.years = config.years;
 
     this.change_line_to_year = function(year_start,year_end,line,callback){
       if (self.timeline.busy()) return;
@@ -53,7 +49,7 @@ var App = function(defaults,lines,data,projects_data,map,styles,params,callback)
           }
           old_year = y;
           y++;
-        }, speed || defaults.speed);
+        }, speed || config.speed);
       } else if (year < self.timeline.current_year()){
         if (speed == 0){
             self.timeline.down_to_year(old_year,year);
@@ -79,7 +75,7 @@ var App = function(defaults,lines,data,projects_data,map,styles,params,callback)
           }
           old_year = y;
           y--;
-        }, speed || defaults.speed);
+        }, speed || config.speed);
       } else {
         self.timeline.release();
         if (typeof callback == 'function') callback(false);
@@ -258,10 +254,6 @@ var App = function(defaults,lines,data,projects_data,map,styles,params,callback)
         });
     });
 
-    // Layers
-    // ------
-    load_layers_control(starting_lines,starting_plans,this);
-    
     // Hover & Popup
     //--------------
     self.mouse_events = new MouseEvents(map,self.style,self.planification,self.timeline);
@@ -273,8 +265,8 @@ var App = function(defaults,lines,data,projects_data,map,styles,params,callback)
     self.set_current_year_info(this.years.start);
     self.set_year_marker(this.years.start);
 
-    if (starting_year) {
-        this.change_to_year(starting_year,0,false,function(){
+    if (config.years.default) {
+        this.change_to_year(config.years.default,0,false,function(){
             if (typeof callback === 'function') callback();
         });
     }else{

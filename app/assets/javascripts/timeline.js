@@ -18,12 +18,6 @@ var Timeline = function(lines,data,map,years,style){
     return self.__lines;
   };
 
-  this.set_lines = function(lines){
-    for (var l in self.__lines){
-      if ($.inArray(l,lines)==-1) self.__lines[l].show = false;
-    }
-  };
-
   this.visible_lines = function(){
     lines = [];
     for (var l in self.__lines){

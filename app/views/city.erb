@@ -21,6 +21,7 @@
             <div class="panel-close"><span>×</span></div>
             <div class="content layers">
                 <h1>Líneas y planes</h1>
+                <%= erb :"city/lines_toggler" %>
             </div>
             <div class="content about">
                 <h1>Sobre Subtograma</h1>
@@ -110,35 +111,22 @@
 
         var config = <%= @config.to_json %>;;
 
-        var params = getSearchParameters();
-        if (params.coords) {
-          config.coords = [params.coords.lon,params.coords.lat];
-          config.zoom = params.coords.z;
-          config.bearing = params.coords.bearing;
-        }
-
         var m = new MapLoader(config);
         var d = new DataLoader();
         var s = new StyleLoader();
 
-        <%
-            lines = {}
-            @city.lines.each do |line|
-                lines[line.name] = {show: true}
-            end
-        %>
-        var lines = <%= lines.to_json %>;
+        var lines = <%= @lines.to_json %>;
         var lineFeaturesByYear = <%= @city.line_features_by_year.to_json %>;
 
         $.when(m.deferred,d.deferred,s.deferred)
         .then(function(map,proyects_data,style){
-          var app = new App(config,
+            window.app = new App(config,
                             lines,
                             lineFeaturesByYear,
                             proyects_data,
                             map,
                             style,
-                            params, function(){
+                            function(){
               $(".spinner-container").fadeOut();
               $(".footer").show();
               $(".current-year-container").fadeIn();

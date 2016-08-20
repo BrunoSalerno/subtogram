@@ -5,6 +5,5 @@
 //= require "planification.js"
 //= require "section.js"
 //= require "timeline.js"
-//= require "layers_control.js"
 //= require "mouse_events.js"
 //= require "app.js"
