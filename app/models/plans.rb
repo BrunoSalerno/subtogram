@@ -3,10 +3,12 @@ class Plan < Sequel::Model(:plans)
     one_to_many :plan_lines
 
     def set_year(year)
-        self.extra.year = year
+        self.extra ||= {}
+        self.extra["year"] = year
     end
 
     def set_url(url)
-        self.extra.url = url
+        self.extra ||= {}
+        self.extra["url"] = url
     end
 end
