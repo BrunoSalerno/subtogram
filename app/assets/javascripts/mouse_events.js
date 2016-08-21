@@ -20,20 +20,15 @@ var MouseEvents = function(map,style,planification,timeline){
         // - 2) data-driven styles for lines are implemented
         var lines = self.timeline.lines();
         for (var line in lines){
-            ['sections'].forEach(function(el){
-                l.push(el+'_'+line);
-            })
+            l.push('sections_' + line);
         }
+
+        for (var planLineKey in self.planification.drawnLines) {
+            var line = planLineKey.split('_')[1];
+            var ll = 'sections_' + line;
+            if (l.indexOf(ll) === -1) l.push(ll);
+        }        
         
-        // FIXME: Fix names when making that plans use server data        
-/*        self.planification.plans().forEach(function(plan){
-            for (var line in plan.lines){
-                ['line','station'].forEach(function(el){
-                    var ll = el+'_'+line;
-                    if (l.indexOf(ll) == -1) l.push(ll);
-                })
-            }
-        }); */
         return l;
     }
     

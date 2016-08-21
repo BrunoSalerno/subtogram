@@ -6,7 +6,7 @@ var Planification = function(plans,map,style){
   this.drawnLines = {};
 
   var self = this;
-  
+ 
   this.current_km = function(){
     var km = 0;
     
