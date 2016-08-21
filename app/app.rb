@@ -1,6 +1,7 @@
 require 'sequel'
 require 'sinatra'
 require 'sinatra/asset_pipeline'
+require "sinatra/namespace"
 
 require './app/config/database.rb'
 require './app/config/mapbox.rb'
@@ -16,12 +17,13 @@ DEFAULT_SPEED = 1
 class App < Sinatra::Base
     set :public_folder, './public'
     set :assets_prefix, %w(assets assets/vendor)
-    
+      
     configure do
         set :title, 'Subtogram'
     end
  
     register Sinatra::AssetPipeline
+    register Sinatra::Namespace
 
     get '/' do
         erb :index
@@ -51,6 +53,8 @@ class App < Sinatra::Base
            @config[:zoom], @config[:bearing] = geo[2..3]
         end
 
+        # Lines
+
         param_lines = if params[:lines]
             params[:lines].split(',')
         end
@@ -62,8 +66,45 @@ class App < Sinatra::Base
             @lines_style[line.name]  = line.style
         }
 
-        #TODO: plan_lines
+        # Plans
+
+        param_plan_lines = if params[:plans]
+            p = params[:plans].split(',')
+            plan_lines = {}
+            p.each { |pair|
+                plan,line = pair.split('.')
+                plan.gsub!('_', ' ')
+                plan_lines[plan] = [] unless plan_lines[plan]
+                plan_lines[plan].push(line)
+            }
+            plan_lines
+        end
+
+        @plans = {}
+        @city.plans.each { |plan|
+            lines = plan.plan_lines.map {|line|
+                {show: param_plan_lines && param_plan_lines[plan.name] && param_plan_lines[plan.name].include?(line.name),
+                 name: line.name,
+                 id: line.id}
+            }
+            @plans[plan.name]= {
+                lines: lines,
+                year: plan.extra["year"],
+                url: plan.extra["url"]
+            }
+        }
 
         erb :city    
+    end
+
+    namespace '/api' do
+        get '/:url_name/plan_line' do |url_name|
+            plan_line_id = params[:id].split(',')
+            @lines = PlanLine.where(id: plan_line_id)
+
+            @lines.map { |l|
+                {line: l.feature, stations: l.plan_stations.map(&:feature)}
+            }.to_json
+        end
     end
 end

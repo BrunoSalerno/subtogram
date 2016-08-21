@@ -7,10 +7,6 @@ var Plan = function(map,plan_name,year,url,style){
   this.map = map;
   var self = this;
   
-  this.url = function(){
-    return self.__url;
-  };
-
   this.lines = function(){
     return self.__lines;
   };
@@ -27,13 +23,6 @@ var Plan = function(map,plan_name,year,url,style){
     self.__lines[line].stations.push(station)
   };
 
-  this.label = function(){
-    return self.__name +' <small>('+self.__year+')</small>';
-  };
-
-  this.year = function(){
-    return self.__year;
-  };
 
   this.draw = function(line){
     var changes = [];
@@ -41,7 +30,7 @@ var Plan = function(map,plan_name,year,url,style){
         self.__lines[line].section = new Section(self.map,
                                                  self.__lines[line].raw_feature,
                                                  self.__style,
-                                                 'line');
+                                                 'sections');
 
     changes.push(self.__lines[line].section.open())
 
@@ -50,7 +39,7 @@ var Plan = function(map,plan_name,year,url,style){
         s.section = new Section(self.map,
                                 s.raw_feature,
                                 self.__style,
-                                'station');
+                                'stations');
       changes.push(s.section.open());
     });
 

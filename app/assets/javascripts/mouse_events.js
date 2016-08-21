@@ -26,14 +26,14 @@ var MouseEvents = function(map,style,planification,timeline){
         }
         
         // FIXME: Fix names when making that plans use server data        
-        self.planification.plans().forEach(function(plan){
+/*        self.planification.plans().forEach(function(plan){
             for (var line in plan.lines){
                 ['line','station'].forEach(function(el){
                     var ll = el+'_'+line;
                     if (l.indexOf(ll) == -1) l.push(ll);
                 })
             }
-        })
+        }); */
         return l;
     }
     

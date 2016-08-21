@@ -6,4 +6,12 @@ class PlanLine < Sequel::Model(:plan_lines)
     one_to_many :plan_stations
 
     plugin :geometry
+
+    def feature
+        super.merge({properties: {line: self.name,
+                                  plan: self.plan.name,
+                                  url: self.plan.extra["url"],
+                                  year: self.plan.extra["year"],
+                                  length: self.length}})
+    end
 end

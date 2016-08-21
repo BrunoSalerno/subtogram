@@ -1,4 +1,4 @@
-var App = function(config,lines,data,projects_data,map,styles,callback){
+var App = function(config,lines,linesData,plansData,map,styles,callback){
     this.interval = null;
     var self = this;
     this.years = config.years;
@@ -155,8 +155,8 @@ var App = function(config,lines,data,projects_data,map,styles,callback){
     };
     
     this.style = new Style(styles);
-    this.planification = new Planification(projects_data,map,this.style);
-    this.timeline = new Timeline(lines,data,map,this.years,this.style);
+    this.planification = new Planification(plansData,map,this.style);
+    this.timeline = new Timeline(lines,linesData,map,this.years,this.style);
     this.create_slider();
 
     // Current year functionality
