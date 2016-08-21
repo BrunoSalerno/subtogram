@@ -94,7 +94,7 @@
         var lineFeaturesByYear = <%= @city.line_features_by_year.to_json %>;
         // FIXME: plans should come directly from the server
         var plans = {lines: {features: []}, stations: {features: []}};
-        var style = <%= @city.style %>;
+        var style = <%= @city.style.to_json %>;
 
         $.when(m.deferred)
         .then(function(map){

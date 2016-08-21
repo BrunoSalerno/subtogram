@@ -4,6 +4,6 @@ class Line < Sequel::Model(:lines)
     one_to_many :stations
 
     def style
-        JSON.parse(self.city.style)["line"]["opening"][self.name]
+        self.city.style["line"]["opening"][self.name]
     end
 end
