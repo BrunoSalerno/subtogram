@@ -36,7 +36,7 @@ Style.prototype = {
           
           case 'stations':
             if (operation == 'opening'){
-              style = $.extend(true,{},this.__styles.point[operation])
+              style = $.extend(true,{},this.__styles.station[operation])
               var stops = [];
               
               for (var l in this.__styles.line[operation]){
@@ -50,7 +50,7 @@ Style.prototype = {
                     stops : stops
                   }
             } else {
-              style = $.extend(true,{},this.__styles.point[operation]);
+              style = $.extend(true,{},this.__styles.station[operation]);
               style["circle-color"] = style["color"];
             }
              
@@ -73,7 +73,7 @@ Style.prototype = {
         return style;
     },
     hover: function(type){
-        var str_type = (type == 'stations')? 'point' : 'line';
+        var str_type = (type == 'stations')? 'station' : 'line';
         return this.__styles[str_type]["hover"]; 
     },
     lineColor: function(line){

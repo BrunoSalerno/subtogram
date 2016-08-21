@@ -82,29 +82,6 @@
           });
       };
 
-      var DataLoader = function(){
-        this.deferred = new $.Deferred();
-        var self = this;
-        var data = {station:null,line:null};
-        var project_data = {stations:null,lines:null};
-
-        $.when($.getJSON('/geojson/projects-lines.geojson'),
-               $.getJSON('/geojson/projects-stations.geojson'))
-        .then(function(p_lines,p_stations){
-          project_data.lines = p_lines[0];
-          project_data.stations = p_stations[0];
-          self.deferred.resolve(project_data);
-        });
-      };
-
-      // Styles loader
-      var StyleLoader = function(){
-        this.deferred = $.Deferred();
-        var self = this;
-        $.getJSON('styles.json', function(json){
-            self.deferred.resolve(json);
-        });
-      };
 
       $(document).ready(function(){
         $(".spinner-container").show().addClass('spinner');
@@ -112,18 +89,19 @@
         var config = <%= @config.to_json %>;;
 
         var m = new MapLoader(config);
-        var d = new DataLoader();
-        var s = new StyleLoader();
 
         var lines = <%= @lines.to_json %>;
         var lineFeaturesByYear = <%= @city.line_features_by_year.to_json %>;
+        // FIXME: plans should come directly from the server
+        var plans = {lines: {features: []}, stations: {features: []}};
+        var style = <%= @city.style %>;
 
-        $.when(m.deferred,d.deferred,s.deferred)
-        .then(function(map,proyects_data,style){
+        $.when(m.deferred)
+        .then(function(map){
             window.app = new App(config,
                             lines,
                             lineFeaturesByYear,
-                            proyects_data,
+                            plans,
                             map,
                             style,
                             function(){
