@@ -6,10 +6,6 @@ class Section < Sequel::Model(:sections)
 
     plugin :geometry
 
-    def set_length
-        self.length = self.calculate_length
-    end
-
     def feature
         super.merge({properties: {length: self.length,
                                   line: self.line.name,

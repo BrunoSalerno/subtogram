@@ -1,5 +1,9 @@
 module Length
 
+    def set_length
+        self.length = self.calculate_length
+    end
+
     def calculate_length
         # When calculating the length of we project the geometry to
         # SRID 3857 (Web Mercator)
