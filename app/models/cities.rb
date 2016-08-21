@@ -2,6 +2,7 @@ require 'json'
 
 class City < Sequel::Model(:cities)
     one_to_many :lines
+    one_to_many :plans
 
     plugin :geometry
 
