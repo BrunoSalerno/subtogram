@@ -5,7 +5,13 @@
             <% @lines.each_pair do |name, v| %>
                 <li>
                     <input type="checkbox" id="checkbox_<%= name %>" <%= v[:show] ? 'checked' : '' %>/>
-                    <label id="label_<%= name %>" for="checkbox_<%= name %>" onclick='toggleLine(<%=name.to_json%>);' style="background-color:#888">
+                    <%
+                        style = "background-color:#{@lines_style[name]['color']};"
+                        if font_color = @lines_style[name]['lineLabelFontColor']
+                            style << "color:#{font_color};"
+                        end
+                    %>
+                    <label id="label_<%= name %>" for="checkbox_<%= name %>" style="<%= style %>" onclick='toggleLine(<%=name.to_json%>);'>
                         <%= name %>
                     </label>
                     </li>

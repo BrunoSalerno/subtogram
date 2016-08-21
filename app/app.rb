@@ -56,8 +56,10 @@ class App < Sinatra::Base
         end
 
         @lines = {}
+        @lines_style = {}
         @city.lines.each { |line|
             @lines[line.name] = {show: param_lines && !param_lines.include?(line.name) ? false : true}
+            @lines_style[line.name]  = line.style
         }
 
         #TODO: plan_lines
