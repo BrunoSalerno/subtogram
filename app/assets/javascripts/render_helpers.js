@@ -85,12 +85,8 @@ LayerUpdate.prototype = {
     },
      
     _matchCondition: function(a,b){
-        return (!a.properties.plan &&
-        !b.properties.plan && 
-        a.properties.id == b.properties.id) || 
-        (a.properties.plan &&
-        a.properties.plan == b.properties.plan &&
-        a.properties.id == b.properties.id) 
+        return (a.properties.klass === b.properties.klass &&
+        a.properties.id === b.properties.id)
     },
 
     render: function(){

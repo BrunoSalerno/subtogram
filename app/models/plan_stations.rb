@@ -4,8 +4,10 @@ class PlanStation < Sequel::Model(:plan_stations)
     plugin :geometry
 
     def feature
-        super.merge({properties: {plan: self.plan_line.plan.name,
-                                  line: self.plan_line.name,
-                                  name: self.name}})
+        h = super
+        h[:properties].merge!({plan: self.plan_line.plan.name,
+                               line: self.plan_line.name,
+                               name: self.name})
+        h
     end
 end

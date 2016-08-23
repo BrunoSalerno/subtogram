@@ -7,11 +7,12 @@ class Section < Sequel::Model(:sections)
     plugin :geometry
 
     def feature
-        super.merge({properties: {length: self.length,
-                                  line: self.line.name,
-                                  id: self.id,
-                                  opening: self.opening,
-                                  buildstart: self.buildstart,
-                                  closure: self.closure}})
+        h = super
+        h[:properties].merge!({length: self.length,
+                               line: self.line.name,
+                               opening: self.opening,
+                               buildstart: self.buildstart,
+                               closure: self.closure})
+        h
     end
 end

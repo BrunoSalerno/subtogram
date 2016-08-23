@@ -8,10 +8,16 @@ class PlanLine < Sequel::Model(:plan_lines)
     plugin :geometry
 
     def feature
-        super.merge({properties: {line: self.name,
-                                  plan: self.plan.name,
-                                  url: self.plan.extra["url"],
-                                  year: self.plan.extra["year"],
-                                  length: self.length}})
+        h = super
+        h[:properties].merge!({line: self.name,
+                               plan: self.plan.name,
+                               url: self.plan.extra["url"],
+                               year: self.plan.extra["year"],
+                               length: self.length})
+        h
+    end
+
+    def style
+        self.plan.city.style["line"]["opening"][self.name]
     end
 end

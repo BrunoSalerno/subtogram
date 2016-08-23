@@ -17,7 +17,7 @@ module Sequel
                 end
 
                 def feature(column = :geometry)
-                    {type: "Feature", geometry: JSON.parse(geojson_geometry(column)), properties:{}}
+                    {type: "Feature", geometry: JSON.parse(geojson_geometry(column)), properties:{id: self.id, klass: self.class.to_s}}
                 end
             end
 
