@@ -1,7 +1,6 @@
 require 'sequel'
 require 'sinatra'
 require 'sinatra/asset_pipeline'
-require "sinatra/namespace"
 
 require './app/config/database.rb'
 require './app/config/mapbox.rb'
@@ -23,7 +22,6 @@ class App < Sinatra::Base
     end
  
     register Sinatra::AssetPipeline
-    register Sinatra::Namespace
 
     get '/' do
         erb :index
@@ -83,6 +81,7 @@ class App < Sinatra::Base
         @plans = {}
         @city.plans.each { |plan|
             lines = plan.plan_lines.map {|line|
+                @lines_style[line.name] = line.style
                 {show: param_plan_lines && param_plan_lines[plan.name] && param_plan_lines[plan.name].include?(line.name),
                  name: line.name,
                  id: line.id}
@@ -97,14 +96,12 @@ class App < Sinatra::Base
         erb :city    
     end
 
-    namespace '/api' do
-        get '/:url_name/plan_line' do |url_name|
-            plan_line_id = params[:id].split(',')
-            @lines = PlanLine.where(id: plan_line_id)
+    get '/api/:url_name/plan_line' do |url_name|
+        plan_line_id = params[:id].split(',')
+        @lines = PlanLine.where(id: plan_line_id)
 
-            @lines.map { |l|
-                {line: l.feature, stations: l.plan_stations.map(&:feature)}
-            }.to_json
-        end
+        @lines.map { |l|
+            {line: l.feature, stations: l.plan_stations.map(&:feature)}
+        }.to_json
     end
 end
