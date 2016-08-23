@@ -1,9 +1,7 @@
-var MouseEvents = function(map,style,planification,timeline){
+var MouseEvents = function(map,style){
     this.features = {};
     this.style = style;
     this.map = map;
-    this.planification = planification;
-    this.timeline = timeline;
    
     var self = this
     

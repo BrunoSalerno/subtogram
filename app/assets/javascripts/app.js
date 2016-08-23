@@ -256,7 +256,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
 
     // Hover & Popup
     //--------------
-    self.mouse_events = new MouseEvents(map,self.style,self.planification,self.timeline);
+    self.mouse_events = new MouseEvents(map,self.style);
     
     // Init to the start year
     // ----------------------
