@@ -1,7 +1,7 @@
 var Planification = function(plans,map,style){
   this.map = map;
   this.style = style;
-  this.__plans = {};
+  this.plans = {};
 
   this.drawnLines = {};
 
@@ -10,10 +10,10 @@ var Planification = function(plans,map,style){
   this.current_km = function(){
     var km = 0;
     
-    for (var plan in self.__plans){
-        for (var k in self.__plans[plan].lines()){
+    for (var plan in self.plans){
+        for (var k in self.plans[plan].lines){
           if (self.drawnLines[plan + '_' + k]) {
-            km += self.__plans[plan].lines()[k].length
+            km += self.plans[plan].lines[k].length
           }
         }
     }
@@ -27,14 +27,14 @@ var Planification = function(plans,map,style){
 
     if (self.drawnLines[planLineKey]){
       delete self.drawnLines[planLineKey];
-      deferred.resolve(self.processChanges(self.__plans[plan].undraw(line)));
+      deferred.resolve(self.processChanges(self.plans[plan].undraw(line)));
     } else {
       self.drawnLines[planLineKey] = true;
-      if (self.__plans[plan] && self.__plans[plan].hasLine(line)) {
-        deferred.resolve(self.processChanges(self.__plans[plan].draw(line)));
+      if (self.plans[plan] && self.plans[plan].hasLine(line)) {
+        deferred.resolve(self.processChanges(self.plans[plan].draw(line)));
       } else {
         $.when(self.fetchPlanLines([planLineId])).then(function(){
-            deferred.resolve(self.processChanges(self.__plans[plan].draw(line)));
+            deferred.resolve(self.processChanges(self.plans[plan].draw(line)));
         })
       }
     }
@@ -47,8 +47,8 @@ var Planification = function(plans,map,style){
 
     var plan_lines = [];
 
-    for (var plan in self.__plans){
-        for (var k in self.__plans[plan].lines()){
+    for (var plan in self.plans){
+        for (var k in self.plans[plan].lines){
           if (self.drawnLines[plan + '_' + k]) {
             plan_lines.push(plan.replace(' ','_')+'.'+k)
           }
@@ -95,17 +95,17 @@ var Planification = function(plans,map,style){
       var plan_url = line.properties.url;
       var length = line.properties.length;
 
-      if (!self.__plans[plan_name]) {
-        self.__plans[plan_name] = new Plan(self.map,plan_name,line.properties.year,plan_url,self.style);
+      if (!self.plans[plan_name]) {
+        self.plans[plan_name] = new Plan(self.map,self.style);
       }
 
-      if (!self.__plans[plan_name].lines()[line_name]){
-        self.__plans[plan_name].add_line(line_name,line,length)
+      if (!self.plans[plan_name].lines[line_name]){
+        self.plans[plan_name].addLine(line_name,line,length)
       }
 
     $.each(stations, function(index,station){
       var obj ={section: null,raw_feature:station};
-      self.__plans[plan_name].add_station(line_name,obj);
+      self.plans[plan_name].addStation(line_name,obj);
     });
   };
 

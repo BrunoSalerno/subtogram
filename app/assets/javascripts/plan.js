@@ -1,48 +1,42 @@
-var Plan = function(map,plan_name,year,url,style){
-  this.__year = year;
-  this.__name = plan_name;
-  this.__style = style;
-  this.__lines = {};
-  this.__url = url;
+var Plan = function(map,style){
+  this.style = style;
+  this.lines = {};
   this.map = map;
+
   var self = this;
 
   this.hasLine = function(line){
-    return typeof this.__lines[line] !== 'undefined';
+    return typeof this.lines[line] !== 'undefined';
   }
 
-  this.lines = function(){
-    return self.__lines;
-  };
-
-  this.add_line = function(name, raw_feature, length){
-    self.__lines[name] = {
+  this.addLine = function(name, raw_feature, length){
+    self.lines[name] = {
         raw_feature: raw_feature,
         section:null,
         stations:[],
         length: round(length/1000)}
   };
 
-  this.add_station = function(line,station){
-    self.__lines[line].stations.push(station)
+  this.addStation = function(line,station){
+    self.lines[line].stations.push(station)
   };
 
 
   this.draw = function(line){
     var changes = [];
-    if (!self.__lines[line].section)
-        self.__lines[line].section = new Section(self.map,
-                                                 self.__lines[line].raw_feature,
-                                                 self.__style,
+    if (!self.lines[line].section)
+        self.lines[line].section = new Section(self.map,
+                                                 self.lines[line].raw_feature,
+                                                 self.style,
                                                  'sections');
 
-    changes.push(self.__lines[line].section.open())
+    changes.push(self.lines[line].section.open())
 
-    $.each(self.__lines[line].stations,function(i,s){
+    $.each(self.lines[line].stations,function(i,s){
       if (!s.section)
         s.section = new Section(self.map,
                                 s.raw_feature,
-                                self.__style,
+                                self.style,
                                 'stations');
       changes.push(s.section.open());
     });
@@ -52,8 +46,8 @@ var Plan = function(map,plan_name,year,url,style){
 
   this.undraw = function(line){
     var changes = [];
-    changes.push(self.__lines[line].section.close());
-    $.each(self.__lines[line].stations,function(i,s){
+    changes.push(self.lines[line].section.close());
+    $.each(self.lines[line].stations,function(i,s){
       changes.push(s.section.close());
     });
     return changes;
