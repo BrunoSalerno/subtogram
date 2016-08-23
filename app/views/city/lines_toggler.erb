@@ -51,9 +51,9 @@
 
 <script>
 function toggleLine(line) {
-   var lines_params = app.timeline.toggle_line(line);
-   var year_start = (app.timeline.lines()[line].show) ? app.years.start : app.timeline.current_year();
-   var year_end = (app.timeline.lines()[line].show) ? app.timeline.current_year() : app.years.start;
+   var lines_params = app.timeline.toggleLine(line);
+   var year_start = (app.timeline.lines[line].show) ? app.years.start : app.timeline.current_year();
+   var year_end = (app.timeline.lines[line].show) ? app.timeline.current_year() : app.years.start;
 
    app.change_line_to_year(year_start,year_end,line,function(){
     app.set_current_year_info();

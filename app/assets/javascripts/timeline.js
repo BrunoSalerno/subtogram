@@ -1,8 +1,8 @@
 var Timeline = function(lines,data,map,years,style){
   var self = this;
 
-  this.__busy = false;
-  this.__lines = lines;
+  this.busy = false;
+  this.lines = lines;
 
   this.map = map;
   this.years = years;
@@ -10,37 +10,29 @@ var Timeline = function(lines,data,map,years,style){
   this.sections = {};
   this.data = data;
 
-  this.busy = function(){
-    return self.__busy;
-  };
-
-  this.lines = function(){
-    return self.__lines;
-  };
-
-  this.visible_lines = function(){
+  this.visibleLines = function(){
     lines = [];
-    for (var l in self.__lines){
-        if (self.__lines[l].show) lines.push(l);
+    for (var l in self.lines){
+        if (self.lines[l].show) lines.push(l);
     }
     return lines;
   }
 
-  this.toggle_line = function(line){
-    self.__lines[line].show = !self.__lines[line].show
-    var lines_params = [];
-    for (var l in self.__lines){
-      if (self.__lines[l].show) lines_params.push(l)
+  this.toggleLine = function(line){
+    self.lines[line].show = !self.lines[line].show
+    var linesParams = [];
+    for (var l in self.lines){
+      if (self.lines[l].show) linesParams.push(l)
     }
-    return lines_params;
+    return linesParams;
   };
 
-  this.get_busy = function(){
-    self.__busy = true;
+  this.getBusy = function(){
+    self.busy = true;
   };
 
   this.release = function(){
-    self.__busy = false;
+    self.busy = false;
   };
 
   this.current_year = function(){
@@ -52,7 +44,7 @@ var Timeline = function(lines,data,map,years,style){
   };
 
   this.down_to_year = function(start_year,end_year,lines){
-    lines = lines || self.visible_lines();
+    lines = lines || self.visibleLines();
     
     var features = {};
     features['buildstart'] = [];
@@ -109,7 +101,7 @@ var Timeline = function(lines,data,map,years,style){
   };
   
   this.up_to_year = function(year_start,year,lines){
-    lines = lines || self.visible_lines();
+    lines = lines || self.visibleLines();
     var features = self.features_in_a_year(year_start,year,lines); 
     self.featuresToMap(features);
   };

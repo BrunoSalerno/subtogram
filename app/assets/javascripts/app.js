@@ -4,8 +4,8 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
     this.years = config.years;
 
     this.change_line_to_year = function(year_start,year_end,line,callback){
-      if (self.timeline.busy()) return;
-      self.timeline.get_busy();
+      if (self.timeline.busy) return;
+      self.timeline.getBusy();
 
       if (year_end > year_start) {
         self.timeline.up_to_year(year_start,year_end,[line]);
@@ -18,9 +18,9 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
 
     this.change_to_year = function(year,speed,from_input,callback){
       if (year > self.years.end) return;
-      if (self.timeline.busy()) return;
+      if (self.timeline.busy) return;
       
-      self.timeline.get_busy();
+      self.timeline.getBusy();
 
       var old_year = self.timeline.current_year();
       
