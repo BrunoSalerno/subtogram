@@ -7,32 +7,11 @@ var MouseEvents = function(map,style,planification,timeline){
    
     var self = this
     
-    this.layers = layers();
+    this.layers = ['stations_opening','stations_buildstart','sections_buildstart', 'sections_opening'];
 
     var STATION_INNER_LAYER = 'station_inner';
     var STATION_HOVER_LAYER = 'station_hover';
 
-    function layers(){
-        l = ['stations_opening','stations_buildstart','sections_buildstart'];
-        
-        // FIXME: simplify this when
-        // - 1) planification uses same layers than regular lines
-        // - 2) data-driven styles for lines are implemented
-        var lines = self.timeline.lines();
-        for (var line in lines){
-            l.push('sections_' + line);
-        }
-
-        // FIXME: this is broken because of asynchronous loading of plans
-        for (var planLineKey in self.planification.drawnLines) {
-            var line = planLineKey.split('_')[1];
-            var ll = 'sections_' + line;
-            if (l.indexOf(ll) === -1) l.push(ll);
-        }        
-        
-        return l;
-    }
-    
     function feature_info(f){
         str = '';
         if (f.name) {
