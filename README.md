@@ -9,9 +9,8 @@ Useful data
 -----------
 
 * Subtogram uses [Mapbox GL](https://github.com/mapbox/mapbox-gl-js).
-* The data about lines and stations is stored in the `geojson` and `shp` folders.
 
 Contribute
 ----------
 
-If you wish to contribute please contact me!
+If you want to contribute please contact me!
