@@ -11,7 +11,7 @@
                             style << "color:#{font_color};"
                         end
                     %>
-                    <label id="label_<%= name %>" for="checkbox_<%= name %>" style="<%= style %>" onclick='toggleLine(<%=name.to_json%>);'>
+                    <label for="checkbox_<%= name %>" style="<%= style %>" onclick='toggleLine(<%=name.to_json%>);'>
                         <%= name %>
                     </label>
                     </li>
@@ -20,6 +20,33 @@
     </li>
 
     <!-- Plans -->
+
+    <% @plans.each_pair do |name, plan| %>
+        <li class="plan-label">
+            <div><%= "#{name} #{plan[:year]}" %></div>
+            <a href="<%= plan[:url] %>" target="_blank" + title="Link a la ley">
+                <span class="plan-link fa fa-external-link"></span>
+            </a>
+            <ul class="plan-list">
+                <% plan[:lines].each do |line| %>
+                    <li>
+                        <input type="checkbox" id="checkbox_<%= line[:id] %>" <%= line[:show] ? 'checked' : '' %>/>
+                        <%
+                            style = "background-color:#{@lines_style[line[:name]]['color']};"
+                            if font_color = @lines_style[line[:name]]['lineLabelFontColor']
+                                style << "color:#{font_color};"
+                            end
+                        %>
+                        <label for="checkbox_<%= line[:id] %>"
+                               style="<%= style %>"
+                               onclick='togglePlanLine(<%= name.to_json %>, <%= line[:name].to_json %>, <%= line[:id].to_json %>);'>
+                            <%= line[:name] %>
+                        </label>
+                    </li>
+                <% end %>
+            </ul>
+        </li>
+    <% end %>
 </ul>
 
 <script>
@@ -33,5 +60,12 @@ function toggleLine(line) {
    });
   
    save_params(null,null,lines_params);
+}
+
+function togglePlanLine(plan, line, planLineId) {
+    $.when(app.planification.toggle(plan, line, planLineId)).then(function(plans_params){
+        app.set_current_year_info();
+        save_params(null,null,null,plans_params);
+    });
 }
 </script>

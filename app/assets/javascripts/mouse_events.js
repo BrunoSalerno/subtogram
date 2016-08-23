@@ -23,6 +23,7 @@ var MouseEvents = function(map,style,planification,timeline){
             l.push('sections_' + line);
         }
 
+        // FIXME: this is broken because of asynchronous loading of plans
         for (var planLineKey in self.planification.drawnLines) {
             var line = planLineKey.split('_')[1];
             var ll = 'sections_' + line;

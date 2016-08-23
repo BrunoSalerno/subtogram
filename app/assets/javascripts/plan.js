@@ -6,7 +6,11 @@ var Plan = function(map,plan_name,year,url,style){
   this.__url = url;
   this.map = map;
   var self = this;
-  
+
+  this.hasLine = function(line){
+    return typeof this.__lines[line] !== 'undefined';
+  }
+
   this.lines = function(){
     return self.__lines;
   };
@@ -52,7 +56,6 @@ var Plan = function(map,plan_name,year,url,style){
     $.each(self.__lines[line].stations,function(i,s){
       changes.push(s.section.close());
     });
-
     return changes;
   };
 };

@@ -22,17 +22,26 @@ var Planification = function(plans,map,style){
 
 
   this.toggle = function(plan, line, planLineId){
-    var changes;
+    var deferred = new $.Deferred();
     var planLineKey = plan + '_' + line;
 
     if (self.drawnLines[planLineKey]){
       delete self.drawnLines[planLineKey];
-      changes = self.__plans[plan].undraw(line);
+      deferred.resolve(self.processChanges(self.__plans[plan].undraw(line)));
     } else {
       self.drawnLines[planLineKey] = true;
-      changes = self.__plans[plan].draw(line);
+      if (self.__plans[plan] && self.__plans[plan].hasLine(line)) {
+        deferred.resolve(self.processChanges(self.__plans[plan].draw(line)));
+      } else {
+        $.when(self.fetchPlanLines([planLineId])).then(function(){
+            deferred.resolve(self.processChanges(self.__plans[plan].draw(line)));
+        })
+      }
     }
+    return deferred.promise();
+  };
 
+  this.processChanges = function(changes){
     var renderUpdates = new RenderUpdates({map: self.map});
     renderUpdates.render(changes);
 
@@ -47,7 +56,7 @@ var Planification = function(plans,map,style){
     }
 
     return plan_lines;
-  };
+  }
 
   this.loadPlans = function(plans) {
     var ids = []
@@ -58,18 +67,26 @@ var Planification = function(plans,map,style){
             }
         });
     }
-    self.fetchPlanLines(ids);
+    $.when(self.fetchPlanLines(ids)).then(function(data){
+        data.forEach(function(d){
+            self.toggle(d.plan, d.line);
+        });
+    });
   }
 
   this.fetchPlanLines = function(ids) {
+    var deferred = new $.Deferred();
     var params = {id: ids.join(',')}
     var url = 'http://' + location.host + '/api' + location.pathname + '/plan_line'
     $.getJSON(url, params).then(function(data){
+        var loaded = [];
         data.forEach(function(planLine){
             self.loadData(planLine.line, planLine.stations);
-            self.toggle(planLine.line.properties.plan, planLine.line.properties.line); 
+            loaded.push({plan: planLine.line.properties.plan, line: planLine.line.properties.line})
         });
-    })    
+        deferred.resolve(loaded);
+    });
+    return deferred.promise();
   }
 
   this.loadData = function(line, stations){
