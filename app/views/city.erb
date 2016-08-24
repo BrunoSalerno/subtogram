@@ -1,34 +1,29 @@
 <script src="<%= javascript_path('base.js') %>"></script>
-<nav class="c-nav c-nav--inline">
-<a href="/" class="c-nav__item c-text--loud">Subtogram</a>
-</nav>
-<div class="o-grid o-panel o-panel--nav-top">
-    <div class="o-grid__cell--width-20 o-grid__cell--hidden o-grid__cell--visible@large">
-        <div class="o-grid o-grid--wrap">
-            <div class="o-grid__cell o-grid__cell--width-100"> 
-                        <h2 class="c-heading c-heading--small"><%= @city.name %></h2>
-                        <div class="c-input-group">
-                            <button class="c-button"> <span class="fa fa-play"></span> </button>
-                            <button class="c-button"> <span class="fa fa-pause"></span> </button>
-                            <input id="current-year" class="c-field" type="number" /> 
-                        </div>
-                        <input type="range" class="c-range" />
-            </div>
-            <div class="o-grid__cell o-grid__cell--width-100 o-panel-container">
-                <div class="o-panel">
-                    <div>
-                    <%= erb :"city/lines_toggler" %>
+    
+<div class="o-grid__cell--width-20 o-grid__cell--hidden o-grid__cell--visible@large">
+    <div class="o-grid o-grid--wrap">
+        <div class="o-grid__cell o-grid__cell--width-100"> 
+                    <h2 class="c-heading c-heading--small"><%= @city.name %></h2>
+                    <div class="c-input-group">
+                        <button class="c-button"> <span class="fa fa-play"></span> </button>
+                        <button class="c-button"> <span class="fa fa-pause"></span> </button>
+                        <input id="current-year" class="c-field" type="number" /> 
                     </div>
+                    <input type="range" class="c-range" />
+        </div>
+        <div class="o-grid__cell o-grid__cell--width-100 o-panel-container">
+            <div class="o-panel">
+                <div>
+                <%= erb :"city/lines_toggler" %>
                 </div>
             </div>
         </div>
     </div>
-    <main class="o-grid__cell o-grid__cell--width-80@large o-panel-container">
-    <div class="spinner-container"></div>
-    <div id="map"></div>
-    </main>
-    
 </div>
+<main class="o-grid__cell o-grid__cell--width-80@large o-panel-container">
+<div class="spinner-container"></div>
+<div id="map"></div>
+</main>
 
 <script>
     (function(){

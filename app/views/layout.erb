@@ -35,6 +35,14 @@
         </script>
     </head>
     <body class="c-text">
-        <%= yield %>
+        <nav class="c-nav c-nav--inline">
+            <a href="/" class="c-nav__item c-text--loud">
+                <span class="fa fa-subway"></span>
+                Subtogram
+            </a>
+        </nav>
+        <div class="o-grid o-panel o-panel--nav-top">
+            <%= yield %>
+        </div>
     </body>
 </html>
