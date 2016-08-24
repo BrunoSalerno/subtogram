@@ -143,7 +143,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
     };
 
     this.set_current_year_info = function(year){
-        if (year) $('.current-year').val(year);
+        if (year) $('#current-year').val(year);
         var y_i = self.timeline.year_information();
         var current_km = round(y_i.km_operating + self.planification.current_km()); 
         var y_i_str = (current_km > 0)? '<p>' + current_km+' km </p>' : '';
@@ -161,7 +161,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
 
     // Current year functionality
     // --------------------------
-    $('.current-year').
+    $('#current-year').
       attr('min',self.years.start).
       attr('max',self.years.end).
         change(function(e){
