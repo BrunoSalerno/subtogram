@@ -1,7 +1,6 @@
 <script src="<%= javascript_path('base.js') %>"></script>
     
 <div class="o-grid__cell--width-20 o-grid__cell--hidden o-grid__cell--visible@large o-panel-container">
-    <div class="o-grid o-grid--wrap o-panel">
         <div class="o-grid__cell o-grid__cell--width-100"> 
             <h2 class="c-heading c-heading--small"><%= @city.name %></h2>
             <div class="c-input-group">
@@ -11,12 +10,9 @@
             </div>
             <input type="range" class="c-range" />
         </div>
-        <div class="o-grid__cell o-grid__cell--width-100 o-panel-container">
-            <div class="o-panel">
-                <%= erb :"city/lines_toggler" %>
-            </div>
+        <div class="lines-toggler-container">
+            <%= erb :"city/lines_toggler" %>
         </div>
-    </div>
 </div>
 <main class="o-grid__cell o-grid__cell--width-80@large o-panel-container">
 <div class="spinner-container"></div>
