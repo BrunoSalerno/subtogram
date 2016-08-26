@@ -6,15 +6,12 @@
             <span class="c-link">Líneas</span>
             <ul class="c-tree">
                 <% @lines.each_pair do |name, v| %>
+                        <style>
+                            <%= ".c-toggle input#checkbox_#{name}:checked+.c-toggle__track {background-color:#{@lines_style[name]['color']};}"%>
+                        </style>
                         <label class="c-toggle" >
-                            <input type="checkbox" onchange='toggleLine(<%=name.to_json%>);' <%= v[:show] ? 'checked' : '' %>>
-                            <%
-                                style = "background-color:#{@lines_style[name]['color']};"
-                                if font_color = @lines_style[name]['lineLabelFontColor']
-                                    style << "color:#{font_color};"
-                                end
-                            %>
-                            <div class="c-toggle__track" style="<%=style%>" >
+                            <input id="checkbox_<%=name%>" type="checkbox" onchange='toggleLine(<%=name.to_json%>);' <%= v[:show] ? 'checked' : '' %>>
+                            <div class="c-toggle__track">
                                 <div class="c-toggle__handle"></div>
                             </div>
                             <%= name %>
@@ -35,18 +32,14 @@
             </a>
             <ul class="c-tree" style="display: none;">
                 <% plan[:lines].each do |line| %>
+                        <style>
+                            <%= ".c-toggle input#checkbox_#{name.gsub(' ','_')}_#{line[:name]}:checked+.c-toggle__track {background-color:#{@lines_style[line[:name]]['color']};}"%>
+                        </style>
                         <label class="c-toggle">
-                            <input type="checkbox"
+                            <input id="checkbox_<%=name.gsub(' ','_')%>_<%=line[:name]%>" type="checkbox"
                                 onchange='togglePlanLine(<%= name.to_json %>, <%= line[:name].to_json %>, <%= line[:id].to_json %>)'
                                 <%= line[:show] ? 'checked' : '' %>/>
-                            <%
-                                style = "background-color:#{@lines_style[line[:name]]['color']};"
-                                if font_color = @lines_style[line[:name]]['lineLabelFontColor']
-                                    style << "color:#{font_color};"
-                                end
-                            %>
-
-                            <div class="c-toggle__track" style="<%=style%>" >
+                            <div class="c-toggle__track">
                                 <div class="c-toggle__handle"></div>
                             </div>
                             <%= line[:name] %>
