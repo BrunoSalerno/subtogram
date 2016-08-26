@@ -145,13 +145,15 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
     this.set_current_year_info = function(year){
         if (year) $('#current-year').val(year);
         var y_i = self.timeline.year_information();
-        var current_km = round(y_i.km_operating + self.planification.current_km()); 
-        var y_i_str = (current_km > 0)? '<p>' + current_km+' km </p>' : '';
-        y_i_str += (y_i.km_under_construction > 0)? '<p>' + y_i.km_under_construction+' km en obra</p>':'';
-        y_i_str += (y_i.stations > 0)? '<p>' + y_i.stations+' estaciones </p>' : '';
-       
-        if (y_i_str == '') y_i_str = '<p>No hay información para este año</p>'  
-        $('.current-year-container .information').html(y_i_str)
+        var kmTotal = round(y_i.km_operating + self.planification.current_km());
+
+        kmTotal ? $("#km-total").show() : $("#km-total").hide();
+        y_i.km_operating ? $("#km-operating").show() : $("#km-operating").hide();
+        y_i.km_under_construction ? $("#km-under-construction").show() : $("#km-under-construction").hide();
+
+        $("#km-total").html('Total: ' + kmTotal + 'km');
+        $("#km-operating").html('Operativos: ' + y_i.km_operating + 'km');
+        $("#km-under-construction").html('En construcción: ' + y_i.km_under_construction + 'km');
     };
     
     this.style = new Style(styles);
@@ -179,54 +181,6 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
       }
     });
 
-    // Tabs toggle
-    // -----------
-    $(".tab").click(function(){
-      var tab = $(this)[0].classList[1];
-         
-      var panel = $('.panel-container .panel'); 
-      var clicked_tab_content = panel.find(".content."+tab);
-      var other_tab_content = panel.find(".content").not(".content."+tab)
-        
-      if (!panel.is(":visible")){
-          $(".leaflet-bottom.leaflet-right").addClass("back");
-          if (!clicked_tab_content.is(":visible")){
-            other_tab_content.hide();
-            clicked_tab_content.show();      
-            $(".tab").not(".tab."+tab).addClass('not-selected');
-            $(".tab."+tab).removeClass('not-selected');
-          }
-          
-          if ($(".panel").css('position') != 'fixed')
-            panel.slideToggle(500); 
-          else
-            panel.toggle();  
-      
-      }else{
-          if (clicked_tab_content.is(":visible")){
-            
-            if ($(".panel").css('position') != 'fixed'){
-                panel.slideToggle(500,function(){
-                    $(".leaflet-bottom.leaflet-right").removeClass("back");
-                });  
-            } else {
-                panel.toggle(function(){
-                    $(".leaflet-bottom.leaflet-right").removeClass("back");
-                });
-            }
-          
-          } else {
-            other_tab_content.hide();
-            clicked_tab_content.show();      
-            $(".tab").not(".tab."+tab).addClass('not-selected');
-            $(".tab."+tab).removeClass('not-selected');
-          }  
-      }
-    });
-
-    $('.panel-close').click(function(){
-        $(".panel").hide();
-    })
 
     // Play/Pause
     // ----------
@@ -238,21 +192,6 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
       }
     });
 
-    $('.info-toggler').click(function(){
-        var info = $('.information');
-        var info_toggler = $(this)
-        info.slideToggle(500,function(){
-            if (info.is(":visible")) {
-                info_toggler.
-                removeClass('fa-angle-double-down').
-                addClass('fa-angle-double-up');
-            } else {
-                info_toggler.
-                removeClass('fa-angle-double-up').
-                addClass('fa-angle-double-down');
-            }
-        });
-    });
 
     // Hover & Popup
     //--------------

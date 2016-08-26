@@ -1,14 +1,16 @@
 <script src="<%= javascript_path('base.js') %>"></script>
     
 <div class="o-grid__cell--width-20 o-grid__cell--hidden o-grid__cell--visible@large o-panel-container">
-        <div class="o-grid__cell o-grid__cell--width-100"> 
+        <div class="panel-header o-grid__cell o-grid__cell--width-100"> 
             <h2 class="c-heading c-heading--small"><%= @city.name %></h2>
             <div class="c-input-group">
                 <button class="c-button"> <span class="fa fa-play"></span> </button>
-                <button class="c-button"> <span class="fa fa-pause"></span> </button>
                 <input id="current-year" class="c-field" type="number" /> 
             </div>
             <input type="range" class="c-range" />
+            <span id="km-total" class="c-badge c-badge--primary"></span>
+            <span id="km-operating" class="c-badge c-badge--success"></span>
+            <span id="km-under-construction" class="c-badge"></span>
         </div>
         <div class="lines-toggler-container">
             <%= erb :"city/lines_toggler" %>

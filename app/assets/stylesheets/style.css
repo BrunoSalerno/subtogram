@@ -13,8 +13,12 @@
     color:#424242;
 }
 
+.panel-header {
+    height:200px;
+}
+
 .lines-toggler-container {
-    height: calc(100% - 130px);
+    height: calc(100% - 200px);
     position: relative;
     overflow: auto;
 }
