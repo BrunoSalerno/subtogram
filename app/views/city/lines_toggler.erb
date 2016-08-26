@@ -32,20 +32,22 @@
             </a>
             <ul class="c-tree" style="display: none;">
                 <% plan[:lines].each do |line| %>
-                    <li class="c-tree__item">
-                        <input type="checkbox" id="checkbox_<%= line[:id] %>" <%= line[:show] ? 'checked' : '' %>/>
-                        <%
-                            style = "background-color:#{@lines_style[line[:name]]['color']};"
-                            if font_color = @lines_style[line[:name]]['lineLabelFontColor']
-                                style << "color:#{font_color};"
-                            end
-                        %>
-                        <label for="checkbox_<%= line[:id] %>"
-                               style="<%= style %>"
-                               onclick='togglePlanLine(<%= name.to_json %>, <%= line[:name].to_json %>, <%= line[:id].to_json %>);'>
+                        <label class="c-toggle">
+                            <input type="checkbox"
+                                onchange='togglePlanLine(<%= name.to_json %>, <%= line[:name].to_json %>, <%= line[:id].to_json %>)'
+                                <%= line[:show] ? 'checked' : '' %>/>
+                            <%
+                                style = "background-color:#{@lines_style[line[:name]]['color']};"
+                                if font_color = @lines_style[line[:name]]['lineLabelFontColor']
+                                    style << "color:#{font_color};"
+                                end
+                            %>
+
+                            <div class="c-toggle__track" style="<%=style%>" >
+                                <div class="c-toggle__handle"></div>
+                            </div>
                             <%= line[:name] %>
                         </label>
-                    </li>
                 <% end %>
             </ul>
         </li>
