@@ -2,23 +2,26 @@
     <!-- Lines -->
 
     <ul class="c-tree">
-        <ul class="c-tree">
-            <% @lines.each_pair do |name, v| %>
-                    <label class="c-toggle" >
-                        <input type="checkbox" onchange='toggleLine(<%=name.to_json%>);' <%= v[:show] ? 'checked' : '' %>>
-                        <%
-                            style = "background-color:#{@lines_style[name]['color']};"
-                            if font_color = @lines_style[name]['lineLabelFontColor']
-                                style << "color:#{font_color};"
-                            end
-                        %>
-                        <div class="c-toggle__track" style="<%=style%>" >
-                            <div class="c-toggle__handle"></div>
-                        </div>
-                        <%= name %>
-                    </label>
-            <% end %>
-        </ul>
+        <li class="c-tree__item c-tree__item--expanded">
+            <span class="c-link">Líneas</span>
+            <ul class="c-tree">
+                <% @lines.each_pair do |name, v| %>
+                        <label class="c-toggle" >
+                            <input type="checkbox" onchange='toggleLine(<%=name.to_json%>);' <%= v[:show] ? 'checked' : '' %>>
+                            <%
+                                style = "background-color:#{@lines_style[name]['color']};"
+                                if font_color = @lines_style[name]['lineLabelFontColor']
+                                    style << "color:#{font_color};"
+                                end
+                            %>
+                            <div class="c-toggle__track" style="<%=style%>" >
+                                <div class="c-toggle__handle"></div>
+                            </div>
+                            <%= name %>
+                        </label>
+                <% end %>
+            </ul>
+        </li>
     </ul>
 
     <!-- Plans -->
