@@ -27,7 +27,7 @@
     <% @plans.each_pair do |name, plan| %>
         <li class="c-tree__item c-tree__item--expandable">
             <span class="c-link"><%= "#{name} #{plan[:year]}" %></span>
-            <a class="c-link" href="<%= plan[:url] %>" target="_blank" + title="Link a la ley">
+            <a class="c-link c-link--primary" href="<%= plan[:url] %>" target="_blank" + title="Link a la ley">
                 <span class="plan-link fa fa-external-link"></span>
             </a>
             <ul class="c-tree" style="display: none;">

@@ -26,9 +26,8 @@
     }
 }
 
-.info-window li {
-    list-style-type: none;
-    color:#424242;
+.popup-feature-info {
+    margin-top:5px;
 }
 
 .panel-header {
@@ -40,6 +39,12 @@
     position: relative;
     overflow: auto;
 }
+
+
+.mapboxgl-popup-content {
+    font-size:14px;
+}
+
 /*
 Spinner
 -------
