@@ -95,8 +95,7 @@ Taken from http://stephanwagner.me/only-css-loading-spinner
     position:absolute;
     top:0;
     left:0;
-    display:none;
-    z-index:10000;
+    z-index:100000;
 }
 
 

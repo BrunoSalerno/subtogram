@@ -1,5 +1,5 @@
 <script src="<%= javascript_path('base.js') %>"></script>
-
+<div class="spinner-container spinner"></div>
 <div id="panel">
         <div class="panel-header o-grid__cell o-grid__cell--width-100"> 
             <h2 class="c-heading c-heading--small"><%= @city.name %></h2>
@@ -17,7 +17,6 @@
         </div>
 </div>
 <main class="o-grid__cell o-grid__cell--width-100 o-panel-container">
-<div class="spinner-container"></div>
 <div id="map"></div>
 </main>
 
@@ -47,8 +46,6 @@
 
 
       $(document).ready(function(){
-        $(".spinner-container").show().addClass('spinner');
-
         var config = <%= @config.to_json %>;;
 
         var m = new MapLoader(config);
@@ -68,8 +65,6 @@
                             style,
                             function(){
               $(".spinner-container").fadeOut();
-              $(".footer").show();
-              $(".current-year-container").fadeIn();
           });
         });
       });
