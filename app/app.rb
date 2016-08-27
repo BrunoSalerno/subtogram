@@ -15,7 +15,7 @@ DEFAULT_SPEED = 1
 
 class App < Sinatra::Base
     set :public_folder, './public'
-    set :assets_prefix, %w(assets assets/vendor)
+    set :assets_prefix, %w(assets ../vendor/assets)
       
     configure do
         set :title, 'Subtogram'
