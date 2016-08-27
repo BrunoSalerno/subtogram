@@ -1,7 +1,39 @@
-<h2><%= settings.title %></h2>
 
-<% City.each do |city| %>
-<% city_name = city.name
-   city_name << " (#{city.system_name})" if city.system_name %>
-<p><a href="<%= city.url %>"><%= city_name %></a>
-<% end %>
+    <div class="o-grid__cell o-grid__cell--width-100">
+        <div class="o-container o-container--small">
+        <h3 class="c-heading c-heading--medium">
+            En <strong>Subtogram</strong> queremos construir una historia espacial de los sistemas de metro del mundo.
+        </h3>
+
+        <h3 class="c-heading c-heading--medium">
+            Ciudades
+        </h3>
+
+        <% City.each do |city| %>
+        <% city_name = city.name
+           city_name << " (#{city.system_name})" if city.system_name %>
+
+        <div class="c-card c-card--higher c-card--primary">
+          <div class="c-card__content c-card__content--divider"><%= city_name %></div>
+            <div class="c-card__content">
+                <p class="c-paragraph"><%= "#{city.total_km/1000} kilómetros" %></p>
+                <p class="c-paragraph"><%= "#{city.lines.count} líneas y #{city.plans.count} planes"%></p>
+                    <a class="c-link c-link--primary" href="<%= city.url %>">Visitar ciudad</a>
+            </div>
+        </div>
+
+        <% end %>
+
+
+        <h3 class="c-heading c-heading--medium">
+            Contacto
+        </h3>
+
+        <p class="c-paragrapgh">
+            ¿Tenés comentarios? ¿Querés colaborar? ¿Querés agregar una ciudad?
+        </p>
+
+        <p class="c-paragrapgh">
+            Contactanos en <a class="c-link c-link--secondary" href="https://twitter.com/SalernoBr">@SalernoBr</a> o visitá nuestro <a class="c-link c-link--secondary" href="https://github.com/BrunoSalerno/subtogram">repositorio de Github</a>.
+        </p>
+</div>
