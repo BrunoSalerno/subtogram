@@ -10,12 +10,17 @@ var MouseEvents = function(map,style){
     var STATION_INNER_LAYER = 'station_inner';
     var STATION_HOVER_LAYER = 'station_hover';
 
+    function lineLabel(line){
+       var color = style.lineLabelFontColor(line) ? style.lineLabelFontColor(line) : 'white';
+       var s ='margin-left:5px; color:' + color + ';background-color:'+ style.lineColor(line) + ';';
+       return '<span class="c-text--highlight" style="' + s + '">'+ line +'</span>';
+    }
     function feature_info(f){
-        str = '';
+        str = '<div class="c-text popup-feature-info"><ul class="c-list c-list--unstyled">';
         if (f.name) {
-            str += '<p><b> Estación ' + f.name + ' (línea '+f.line+')</b></p>';
+            str += '<li class="c-list__item"><strong> Estación ' + f.name + '</strong>' + lineLabel(f.line) + '</li>';
         } else {
-            str += '<p><b> ' + ((f.plan)? 'Línea ' : 'Tramo de la línea ') + f.line +'</b></p>'
+            str += '<li class="c-list__item"><strong>' + ((!f.plan)? 'Tramo': '') + '</strong>' + lineLabel(f.line) +'</li>'
         }
 
         // We have to parse null values because Mapbox GL stringifies them.
@@ -23,12 +28,13 @@ var MouseEvents = function(map,style){
             if (f[key] == 'null') f[key] = null;
         }
 
-        if (f.buildstart) str += '<p>La construcción empezó en '+f.buildstart;
-        if (f.opening) str += '<p>Se inauguró en '+f.opening;
-        if (f.closure) str += '<p>Se cerró en '+f.closure;
-        if (f.plan && f.year) str +='<p>'+f.plan + ' (' + f.year + ')</p>'
-        if (f.length) str += '<p>Longitud aproximada: '+(parseFloat(f.length)/1000).toFixed(2)+'km';
-        if (f.plan && f.url) str += '<p><a target="_blank" href="'+f.url+'">Más información</a></p>'
+        if (f.buildstart) str += '<li class="c-list__item">La construcción empezó en ' + f.buildstart + '</li>';
+        if (f.opening) str += '<li class="c-list__item">Se inauguró en ' + f.opening + '</li>';
+        if (f.closure) str += '<li class="c-list__item">Se cerró en ' + f.closure +'</li>';
+        if (f.plan && f.year) str +='<li class="c-list__item">'+f.plan + ' ' + f.year + '</li>'
+        if (f.length) str += '<li class="c-list__item">Longitud aproximada: '+ (parseFloat(f.length)/1000).toFixed(2) + 'km</li>';
+        if (f.plan && f.url) str += '<li class="c-list__item"><a class="c-link c-link--primary" target="_blank" href="'+f.url+'">Más información</a></li>';
+        str += '<ul></div>';
         return str;
     }
       

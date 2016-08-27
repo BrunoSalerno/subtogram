@@ -1,62 +1,24 @@
 <script src="<%= javascript_path('base.js') %>"></script>
-<div id="wrapper">
-    <div class="spinner-container"></div>
-    <div id="map"></div>
-    
-    <div class="current-year-container">
-        <div class="city-container">
-            <div class="city"><%= @city.system_name || @city.name %></div><input class="current-year" type="number" />
-        </div>
-        <div class="information"> 
-        </div>
-        <div class="info-toggler fa fa-angle-double-down"></div>
-    </div>
-    <div class="footer">
-    <div class="panel-container">
-        <div class='tab-container'>
-            <div class="tab layers"><span class="tab-icon fa fa-list"></span></div>
-            <div class="tab about not-selected"><span class="tab-icon fa fa-info"></span></div>
-        </div>
-        <div class="panel">
-            <div class="panel-close"><span>×</span></div>
-            <div class="content layers">
-                <h1>Líneas y planes</h1>
-                <%= erb :"city/lines_toggler" %>
+<div class="spinner-container spinner"></div>
+<div id="panel">
+        <div class="panel-header o-grid__cell o-grid__cell--width-100"> 
+            <h2 class="c-heading c-heading--small"><%= @city.name %></h2>
+            <div class="c-input-group">
+                <button id="action" class="c-button c-button--secondary"> <span class="fa fa-play"></span> </button>
+                <input id="current-year" class="c-field" type="number" /> 
             </div>
-            <div class="content about">
-                <h1>Sobre Subtograma</h1>
-                <p>Quiero construir una historia visual del Subte de Buenos Aires y de sus proyectos.</p>
-                <p>Contactame en <a target="_blank" href="https://twitter.com/SalernoBr">@SalernoBr</a>, y/o contribuí en el <a target="_blank" href="https://github.com/BrunoSalerno/subtograma">repositorio de GitHub</a><p>
-            </div>
+            <input id="slider" type="range" class="c-range" />
+            <span id="km-total" class="c-badge c-badge--primary" style="display:none;"></span>
+            <span id="km-operating" class="c-badge c-badge--success" style="display:none;"></span>
+            <span id="km-under-construction" class="c-badge" style="display:none;"></span>
         </div>
-    </div>
-    <div class = "slider">
-        <div class="share">
-            <!-- AddToAny BEGIN -->
-            <div class="a2a_kit a2a_kit_size_24 a2a_default_style">
-                <a class="a2a_dd" href="https://www.addtoany.com/share_save"></a>
-                <a class="a2a_button_facebook"></a>
-                <a class="a2a_button_twitter"></a>
-                <a class="a2a_button_google_plus"></a>
-            </div>
-            <script type="text/javascript" src="//static.addtoany.com/menu/page.js"></script>
-            <!-- AddToAny END -->
+        <div class="lines-toggler-container">
+            <%= erb :"city/lines_toggler" %>
         </div>
-        <div class="logo">
-            <span class="fa fa-subway" style="margin-right:10px;margin-left:5px;font-size:0.9em"></span><%= settings.title %>
-        </div>
-        <div class="reference-container">
-            <div class="action-container">
-                <span class="action fa fa-play"></span>
-            </div>
-            <div class="year-hover"></div>
-            <div class="reference">
-                <div class="year-marker"></div>
-            </div>
-        </div>
-    </div>
-    </footer>
 </div>
+<main class="o-grid__cell o-grid__cell--width-100 o-panel-container">
+<div id="map"></div>
+</main>
 
 <script>
     (function(){
@@ -84,8 +46,6 @@
 
 
       $(document).ready(function(){
-        $(".spinner-container").show().addClass('spinner');
-
         var config = <%= @config.to_json %>;;
 
         var m = new MapLoader(config);
@@ -105,8 +65,6 @@
                             style,
                             function(){
               $(".spinner-container").fadeOut();
-              $(".footer").show();
-              $(".current-year-container").fadeIn();
           });
         });
       });

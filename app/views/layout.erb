@@ -16,11 +16,11 @@
 
         <link rel="icon" type="image/png" href="<%= image_path('favicon-32x32.png')  %>" sizes="32x32">
 
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/blazecss/latest/blaze.min.css" />
+        <link rel="stylesheet" href="<%= asset_path('font-awesome-4.5.0/css/font-awesome.min.css') %>" />
         <link rel="stylesheet" href="<%= stylesheet_path('style.css') %>" />
 
-        <link rel="stylesheet" href="<%= asset_path('font-awesome-4.5.0/css/font-awesome.min.css') %>">
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Lato">
-      
         <script src="<%= asset_path('jquery/jquery-1.12.2.min.js') %>"></script>
         <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.21.0/mapbox-gl.js'></script>
         <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.21.0/mapbox-gl.css' rel='stylesheet' />
@@ -35,7 +35,18 @@
           ga('send', 'pageview');
         </script>
     </head>
-    <body>
-        <%= yield %>
+    <body class="c-text">
+        <nav class="c-nav c-nav--inline">
+            <span id="panel-toggler" class="c-nav__item" style="display:none;">
+                <span class="fa fa-bars"></span>
+            </span>
+            <a href="/" class="c-nav__item c-text--loud">
+                <span class="fa fa-subway"></span>
+                Subtogram
+            </a>
+        </nav>
+        <div class="o-grid o-panel o-panel--nav-top">
+            <%= yield %>
+        </div>
     </body>
 </html>

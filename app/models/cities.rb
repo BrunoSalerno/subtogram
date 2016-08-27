@@ -40,4 +40,14 @@ class City < Sequel::Model(:cities)
         }
         hash
     end
+
+    def total_km
+        length = 0
+        self.lines.each {|line|
+            line.sections.each {|section|
+                length += section.length
+            }
+        }
+        length
+    end
 end

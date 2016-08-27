@@ -79,7 +79,9 @@ class App < Sinatra::Base
         end
 
         @plans = {}
-        @city.plans.each { |plan|
+        @city.plans
+        .sort_by{ |plan| plan.extra["year"].to_i }
+        .each { |plan|
             lines = plan.plan_lines.map {|line|
                 @lines_style[line.name] = line.style
                 {show: param_plan_lines && param_plan_lines[plan.name] && param_plan_lines[plan.name].include?(line.name),

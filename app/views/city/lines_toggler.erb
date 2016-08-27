@@ -1,52 +1,54 @@
-<ul class="lines">
+<ul class="c-tree">
     <!-- Lines -->
-    <li class="plan-label lines-label">
-        <ul class="plan-list">
-            <% @lines.each_pair do |name, v| %>
-                <li>
-                    <input type="checkbox" id="checkbox_<%= name %>" <%= v[:show] ? 'checked' : '' %>/>
-                    <%
-                        style = "background-color:#{@lines_style[name]['color']};"
-                        if font_color = @lines_style[name]['lineLabelFontColor']
-                            style << "color:#{font_color};"
-                        end
-                    %>
-                    <label for="checkbox_<%= name %>" style="<%= style %>" onclick='toggleLine(<%=name.to_json%>);'>
-                        <%= name %>
-                    </label>
-                    </li>
-            <% end %>
-        </ul>
-    </li>
+
+    <ul class="c-tree">
+        <li class="c-tree__item c-tree__item--expanded">
+            <span class="c-link">Líneas</span>
+            <ul class="c-tree">
+                <% @lines.each_pair do |name, v| %>
+                        <style>
+                            <%= ".c-toggle input#checkbox_#{name}:checked+.c-toggle__track {background-color:#{@lines_style[name]['color']};}"%>
+                        </style>
+                        <label class="c-toggle" >
+                            <input id="checkbox_<%=name%>" type="checkbox" onchange='toggleLine(<%=name.to_json%>);' <%= v[:show] ? 'checked' : '' %>>
+                            <div class="c-toggle__track">
+                                <div class="c-toggle__handle"></div>
+                            </div>
+                            <%= name %>
+                        </label>
+                <% end %>
+            </ul>
+        </li>
+    </ul>
 
     <!-- Plans -->
 
+    <ul class="c-tree">
     <% @plans.each_pair do |name, plan| %>
-        <li class="plan-label">
-            <div><%= "#{name} #{plan[:year]}" %></div>
-            <a href="<%= plan[:url] %>" target="_blank" + title="Link a la ley">
+        <li class="c-tree__item c-tree__item--expandable">
+            <span class="c-link"><%= "#{name} #{plan[:year]}" %></span>
+            <a class="c-link c-link--secondary" href="<%= plan[:url] %>" target="_blank" + title="Link a la ley">
                 <span class="plan-link fa fa-external-link"></span>
             </a>
-            <ul class="plan-list">
+            <ul class="c-tree" style="display: none;">
                 <% plan[:lines].each do |line| %>
-                    <li>
-                        <input type="checkbox" id="checkbox_<%= line[:id] %>" <%= line[:show] ? 'checked' : '' %>/>
-                        <%
-                            style = "background-color:#{@lines_style[line[:name]]['color']};"
-                            if font_color = @lines_style[line[:name]]['lineLabelFontColor']
-                                style << "color:#{font_color};"
-                            end
-                        %>
-                        <label for="checkbox_<%= line[:id] %>"
-                               style="<%= style %>"
-                               onclick='togglePlanLine(<%= name.to_json %>, <%= line[:name].to_json %>, <%= line[:id].to_json %>);'>
+                        <style>
+                            <%= ".c-toggle input#checkbox_#{name.gsub(' ','_')}_#{line[:name]}:checked+.c-toggle__track {background-color:#{@lines_style[line[:name]]['color']};}"%>
+                        </style>
+                        <label class="c-toggle">
+                            <input id="checkbox_<%=name.gsub(' ','_')%>_<%=line[:name]%>" type="checkbox"
+                                onchange='togglePlanLine(<%= name.to_json %>, <%= line[:name].to_json %>, <%= line[:id].to_json %>)'
+                                <%= line[:show] ? 'checked' : '' %>/>
+                            <div class="c-toggle__track">
+                                <div class="c-toggle__handle"></div>
+                            </div>
                             <%= line[:name] %>
                         </label>
-                    </li>
                 <% end %>
             </ul>
         </li>
     <% end %>
+    <ul class="c-tree">
 </ul>
 
 <script>
@@ -68,4 +70,17 @@ function togglePlanLine(plan, line, planLineId) {
         save_params(null,null,null,plans_params);
     });
 }
+
+$(".c-tree__item").click(function(){
+    var el = $(this);
+    if (el.hasClass("c-tree__item--expanded")) {
+          el.removeClass("c-tree__item--expanded");
+          el.addClass("c-tree__item--expandable");
+          el.children(".c-tree").hide(); 
+    } else if (el.hasClass("c-tree__item--expandable")) {
+          el.removeClass("c-tree__item--expandable");
+          el.addClass("c-tree__item--expanded"); 
+          el.children(".c-tree").show();
+    }
+})
 </script>
