@@ -170,6 +170,10 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
       }
     });
 
+    // Panel toggle
+    $("#panel-toggler").show().click(function(){
+        $("#panel").toggle();
+    })
 
     // Hover & Popup
     //--------------
