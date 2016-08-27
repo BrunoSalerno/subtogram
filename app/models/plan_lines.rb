@@ -7,6 +7,10 @@ class PlanLine < Sequel::Model(:plan_lines)
 
     plugin :geometry
 
+    def city
+        self.plan.city
+    end
+
     def feature
         h = super
         h[:properties].merge!({line: self.name,

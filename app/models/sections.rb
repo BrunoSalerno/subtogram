@@ -6,6 +6,10 @@ class Section < Sequel::Model(:sections)
 
     plugin :geometry
 
+    def city
+        self.line.city
+    end
+
     def feature
         h = super
         h[:properties].merge!({length: self.length,
