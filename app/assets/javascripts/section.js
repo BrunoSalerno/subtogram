@@ -19,14 +19,8 @@ var Section = function(map, feature, style, type){
 
     if (!self.status || self.status == 'closure')
         return;
-    else if (self.status=='buildstart')
-        str += self.status;
-    else if (self.status=='opening' && self.__type == 'stations')
-        str += 'opening';
-    else // line cases FIXME: it has to disappear with data-driven styles.
-        str += self.properties.line;
 
-    return str;
+    return str + self.status;
   }
 
   this.before_layer = function(){

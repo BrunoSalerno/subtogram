@@ -12,8 +12,6 @@ Style.prototype = {
             return opts.source_name;
 
         var key = type + '-' + operation;
-        if (type != 'stations' && operation != 'buildstart')
-            key += '-'+ line;
 
         return key;    
     },
@@ -25,45 +23,43 @@ Style.prototype = {
         if (cachedStyle) return cachedStyle;
     
         var style;
-        switch (type){
-          case 'sections':
-            style = (operation == 'opening') ?
-              $.extend(true,{},this.__styles.line[operation]["default"],this.__styles.line[operation][line]) :
-              $.extend(true,{},this.__styles.line[operation]);
-              
-            style["line-color"] = style["color"];
-            break;
-          
-          case 'stations':
+            var colorCategory = type === 'sections' ? 'line-color' : 'circle-color';
+            var styleCategory = type === 'sections' ? 'line' : 'station';
+
             if (operation == 'opening'){
-              style = $.extend(true,{},this.__styles.station[operation])
+              style = $.extend(true, {}, this.__styles[styleCategory][operation]);
+
+              if (type === 'sections') {
+                style = $.extend(true, style, this.__styles[styleCategory][operation].default);
+              }
+
               var stops = [];
               
               for (var l in this.__styles.line[operation]){
-                if (l != 'default')
-                stops.push([l, this.lineColor(l)]);
+                delete style[l];
+                if (l !== 'default'){
+                    stops.push([l, this.lineColor(l)]);
+                }
               }
               
-              style["circle-color"] = {
+              style[colorCategory] = {
                     type: "categorical",
                     property : "line",
                     stops : stops
                   }
             } else {
-              style = $.extend(true,{},this.__styles.station[operation]);
-              style["circle-color"] = style["color"];
-            }
-             
-            if (opts.source_name == this.STATION_INNER_LAYER) {
-                style["circle-color"] = style["fillColor"];
-                style["circle-radius"] = style["circle-radius"] - 3;    
+              style = $.extend(true,{},this.__styles[styleCategory][operation]);
+              style[colorCategory] = style["color"];
             }
             
-            delete style["line-width"];
-            
-            break;
-        }
-        
+            if (type === 'stations') {
+                if (opts.source_name == this.STATION_INNER_LAYER) {
+                    style["circle-color"] = style["fillColor"];
+                    style["circle-radius"] = style["circle-radius"] - 3;
+                }
+                delete style["line-width"];
+            }
+
         delete style["labelFontColor"];    
         delete style["fillColor"];
         delete style["color"];

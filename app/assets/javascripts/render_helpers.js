@@ -9,7 +9,8 @@ var LayerUpdate = function(args){
 
 LayerUpdate.prototype = {
     sourceData: function(features){
-        return {"data":{
+        return {"type": "geojson",
+                "data":{
                     "type" : "FeatureCollection",
                     "features": features
                 }}
@@ -43,7 +44,7 @@ LayerUpdate.prototype = {
         this.featuresToRemove.push(feature);        
     },
     newSource: function(){
-        var source = new mapboxgl.GeoJSONSource(this.sourceData(this.featuresToAdd))
+        var source = this.sourceData(this.featuresToAdd);
         this.map.addSource(this.layerName, source)
         this.map.addLayer(this._layer(), this.beforeLayer);
         
