@@ -37,10 +37,20 @@ var MouseEvents = function(map,style){
         str += '<ul></div>';
         return str;
     }
-      
+
+    this.queryRenderedFeatures = function(point){
+        var features = [];
+        try {
+            features = map.queryRenderedFeatures(point, {layers:self.layers});
+        } catch (error) {
+            console.log("Missing layer", error);
+        }
+        return features;
+    }
+
     map.on('click',function(e){
         var point = [e.point.x,e.point.y];
-        var features = map.queryRenderedFeatures(point, {layers:self.layers});
+        var features = self.queryRenderedFeatures(point);
         var html = '';
         features.forEach(function(f){
             html+= feature_info(f.properties);
@@ -55,7 +65,7 @@ var MouseEvents = function(map,style){
 
     map.on("mousemove", function(e){
         var point = [e.point.x,e.point.y];
-        var features = map.queryRenderedFeatures(point, {layers:self.layers});
+        var features = self.queryRenderedFeatures(point);
         var ids = [];
 
         // Cursor pointer
