@@ -10,11 +10,8 @@
         </h3>
 
         <% City.each do |city| %>
-        <% city_name = city.name
-           city_name << " (#{city.system_name})" if city.system_name %>
-
         <div class="c-card c-card--higher c-card--primary">
-          <div class="c-card__content c-card__content--divider"><%= city_name %></div>
+          <div class="c-card__content c-card__content--divider"><%= city.name %></div>
             <div class="c-card__content">
                 <p class="c-paragraph"><%= "#{city.total_km/1000} kilómetros" %></p>
                 <p class="c-paragraph"><%= "#{city.lines.count} líneas y #{city.plans.count} planes"%></p>
