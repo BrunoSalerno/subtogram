@@ -1,8 +1,7 @@
 Subtogram
 ==========
-**Work in progress**
 
-This repository contains the source-code of Subtogram,
+This repository contains the source-code of [Subtogram](http://www.subtogram.com),
 a web app intended to help to analyze and describe the history of World's metro systems.
 
 Useful data
