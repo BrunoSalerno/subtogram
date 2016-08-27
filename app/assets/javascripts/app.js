@@ -87,9 +87,11 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
       .attr('min',self.years.start)
       .attr('max',self.years.end)
       .click(function(e){
-        var year = $(this).val();
+        var year = parseInt($(this).val());
         self.action_button_is_playing();
-        self.change_to_year(year,null,false,function(){
+        self.change_to_year(year,0,true,function(){
+          save_params(year);
+          self.set_current_year_info();
           self.action_button_is_paused();
         });
       });
