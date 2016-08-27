@@ -32,11 +32,11 @@
 }
 
 .panel-header {
-    height:200px;
+    height:220px;
 }
 
 .lines-toggler-container {
-    height: calc(100% - 200px);
+    height: calc(100% - 220px);
     position: relative;
     overflow: auto;
 }
