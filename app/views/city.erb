@@ -4,10 +4,10 @@
         <div class="panel-header o-grid__cell o-grid__cell--width-100"> 
             <h2 class="c-heading c-heading--small"><%= @city.name %></h2>
             <div class="c-input-group">
-                <button class="c-button c-button--secondary"> <span class="fa fa-play"></span> </button>
+                <button id="action" class="c-button c-button--secondary"> <span class="fa fa-play"></span> </button>
                 <input id="current-year" class="c-field" type="number" /> 
             </div>
-            <input type="range" class="c-range" />
+            <input id="slider" type="range" class="c-range" />
             <span id="km-total" class="c-badge c-badge--primary" style="display:none;"></span>
             <span id="km-operating" class="c-badge c-badge--success" style="display:none;"></span>
             <span id="km-under-construction" class="c-badge" style="display:none;"></span>
