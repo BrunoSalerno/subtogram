@@ -10,9 +10,9 @@ var Section = function(map, feature, style, type){
   
   var self = this;
   
-  const STATION_INNER_LAYER = 'station_inner';
-  const STATION_TOP_LAYER = 'line_hover';
-  const STATION_BUILDSTART_LAYER = 'station_buildstart';
+  const STATION_INNER_LAYER = 'stations_inner';
+  const STATION_TOP_LAYER = 'sections_hover';
+  const STATION_BUILDSTART_LAYER = 'stations_buildstart';
 
   this.sourceName = function(){
     var str = self.__type + "_";

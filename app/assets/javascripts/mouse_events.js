@@ -5,8 +5,8 @@ var MouseEvents = function(map,style){
 
     var self = this
 
-    var STATION_INNER_LAYER = 'station_inner';
-    var STATION_HOVER_LAYER = 'station_hover';
+    var STATION_INNER_LAYER = 'stations_inner';
+    var STATION_HOVER_LAYER = 'stations_hover';
 
     function layers() {
       var candidates = ['stations_opening','stations_buildstart','sections_buildstart', 'sections_opening'];

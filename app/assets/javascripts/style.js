@@ -3,7 +3,7 @@ var Style = function(styles){
 }
 
 Style.prototype = {
-    STATION_INNER_LAYER: 'station_inner',
+    STATION_INNER_LAYER: 'stations_inner',
     
     __styles: null,
     cache: {},
