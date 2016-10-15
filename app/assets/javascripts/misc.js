@@ -28,7 +28,7 @@ function save_params(year,map,lines,plans){
 
   if (map){
     var center = map.getCenter();
-    url += '&geo=' + center.lat.toFixed(6) + ',' + center.lng.toFixed(6) + ',' + map.getZoom().toFixed(2) + ',' + map.getBearing().toFixed(2);
+    url += '&geo=' + center.lat.toFixed(6) + ',' + center.lng.toFixed(6) + ',' + map.getZoom().toFixed(2) + ',' + map.getBearing().toFixed(2) + ',' + map.getPitch().toFixed(2);
   } else if (current_params.geo) {
     url += '&geo=' + current_params.geo;
   }

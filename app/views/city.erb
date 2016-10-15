@@ -31,7 +31,8 @@
             style: <%= MAPBOX_STYLE.to_json %>,
             center: config.coords,
             zoom: config.zoom,
-            bearing: config.bearing
+            bearing: config.bearing,
+            pitch: config.pitch
           });
 
           map.addControl(new mapboxgl.NavigationControl());

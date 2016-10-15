@@ -11,6 +11,7 @@ Dir['./app/models/*.rb'].each {|file| require file}
 
 DEFAULT_ZOOM = 12
 DEFAULT_BEARING = 0
+DEFAULT_PITCH = 0
 DEFAULT_SPEED = 1
 
 class App < Sinatra::Base
@@ -37,6 +38,7 @@ class App < Sinatra::Base
             coords: @city.geojson_coords,
             zoom: DEFAULT_ZOOM,
             bearing: DEFAULT_BEARING,
+            pitch: DEFAULT_PITCH,
             speed: DEFAULT_SPEED,
             years: { start: @city.start_year,
                      end: Date.today.year,
@@ -49,7 +51,9 @@ class App < Sinatra::Base
         if params[:geo]
            geo = params[:geo].split(',')
            @config[:coords] = geo[0..1].reverse
-           @config[:zoom], @config[:bearing] = geo[2..3]
+           @config[:zoom] = geo[2]
+           @config[:bearing] = geo[3]
+           @config[:pitch] = geo[4]
         end
 
         # Lines
