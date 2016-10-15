@@ -34,7 +34,7 @@
             bearing: config.bearing
           });
 
-          map.addControl(new mapboxgl.Navigation()); 
+          map.addControl(new mapboxgl.NavigationControl());
           map.on('load',function(){
             self.deferred.resolve(map);
           });
