@@ -10,9 +10,8 @@ var Section = function(map, feature, style, type){
   
   var self = this;
   
-  const STATION_INNER_LAYER = 'station_inner';
-  const STATION_TOP_LAYER = 'line_hover';
-  const STATION_BUILDSTART_LAYER = 'station_buildstart';
+  var STATION_TOP_LAYER = 'sections_hover';
+  var STATION_BUILDSTART_LAYER = 'stations_buildstart';
 
   this.sourceName = function(){
     var str = self.__type + "_";
@@ -26,7 +25,7 @@ var Section = function(map, feature, style, type){
   this.before_layer = function(){
     var b = STATION_BUILDSTART_LAYER;
     if (self.__type == 'stations' || !self.map.getLayer(b)) b = STATION_TOP_LAYER;
-    if (!self.map.getLayer(b)) b = STATION_INNER_LAYER;
+    if (!self.map.getLayer(b)) b = self.__style.STATION_INNER_LAYER;
     return b;
   }
 
@@ -82,9 +81,9 @@ var Section = function(map, feature, style, type){
 
         if (self.type() == 'stations' && (!previousStatus || previousStatus == 'closure')) {
             changes.add.push(self.buildChange({
-            layerName: STATION_INNER_LAYER,
+            layerName: self.__style.STATION_INNER_LAYER,
             feature: self.raw_feature,
-            style: self.style(newStatus,{source_name: STATION_INNER_LAYER}),
+            style: self.style(newStatus,{source_name: self.__style.STATION_INNER_LAYER}),
             beforeLayer:null
            }));
         }
@@ -92,7 +91,7 @@ var Section = function(map, feature, style, type){
 
     if (newStatus == 'closure' && self.type() == 'stations'){
         changes.remove.push(self.buildChange({
-            layerName: STATION_INNER_LAYER,
+            layerName: self.__style.STATION_INNER_LAYER,
             feature: self.raw_feature}));
     }
 

@@ -51,7 +51,7 @@ LayerUpdate.prototype = {
         var self = this;
         // Remove hover layers if this layer is not a hover layer
         if (this.layerName.indexOf('hover') == -1){
-            ['line_hover','station_hover'].forEach(function(l){
+            ['sections_hover','stations_hover'].forEach(function(l){
                 if (!self.map.getLayer(l)) return;
                 self.map.removeLayer(l);
                 self.map.removeSource(l);

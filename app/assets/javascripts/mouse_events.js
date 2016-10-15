@@ -2,19 +2,32 @@ var MouseEvents = function(map,style){
     this.features = {};
     this.style = style;
     this.map = map;
-   
-    var self = this
-    
-    this.layers = ['stations_opening','stations_buildstart','sections_buildstart', 'sections_opening'];
 
-    var STATION_INNER_LAYER = 'station_inner';
-    var STATION_HOVER_LAYER = 'station_hover';
+    var self = this
+
+    var STATION_HOVER_LAYER = 'stations_hover';
+
+    function layers() {
+      var candidates = ['stations_opening','stations_buildstart','sections_buildstart', 'sections_opening'];
+      var existingLayers = [];
+      self.alreadyCreatedLayers = self.alreadyCreatedLayers || {};
+
+      candidates.forEach(function(candidate){
+        if (self.alreadyCreatedLayers[candidate] || self.map.getLayer(candidate)) {
+          self.alreadyCreatedLayers[candidate] = true;
+          existingLayers.push(candidate);
+        }
+      });
+
+      return existingLayers;
+    }
 
     function lineLabel(line){
        var color = style.lineLabelFontColor(line) ? style.lineLabelFontColor(line) : 'white';
        var s ='margin-left:5px; color:' + color + ';background-color:'+ style.lineColor(line) + ';';
        return '<span class="c-text--highlight" style="' + s + '">'+ line +'</span>';
     }
+
     function feature_info(f){
         str = '<div class="c-text popup-feature-info"><ul class="c-list c-list--unstyled">';
         if (f.name) {
@@ -39,13 +52,7 @@ var MouseEvents = function(map,style){
     }
 
     this.queryRenderedFeatures = function(point){
-        var features = [];
-        try {
-            features = map.queryRenderedFeatures(point, {layers:self.layers});
-        } catch (error) {
-            console.log("Missing layer", error);
-        }
-        return features;
+        return map.queryRenderedFeatures(point, {layers: layers()});
     }
 
     map.on('click',function(e){
@@ -81,7 +88,7 @@ var MouseEvents = function(map,style){
 
             if (!self.features[id]){
                var style = self.style.hover(type);
-               var beforeLayer = (type == 'stations')? STATION_INNER_LAYER : STATION_HOVER_LAYER;
+               var beforeLayer = (type == 'stations')? self.style.STATION_INNER_LAYER : STATION_HOVER_LAYER;
 
                var hoverFeature = {layerName: type + '_hover',
                                    type: type,
