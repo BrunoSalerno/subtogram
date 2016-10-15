@@ -5,7 +5,6 @@ var MouseEvents = function(map,style){
 
     var self = this
 
-    var STATION_INNER_LAYER = 'stations_inner';
     var STATION_HOVER_LAYER = 'stations_hover';
 
     function layers() {
@@ -89,7 +88,7 @@ var MouseEvents = function(map,style){
 
             if (!self.features[id]){
                var style = self.style.hover(type);
-               var beforeLayer = (type == 'stations')? STATION_INNER_LAYER : STATION_HOVER_LAYER;
+               var beforeLayer = (type == 'stations')? self.style.STATION_INNER_LAYER : STATION_HOVER_LAYER;
 
                var hoverFeature = {layerName: type + '_hover',
                                    type: type,
