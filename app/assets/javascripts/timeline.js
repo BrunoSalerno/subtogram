@@ -211,3 +211,5 @@ var Timeline = function(lines,data,map,years,style){
   };
 
 };
+
+module.exports = Timeline;

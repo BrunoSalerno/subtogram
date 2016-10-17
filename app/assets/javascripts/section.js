@@ -110,3 +110,5 @@ var Section = function(map, feature, style, type){
     return self.update('closure');
   };
 }
+
+module.exports = Section;

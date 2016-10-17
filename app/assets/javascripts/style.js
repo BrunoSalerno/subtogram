@@ -80,3 +80,5 @@ Style.prototype = {
     }
     
 }
+
+module.exports = Style;

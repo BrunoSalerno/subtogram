@@ -142,3 +142,6 @@ RenderUpdates.prototype = {
       }    
     }
 }
+
+module.exports.LayerUpdate = LayerUpdate;
+module.exports.RenderUpdates = RenderUpdates;

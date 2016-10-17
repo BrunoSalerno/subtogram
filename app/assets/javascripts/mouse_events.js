@@ -112,3 +112,5 @@ var MouseEvents = function(map,style){
         renderUpdates.render(hoverActions);
     });
 }
+
+module.exports = MouseEvents;

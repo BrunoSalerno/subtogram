@@ -1,4 +1,4 @@
-<script src="<%= javascript_path('base.js') %>"></script>
+<script src="<%= javascript_path('bundle.js') %>"></script>
 <div class="spinner-container spinner"></div>
 <div id="panel">
         <div class="panel-header o-grid__cell o-grid__cell--width-100"> 
@@ -19,55 +19,3 @@
 <main class="o-grid__cell o-grid__cell--width-100 o-panel-container">
 <div id="map"></div>
 </main>
-
-<script>
-    (function(){
-      var MapLoader = function(config){
-        this.deferred = new $.Deferred();
-        var self = this;
-          mapboxgl.accessToken = <%= MAPBOX_ACCESS_TOKEN.to_json %>;
-          var map = new mapboxgl.Map({
-            container: 'map',
-            style: <%= MAPBOX_STYLE.to_json %>,
-            center: config.coords,
-            zoom: config.zoom,
-            bearing: config.bearing,
-            pitch: config.pitch
-          });
-
-          map.addControl(new mapboxgl.NavigationControl());
-          map.on('load',function(){
-            self.deferred.resolve(map);
-          });
-
-          map.on('moveend',function(){
-            save_params(null,map);
-          });
-      };
-
-
-      $(document).ready(function(){
-        var config = <%= @config.to_json %>;;
-
-        var m = new MapLoader(config);
-
-        var lines = <%= @lines.to_json %>;
-        var lineFeaturesByYear = <%= @city.line_features_by_year.to_json %>;
-        var plans = <%= @plans.to_json %>;
-        var style = <%= @city.style.to_json %>;
-
-        $.when(m.deferred)
-        .then(function(map){
-            window.app = new App(config,
-                            lines,
-                            lineFeaturesByYear,
-                            plans,
-                            map,
-                            style,
-                            function(){
-              $(".spinner-container").fadeOut();
-          });
-        });
-      });
-    })();
-</script>

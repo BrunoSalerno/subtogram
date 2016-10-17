@@ -111,3 +111,5 @@ var Planification = function(plans,map,style){
 
   this.loadPlans(plans)
 };
+
+module.exports = Planification;

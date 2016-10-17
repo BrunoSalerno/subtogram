@@ -1,3 +1,13 @@
+var Misc = require('./misc');
+var MouseEvents = require('./mouse_events');
+var Plan = require('./plan');
+var Planification = require('./planification');
+var LayerUpdate = require('./render_helpers').LayerUpdate;
+var RenderUpdates = require('./render_helpers').RenderUpdates;
+var Section = require('./section');
+var Style = require('./style');
+var Timeline = require('./timeline');
+
 var App = function(config,lines,linesData,plansData,map,styles,callback){
     this.interval = null;
     var self = this;
@@ -37,7 +47,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
         var y = self.timeline.current_year()+1;
         self.interval = setInterval(function(){
           if (y > year) {
-            save_params(year);
+            Misc.saveParams(year);
             clearInterval(self.interval);
             self.timeline.release();
             if (typeof callback == 'function') callback(true);
@@ -63,7 +73,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
         var y = self.timeline.current_year();
         self.interval = setInterval(function(){
           if (y < year) {
-            save_params(year);
+            Misc.saveParams(year);
             clearInterval(self.interval);
             self.timeline.release();
             if (typeof callback == 'function') callback(true);
@@ -90,7 +100,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
         var year = parseInt($(this).val());
         self.action_button_is_playing();
         self.change_to_year(year,0,true,function(){
-          save_params(year);
+          mic.saveParams(year);
           self.set_current_year_info();
           self.action_button_is_paused();
         });
@@ -120,7 +130,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
       clearInterval(self.interval);
       self.timeline.release();
       self.set_current_year_info(self.timeline.current_year());
-      save_params(self.timeline.current_year());
+      Misc.saveParams(self.timeline.current_year());
     };
 
     this.set_current_year_info = function(year){
@@ -196,3 +206,5 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
         if (typeof callback === 'function') callback();    
     }
 };
+
+module.exports = App;

@@ -53,3 +53,5 @@ var Plan = function(map,style){
     return changes;
   };
 };
+
+module.exports = Plan;

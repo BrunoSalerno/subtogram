@@ -1,0 +1,33 @@
+{
+  "name": "subtogram",
+  "version": "0.1.0",
+  "description": "A web app about the Metro systems of the World",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BrunoSalerno/subtogram.git"
+  },
+  "keywords": [
+    "metro",
+    "subway",
+    "tube",
+    "undergroud",
+    "subte",
+    "railway",
+    "city"
+  ],
+  "author": "Bruno Salerno",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BrunoSalerno/subtogram/issues"
+  },
+  "homepage": "https://github.com/BrunoSalerno/subtogram#readme",
+  "dependencies": {
+    "browserify": "^13.1.0",
+    "jquery": "^3.1.1",
+    "mapbox-gl": "^0.26.0"
+  }
+}
