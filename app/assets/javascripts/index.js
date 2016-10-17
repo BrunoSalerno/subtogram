@@ -1,6 +1,7 @@
 var App = require('./app');
 var mapboxgl = require('mapbox-gl');
 var $ = require('jquery');
+var Misc = require('./misc');
 
 var MapLoader = function(config, mapboxAccessToken, mapboxStyle){
   this.deferred = new $.Deferred();
@@ -21,7 +22,7 @@ var MapLoader = function(config, mapboxAccessToken, mapboxStyle){
   });
 
   map.on('moveend',function(){
-    save_params(null,map);
+    Misc.saveParams(null,map);
   });
 };
 

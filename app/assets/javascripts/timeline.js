@@ -1,5 +1,7 @@
 var RenderUpdates = require('./render_helpers').RenderUpdates;
 var Section = require('./section');
+var Misc = require('./misc');
+var $ = require('jquery');
 
 var Timeline = function(lines,data,map,years,style){
   var self = this;
@@ -196,10 +198,10 @@ var Timeline = function(lines,data,map,years,style){
         case 'sections':
             if (section.status == 'opening'){
                 information.km_operating += section.length();
-                information.km_operating = round(information.km_operating);
+                information.km_operating = Misc.round(information.km_operating);
             } else if (section.status == 'buildstart') {
                 information.km_under_construction += section.length();
-                information.km_under_construction = round(information.km_under_construction);
+                information.km_under_construction = Misc.round(information.km_under_construction);
             }
         break;
         case 'stations':

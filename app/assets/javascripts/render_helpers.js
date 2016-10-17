@@ -1,3 +1,5 @@
+var $ = require('jquery');
+
 var LayerUpdate = function(args){
     this.layerName = args.layerName;
     this.map = args.map;

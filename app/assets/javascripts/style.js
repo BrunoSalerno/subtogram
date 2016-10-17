@@ -1,3 +1,5 @@
+var $ = require('jquery');
+
 var Style = function(styles){
     this.__styles = styles;    
 }

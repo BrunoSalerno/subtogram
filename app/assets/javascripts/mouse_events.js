@@ -1,3 +1,4 @@
+var mapboxgl = require('mapbox-gl');
 var RenderUpdates = require('./render_helpers').RenderUpdates;
 
 var MouseEvents = function(map,style){
