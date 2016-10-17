@@ -3,10 +3,9 @@ var MouseEvents = require('./mouse_events');
 var Plan = require('./plan');
 var Planification = require('./planification');
 var LayerUpdate = require('./render_helpers').LayerUpdate;
-var RenderUpdates = require('./render_helpers').RenderUpdates;
-var Section = require('./section');
 var Style = require('./style');
 var Timeline = require('./timeline');
+var $ = require('jquery');
 
 var App = function(config,lines,linesData,plansData,map,styles,callback){
     this.interval = null;
@@ -136,7 +135,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
     this.set_current_year_info = function(year){
         if (year) $('#current-year').val(year);
         var y_i = self.timeline.year_information();
-        var kmTotal = round(y_i.km_operating + self.planification.current_km());
+        var kmTotal = Misc.round(y_i.km_operating + self.planification.current_km());
 
         kmTotal ? $("#km-total").show() : $("#km-total").hide();
         y_i.km_operating ? $("#km-operating").show() : $("#km-operating").hide();
@@ -205,6 +204,41 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
     }else{
         if (typeof callback === 'function') callback();    
     }
+
+    // Toggle Lines
+    // ------------
+
+    function toggleLine(line) {
+       var lines_params = app.timeline.toggleLine(line);
+       var year_start = (app.timeline.lines[line].show) ? app.years.start : app.timeline.current_year();
+       var year_end = (app.timeline.lines[line].show) ? app.timeline.current_year() : app.years.start;
+
+       app.change_line_to_year(year_start,year_end,line,function(){
+        app.set_current_year_info();
+       });
+      
+       save_params(null,null,lines_params);
+    }
+
+    function togglePlanLine(plan, line, planLineId) {
+        $.when(app.planification.toggle(plan, line, planLineId)).then(function(plans_params){
+            app.set_current_year_info();
+            save_params(null,null,null,plans_params);
+        });
+    }
+
+    $(".c-tree__item").click(function(){
+        var el = $(this);
+        if (el.hasClass("c-tree__item--expanded")) {
+              el.removeClass("c-tree__item--expanded");
+              el.addClass("c-tree__item--expandable");
+              el.children(".c-tree").hide(); 
+        } else if (el.hasClass("c-tree__item--expandable")) {
+              el.removeClass("c-tree__item--expandable");
+              el.addClass("c-tree__item--expanded"); 
+              el.children(".c-tree").show();
+        }
+    })
 };
 
 module.exports = App;

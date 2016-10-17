@@ -1,14 +1,14 @@
-var App = require './app'
+var App = require('./app');
 var mapboxgl = require('mapbox-gl');
-var $ = require('jquery')
+var $ = require('jquery');
 
-var MapLoader = function(config){
+var MapLoader = function(config, mapboxAccessToken, mapboxStyle){
   this.deferred = new $.Deferred();
   var self = this;
-  mapboxgl.accessToken = <%= MAPBOX_ACCESS_TOKEN.to_json %>;
+  mapboxgl.accessToken = mapboxAccessToken;
   var map = new mapboxgl.Map({
     container: 'map',
-    style: <%= MAPBOX_STYLE.to_json %>,
+    style: mapboxStyle,
     center: config.coords,
     zoom: config.zoom,
     bearing: config.bearing,
@@ -26,16 +26,8 @@ var MapLoader = function(config){
 };
 
 
-$(document).ready(function(){
-  var config = <%= @config.to_json %>;;
-
-  var m = new MapLoader(config);
-
-  var lines = <%= @lines.to_json %>;
-  var lineFeaturesByYear = <%= @city.line_features_by_year.to_json %>;
-  var plans = <%= @plans.to_json %>;
-  var style = <%= @city.style.to_json %>;
-
+window.loadApp = function(lines, lineFeaturesByYear, plans, style, config, mapboxAccessToken, mapboxStyle) {
+  var m = new MapLoader(config, mapboxAccessToken, mapboxStyle);
   $.when(m.deferred)
   .then(function(map){
     window.app = new App(config,
@@ -48,4 +40,4 @@ $(document).ready(function(){
         $(".spinner-container").fadeOut();
       });
   });
-});
+};

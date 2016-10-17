@@ -1,3 +1,5 @@
+var Section = require('./section');
+
 var Plan = function(map,style){
   this.style = style;
   this.lines = {};

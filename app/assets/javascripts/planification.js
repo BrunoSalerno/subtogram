@@ -1,3 +1,6 @@
+var Misc = require('./misc');
+var $ = require('jquery');
+
 var Planification = function(plans,map,style){
   this.map = map;
   this.style = style;
@@ -17,7 +20,7 @@ var Planification = function(plans,map,style){
           }
         }
     }
-    return round(km);
+    return Misc.round(km);
   }
 
 

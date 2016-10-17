@@ -1,3 +1,6 @@
+var RenderUpdates = require('./render_helpers').RenderUpdates;
+var Section = require('./section');
+
 var Timeline = function(lines,data,map,years,style){
   var self = this;
 

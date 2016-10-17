@@ -1,3 +1,5 @@
+var RenderUpdates = require('./render_helpers').RenderUpdates;
+
 var MouseEvents = function(map,style){
     this.features = {};
     this.style = style;
