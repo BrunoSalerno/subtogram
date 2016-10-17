@@ -1,9 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Misc = require('./misc');
 var MouseEvents = require('./mouse_events');
-var Plan = require('./plan');
 var Planification = require('./planification');
-var LayerUpdate = require('./render_helpers').LayerUpdate;
 var Style = require('./style');
 var Timeline = require('./timeline');
 var $ = require('jquery');
@@ -100,7 +98,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
         var year = parseInt($(this).val());
         self.action_button_is_playing();
         self.change_to_year(year,0,true,function(){
-          mic.saveParams(year);
+          Misc.saveParams(year);
           self.set_current_year_info();
           self.action_button_is_paused();
         });
@@ -217,16 +215,29 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
        app.change_line_to_year(year_start,year_end,line,function(){
         app.set_current_year_info();
        });
-      
-       save_params(null,null,lines_params);
+
+       Misc.saveParams(null,null,lines_params);
     }
 
     function togglePlanLine(plan, line, planLineId) {
         $.when(app.planification.toggle(plan, line, planLineId)).then(function(plans_params){
             app.set_current_year_info();
-            save_params(null,null,null,plans_params);
+            Misc.saveParams(null,null,null,plans_params);
         });
     }
+
+    $('.checkbox-toggle-plan').change(function(){
+      var elIdParts = $(this)[0].id.split('_');
+      var name = elIdParts[1].replace('-',' ');
+      var line = elIdParts[2];
+      var id = elIdParts[3];
+      togglePlanLine(name, line, id);
+    });
+
+    $('.checkbox-toggle').change(function(){
+      var line = $(this)[0].id.split('_')[1];
+      toggleLine(line);
+    });
 
     $(".c-tree__item").click(function(){
         var el = $(this);
@@ -244,7 +255,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
 
 module.exports = App;
 
-},{"./misc":3,"./mouse_events":4,"./plan":5,"./planification":6,"./render_helpers":7,"./style":9,"./timeline":10,"jquery":11}],2:[function(require,module,exports){
+},{"./misc":3,"./mouse_events":4,"./planification":6,"./style":9,"./timeline":10,"jquery":11}],2:[function(require,module,exports){
 var App = require('./app');
 var mapboxgl = require('mapbox-gl');
 var $ = require('jquery');
@@ -470,6 +481,7 @@ module.exports = MouseEvents;
 
 },{"./render_helpers":7,"mapbox-gl":29}],5:[function(require,module,exports){
 var Section = require('./section');
+var Misc = require('./misc');
 
 var Plan = function(map,style){
   this.style = style;
@@ -487,7 +499,7 @@ var Plan = function(map,style){
         raw_feature: raw_feature,
         section:null,
         stations:[],
-        length: round(length/1000)}
+        length: Misc.round(length/1000)}
   };
 
   this.addStation = function(line,station){
@@ -505,7 +517,7 @@ var Plan = function(map,style){
 
     changes.push(self.lines[line].section.open())
 
-    $.each(self.lines[line].stations,function(i,s){
+    self.lines[line].stations.forEach(function(s){
       if (!s.section)
         s.section = new Section(self.map,
                                 s.raw_feature,
@@ -520,7 +532,7 @@ var Plan = function(map,style){
   this.undraw = function(line){
     var changes = [];
     changes.push(self.lines[line].section.close());
-    $.each(self.lines[line].stations,function(i,s){
+    self.lines[line].stations.forEach(function(s){
       changes.push(s.section.close());
     });
     return changes;
@@ -529,8 +541,10 @@ var Plan = function(map,style){
 
 module.exports = Plan;
 
-},{"./section":8}],6:[function(require,module,exports){
+},{"./misc":3,"./section":8}],6:[function(require,module,exports){
+var Plan = require('./plan');
 var Misc = require('./misc');
+var RenderUpdates = require('./render_helpers').RenderUpdates;
 var $ = require('jquery');
 
 var Planification = function(plans,map,style){
@@ -649,7 +663,7 @@ var Planification = function(plans,map,style){
 
 module.exports = Planification;
 
-},{"./misc":3,"jquery":11}],7:[function(require,module,exports){
+},{"./misc":3,"./plan":5,"./render_helpers":7,"jquery":11}],7:[function(require,module,exports){
 var $ = require('jquery');
 
 var LayerUpdate = function(args){

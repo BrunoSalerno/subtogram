@@ -1,4 +1,6 @@
+var Plan = require('./plan');
 var Misc = require('./misc');
+var RenderUpdates = require('./render_helpers').RenderUpdates;
 var $ = require('jquery');
 
 var Planification = function(plans,map,style){

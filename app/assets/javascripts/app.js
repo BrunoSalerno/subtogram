@@ -1,8 +1,6 @@
 var Misc = require('./misc');
 var MouseEvents = require('./mouse_events');
-var Plan = require('./plan');
 var Planification = require('./planification');
-var LayerUpdate = require('./render_helpers').LayerUpdate;
 var Style = require('./style');
 var Timeline = require('./timeline');
 var $ = require('jquery');
@@ -99,7 +97,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
         var year = parseInt($(this).val());
         self.action_button_is_playing();
         self.change_to_year(year,0,true,function(){
-          mic.saveParams(year);
+          Misc.saveParams(year);
           self.set_current_year_info();
           self.action_button_is_paused();
         });
@@ -216,16 +214,29 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
        app.change_line_to_year(year_start,year_end,line,function(){
         app.set_current_year_info();
        });
-      
-       save_params(null,null,lines_params);
+
+       Misc.saveParams(null,null,lines_params);
     }
 
     function togglePlanLine(plan, line, planLineId) {
         $.when(app.planification.toggle(plan, line, planLineId)).then(function(plans_params){
             app.set_current_year_info();
-            save_params(null,null,null,plans_params);
+            Misc.saveParams(null,null,null,plans_params);
         });
     }
+
+    $('.checkbox-toggle-plan').change(function(){
+      var elIdParts = $(this)[0].id.split('_');
+      var name = elIdParts[1].replace('-',' ');
+      var line = elIdParts[2];
+      var id = elIdParts[3];
+      togglePlanLine(name, line, id);
+    });
+
+    $('.checkbox-toggle').change(function(){
+      var line = $(this)[0].id.split('_')[1];
+      toggleLine(line);
+    });
 
     $(".c-tree__item").click(function(){
         var el = $(this);
