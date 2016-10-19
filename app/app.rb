@@ -17,7 +17,7 @@ DEFAULT_SPEED = 1
 class App < Sinatra::Base
     set :public_folder, './public'
     set :assets_prefix, %w(assets)
-    set :assets_precompile, %w(base.js *.css *.png)
+    set :assets_precompile, %w(bundle.js *.css *.png)
       
     configure do
         set :title, 'Subtogram'

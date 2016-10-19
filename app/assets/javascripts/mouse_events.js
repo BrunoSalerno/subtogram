@@ -1,3 +1,6 @@
+var mapboxgl = require('mapbox-gl');
+var RenderUpdates = require('./render_helpers').RenderUpdates;
+
 var MouseEvents = function(map,style){
     this.features = {};
     this.style = style;
@@ -112,3 +115,5 @@ var MouseEvents = function(map,style){
         renderUpdates.render(hoverActions);
     });
 }
+
+module.exports = MouseEvents;

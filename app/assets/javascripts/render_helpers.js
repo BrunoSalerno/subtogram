@@ -1,3 +1,5 @@
+var $ = require('jquery');
+
 var LayerUpdate = function(args){
     this.layerName = args.layerName;
     this.map = args.map;
@@ -142,3 +144,6 @@ RenderUpdates.prototype = {
       }    
     }
 }
+
+module.exports.LayerUpdate = LayerUpdate;
+module.exports.RenderUpdates = RenderUpdates;

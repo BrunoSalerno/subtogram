@@ -1,3 +1,10 @@
+var Misc = require('./misc');
+var MouseEvents = require('./mouse_events');
+var Planification = require('./planification');
+var Style = require('./style');
+var Timeline = require('./timeline');
+var $ = require('jquery');
+
 var App = function(config,lines,linesData,plansData,map,styles,callback){
     this.interval = null;
     var self = this;
@@ -37,7 +44,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
         var y = self.timeline.current_year()+1;
         self.interval = setInterval(function(){
           if (y > year) {
-            save_params(year);
+            Misc.saveParams(year);
             clearInterval(self.interval);
             self.timeline.release();
             if (typeof callback == 'function') callback(true);
@@ -63,7 +70,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
         var y = self.timeline.current_year();
         self.interval = setInterval(function(){
           if (y < year) {
-            save_params(year);
+            Misc.saveParams(year);
             clearInterval(self.interval);
             self.timeline.release();
             if (typeof callback == 'function') callback(true);
@@ -90,7 +97,7 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
         var year = parseInt($(this).val());
         self.action_button_is_playing();
         self.change_to_year(year,0,true,function(){
-          save_params(year);
+          Misc.saveParams(year);
           self.set_current_year_info();
           self.action_button_is_paused();
         });
@@ -120,13 +127,13 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
       clearInterval(self.interval);
       self.timeline.release();
       self.set_current_year_info(self.timeline.current_year());
-      save_params(self.timeline.current_year());
+      Misc.saveParams(self.timeline.current_year());
     };
 
     this.set_current_year_info = function(year){
         if (year) $('#current-year').val(year);
         var y_i = self.timeline.year_information();
-        var kmTotal = round(y_i.km_operating + self.planification.current_km());
+        var kmTotal = Misc.round(y_i.km_operating + self.planification.current_km());
 
         kmTotal ? $("#km-total").show() : $("#km-total").hide();
         y_i.km_operating ? $("#km-operating").show() : $("#km-operating").hide();
@@ -195,4 +202,54 @@ var App = function(config,lines,linesData,plansData,map,styles,callback){
     }else{
         if (typeof callback === 'function') callback();    
     }
+
+    // Toggle Lines
+    // ------------
+
+    function toggleLine(line) {
+       var lines_params = app.timeline.toggleLine(line);
+       var year_start = (app.timeline.lines[line].show) ? app.years.start : app.timeline.current_year();
+       var year_end = (app.timeline.lines[line].show) ? app.timeline.current_year() : app.years.start;
+
+       app.change_line_to_year(year_start,year_end,line,function(){
+        app.set_current_year_info();
+       });
+
+       Misc.saveParams(null,null,lines_params);
+    }
+
+    function togglePlanLine(plan, line, planLineId) {
+        $.when(app.planification.toggle(plan, line, planLineId)).then(function(plans_params){
+            app.set_current_year_info();
+            Misc.saveParams(null,null,null,plans_params);
+        });
+    }
+
+    $('.checkbox-toggle-plan').change(function(){
+      var elIdParts = $(this)[0].id.split('_');
+      var name = elIdParts[1].replace('-',' ');
+      var line = elIdParts[2];
+      var id = elIdParts[3];
+      togglePlanLine(name, line, id);
+    });
+
+    $('.checkbox-toggle').change(function(){
+      var line = $(this)[0].id.split('_')[1];
+      toggleLine(line);
+    });
+
+    $(".c-tree__item").click(function(){
+        var el = $(this);
+        if (el.hasClass("c-tree__item--expanded")) {
+              el.removeClass("c-tree__item--expanded");
+              el.addClass("c-tree__item--expandable");
+              el.children(".c-tree").hide(); 
+        } else if (el.hasClass("c-tree__item--expandable")) {
+              el.removeClass("c-tree__item--expandable");
+              el.addClass("c-tree__item--expanded"); 
+              el.children(".c-tree").show();
+        }
+    })
 };
+
+module.exports = App;

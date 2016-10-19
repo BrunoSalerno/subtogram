@@ -1,3 +1,6 @@
+var $ = require('jquery');
+var Misc = require ('./misc');
+
 var Section = function(map, feature, style, type){
   this.status = null;
   
@@ -46,7 +49,7 @@ var Section = function(map, feature, style, type){
   };
 
   this.length = function(){
-    return round((self.__length/1000)); //in km
+    return Misc.round((self.__length/1000)); //in km
   };
 
   this.style = function(operation,opts){
@@ -110,3 +113,5 @@ var Section = function(map, feature, style, type){
     return self.update('closure');
   };
 }
+
+module.exports = Section;

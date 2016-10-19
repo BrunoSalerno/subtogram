@@ -1,3 +1,6 @@
+var Section = require('./section');
+var Misc = require('./misc');
+
 var Plan = function(map,style){
   this.style = style;
   this.lines = {};
@@ -14,7 +17,7 @@ var Plan = function(map,style){
         raw_feature: raw_feature,
         section:null,
         stations:[],
-        length: round(length/1000)}
+        length: Misc.round(length/1000)}
   };
 
   this.addStation = function(line,station){
@@ -32,7 +35,7 @@ var Plan = function(map,style){
 
     changes.push(self.lines[line].section.open())
 
-    $.each(self.lines[line].stations,function(i,s){
+    self.lines[line].stations.forEach(function(s){
       if (!s.section)
         s.section = new Section(self.map,
                                 s.raw_feature,
@@ -47,9 +50,11 @@ var Plan = function(map,style){
   this.undraw = function(line){
     var changes = [];
     changes.push(self.lines[line].section.close());
-    $.each(self.lines[line].stations,function(i,s){
+    self.lines[line].stations.forEach(function(s){
       changes.push(s.section.close());
     });
     return changes;
   };
 };
+
+module.exports = Plan;

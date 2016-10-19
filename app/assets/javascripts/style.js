@@ -1,3 +1,5 @@
+var $ = require('jquery');
+
 var Style = function(styles){
     this.__styles = styles;    
 }
@@ -80,3 +82,5 @@ Style.prototype = {
     }
     
 }
+
+module.exports = Style;

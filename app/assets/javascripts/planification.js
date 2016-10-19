@@ -1,3 +1,8 @@
+var Plan = require('./plan');
+var Misc = require('./misc');
+var RenderUpdates = require('./render_helpers').RenderUpdates;
+var $ = require('jquery');
+
 var Planification = function(plans,map,style){
   this.map = map;
   this.style = style;
@@ -17,7 +22,7 @@ var Planification = function(plans,map,style){
           }
         }
     }
-    return round(km);
+    return Misc.round(km);
   }
 
 
@@ -111,3 +116,5 @@ var Planification = function(plans,map,style){
 
   this.loadPlans(plans)
 };
+
+module.exports = Planification;
