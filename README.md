@@ -21,23 +21,33 @@ to you. Check out the `app/config/*.yml.sample` files.
 
 * Install Ruby dependencies:
 
-`bundle install`
+```
+bundle install
+```
 
 * Run migrations:
 
-`rake db:migrate`
+```
+rake db:migrate
+```
 
 * Install JS dependencies:
 
-`npm install`
+```
+npm install
+```
 
 * Build:
 
-`npm run build`
+```
+npm run build
+```
 
 * Assets need to be compiled before deployment:
 
-`RACK_ENV=production rake assets:precompile`
+```
+RACK_ENV=production rake assets:precompile
+```
 
 Contribute
 ----------
