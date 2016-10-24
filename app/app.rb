@@ -111,4 +111,15 @@ class App < Sinatra::Base
             {line: l.feature, stations: l.plan_stations.map(&:feature)}
         }.to_json
     end
+
+    get '/api/source/:type' do |type|
+      features = if type == 'sections'
+                   Section.map(&:feature)
+                 else
+                   Station.map(&:feature)
+                 end
+
+      {type: "FeatureCollection",
+       features: features}.to_json
+    end
 end

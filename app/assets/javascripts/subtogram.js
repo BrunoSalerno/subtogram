@@ -1,6 +1,8 @@
 var Subtogram = function(args){
   args = args || {};
   this.map = args.map;
+  this.style = args.style;
+  this.addLayers();
 };
 
 Subtogram.prototype = {
@@ -9,12 +11,12 @@ Subtogram.prototype = {
   layers: {
     sections: {
       BUILDSTART: 'sections_buildstart',
-      OPENGING: 'sections_openging',
+      OPENGING: 'sections_opening',
       HOVER: 'sections_hover'
     },
     stations: {
       BUILDSTART: 'stations_buildstart',
-      OPENGING: 'stations_openging',
+      OPENGING: 'stations_opening',
       HOVER: 'stations_hover',
       INNER_LAYER: 'stations_inner_layer'
     }
@@ -22,17 +24,27 @@ Subtogram.prototype = {
 
   _addSource: function(type) {
     var sourceName = type + '_source';
-    // addSource, with the url directly to de server (new api endpoint)
+
+    if (this.map.getSource(sourceName)) {
+      return sourceName;
+    }
+
+    this.map.addSource(sourceName, {
+      type: 'geojson',
+      data: '/api/source/' + type
+    });
+
     return sourceName;
   },
 
   addLayers: function() {
     var self = this;
     ['sections', 'stations'].forEach(function(type){
-      for (var k in this.layers[type]) {
-        var sourceName = _addSource(type);
+      for (var k in self.layers[type]) {
+        var sourceName = self._addSource(type);
         var featureType = type === 'sections' ? 'line' : 'circle';
-        self._addLayer(sourceName, this.layers[type][k], featureType);
+        var layer = self.layers[type][k];
+        self._addLayer(sourceName, layer, featureType);
       }
     });
   },
@@ -43,23 +55,30 @@ Subtogram.prototype = {
       source: sourceName,
       type: featureType,
       interactive: true,
-      paint: this.style(layerName)
+      paint: this.style.get(layerName)
     };
 
     this.map.addLayer(layer);
   },
 
-  style: function(layerName) {
-    //return style;
-  },
+  filterYear: function(year) {
+    var self = this;
+    ['sections', 'stations'].forEach(function(type){
+      for (var k in self.layers[type]) {
+        var layer = self.layers[type][k];
 
-  filter: function(year) {
-    // setFilter on layers
+        if (layer.indexOf('hover') === -1 || layer.indexOf('buildstart') === -1) {
+          var filter = [
+            "all",
+            [">=", "opening", year],
+            ["<", "closure", year],
+          ];
+
+          self.map.setFilter(layer, filter);
+        }
+      }
+    });
   }
 }
 
-// Outisde here, in the index file, this class should be instantiated:
-// - Subtogram
-// - A Timeline class that requires as parameter Subtogram
-// - MouseEvents class that also requires Subtogram (or subtogram layers);
-// And in index there should be the jQuery and the interactions
+module.exports = Subtogram;
