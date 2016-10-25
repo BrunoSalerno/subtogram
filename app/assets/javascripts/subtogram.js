@@ -1,12 +1,12 @@
-var Subtogram = function(args){
-  args = args || {};
-  this.map = args.map;
-  this.style = args.style;
+var Subtogram = function(map, style){
+  this.map = map;
+  this.style = style;
   this.addLayers();
 };
 
 Subtogram.prototype = {
   map: null,
+  style: null,
 
   layers: {
     sections: {
@@ -71,6 +71,8 @@ Subtogram.prototype = {
         if (layer.indexOf('hover') !== -1){
           // TODO: hide this layer
         } else if (layer.indexOf('buildstart') !== -1) {
+          // FIXME: this should consider also when there is closure
+          // and not opening
           filter = [
             "all",
             ["<=", "buildstart", year],
@@ -93,7 +95,7 @@ Subtogram.prototype = {
         if (filter) self.map.setFilter(layer, filter);
       }
     });
-  }
+  },
 }
 
 module.exports = Subtogram;

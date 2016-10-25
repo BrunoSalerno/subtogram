@@ -3,13 +3,14 @@ var Subtogram = require('./subtogram');
 var mapboxgl = require('mapbox-gl');
 var $ = require('jquery');
 var Misc = require('./misc');
+var Timeline = require('./timeline');
 
 var App = function(map, styles, years) {
   var style = new Style(styles);
-  var subtogram = new Subtogram({map: map,
-                                 style: style});
+  var subtogram = new Subtogram(map, style);
+  var timeline = new Timeline(subtogram, years);
 
-  subtogram.filterYear(2009);
+  timeline.toYear(years.default || 1913);
 
   $(".spinner-container").fadeOut();
 
@@ -23,8 +24,12 @@ var App = function(map, styles, years) {
     change(function(e){
       var year = parseInt($(this).val());
       if (year < years.start || year > years.end) return;
-      subtogram.filterYear(year);
+      timeline.toYear(year);
     });
+
+  $('#action').click(function(){
+    timeline.animateToYear(years.end);
+  });
 }
 
 window.loadApp = function(lines, plans, styles, config, mapboxAccessToken, mapboxStyle) {
