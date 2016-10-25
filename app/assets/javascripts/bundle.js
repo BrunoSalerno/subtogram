@@ -10,9 +10,13 @@ var App = function(map, styles) {
   var subtogram = new Subtogram({map: map,
                                  style: style});
 
-  subtogram.filterYear(1987);
+  subtogram.filterYear(2009);
 
   $(".spinner-container").fadeOut();
+
+  $("#panel-toggler").show().click(function(){
+    $("#panel").toggle();
+  });
 }
 
 window.loadApp = function(lines, plans, styles, config, mapboxAccessToken, mapboxStyle) {
@@ -186,6 +190,7 @@ var Subtogram = function(args){
 
 Subtogram.prototype = {
   map: null,
+  hoverFeature: null,
 
   layers: {
     sections: {
@@ -245,27 +250,36 @@ Subtogram.prototype = {
     ['sections', 'stations'].forEach(function(type){
       for (var k in self.layers[type]) {
         var layer = self.layers[type][k];
-/*
-        if (layer.indexOf('hover') === -1 || layer.indexOf('buildstart') === -1) {
-          var filter = [
-            "all",
-            [">=", "opening", year],
-            ["<", "closure", year],
-          ];
+        var filter;
 
-          self.map.setFilter(layer, filter);
-        } */
+        if (layer.indexOf('hover') !== -1){
+          // TODO: hide this layer
+        } else if (layer.indexOf('buildstart') !== -1) {
+          filter = [
+            "all",
+            ["<=", "buildstart", year],
+            [">", "opening", year],
+          ];
+        } else if (layer.indexOf('opening') !== -1){
+          filter = [
+            "all",
+            ["<=", "opening", year],
+            [">", "closure", year],
+          ];
+        } else if (layer.indexOf('inner') !== -1){
+          filter = [
+            "all",
+            ["<=", "buildstart", year],
+            [">", "closure", year],
+          ];
+        }
+
+        if (filter) self.map.setFilter(layer, filter);
       }
     });
   }
 }
 
-// Outisde here, in the index file, this class should be instantiated:
-// - Subtogram
-// - A Timeline class that requires as parameter Subtogram
-// - MouseEvents class that also requires Subtogram (or subtogram layers);
-// And in index there should be the jQuery and the interactions
-//
 module.exports = Subtogram;
 
 },{}],5:[function(require,module,exports){

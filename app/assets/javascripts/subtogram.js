@@ -66,16 +66,31 @@ Subtogram.prototype = {
     ['sections', 'stations'].forEach(function(type){
       for (var k in self.layers[type]) {
         var layer = self.layers[type][k];
+        var filter;
 
-        if (layer.indexOf('hover') === -1 || layer.indexOf('buildstart') === -1) {
-          var filter = [
+        if (layer.indexOf('hover') !== -1){
+          // TODO: hide this layer
+        } else if (layer.indexOf('buildstart') !== -1) {
+          filter = [
             "all",
-            [">=", "opening", year],
-            ["<", "closure", year],
+            ["<=", "buildstart", year],
+            [">", "opening", year],
           ];
-
-          self.map.setFilter(layer, filter);
+        } else if (layer.indexOf('opening') !== -1){
+          filter = [
+            "all",
+            ["<=", "opening", year],
+            [">", "closure", year],
+          ];
+        } else if (layer.indexOf('inner') !== -1){
+          filter = [
+            "all",
+            ["<=", "buildstart", year],
+            [">", "closure", year],
+          ];
         }
+
+        if (filter) self.map.setFilter(layer, filter);
       }
     });
   }

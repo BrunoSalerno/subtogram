@@ -8,9 +8,9 @@ class Station < Sequel::Model(:stations)
         h = super
         h[:properties].merge!({line:self.line.name,
                                name: self.name,
-                               opening: self.opening,
+                               opening: self.opening || 10000,
                                buildstart: self.buildstart,
-                               closure: self.closure})
+                               closure: self.closure || 10000})
         h
     end
 end

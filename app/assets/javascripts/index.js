@@ -9,9 +9,13 @@ var App = function(map, styles) {
   var subtogram = new Subtogram({map: map,
                                  style: style});
 
-  subtogram.filterYear(1987);
+  subtogram.filterYear(2009);
 
   $(".spinner-container").fadeOut();
+
+  $("#panel-toggler").show().click(function(){
+    $("#panel").toggle();
+  });
 }
 
 window.loadApp = function(lines, plans, styles, config, mapboxAccessToken, mapboxStyle) {

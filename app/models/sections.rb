@@ -14,9 +14,9 @@ class Section < Sequel::Model(:sections)
         h = super
         h[:properties].merge!({length: self.length,
                                line: self.line.name,
-                               opening: self.opening,
+                               opening: self.opening || 10000,
                                buildstart: self.buildstart,
-                               closure: self.closure})
+                               closure: self.closure || 10000 })
         h
     end
 end
