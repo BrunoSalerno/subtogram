@@ -5,7 +5,7 @@ var mapboxgl = require('mapbox-gl');
 var $ = require('jquery');
 var Misc = require('./misc');
 
-var App = function(map, styles) {
+var App = function(map, styles, years) {
   var style = new Style(styles);
   var subtogram = new Subtogram({map: map,
                                  style: style});
@@ -17,6 +17,14 @@ var App = function(map, styles) {
   $("#panel-toggler").show().click(function(){
     $("#panel").toggle();
   });
+
+  $('#current-year').
+    attr('min', years.start).
+    attr('max', years.end).
+    change(function(e){
+      var year = parseInt($(this).val());
+      subtogram.filterYear(year);
+    });
 }
 
 window.loadApp = function(lines, plans, styles, config, mapboxAccessToken, mapboxStyle) {
@@ -33,7 +41,7 @@ window.loadApp = function(lines, plans, styles, config, mapboxAccessToken, mapbo
   map.addControl(new mapboxgl.NavigationControl());
 
   map.on('load',function(){
-    new App(map, styles, lines, plans);
+    new App(map, styles, config.years, lines, plans);
   });
 
   map.on('moveend',function(){
@@ -190,7 +198,6 @@ var Subtogram = function(args){
 
 Subtogram.prototype = {
   map: null,
-  hoverFeature: null,
 
   layers: {
     sections: {
