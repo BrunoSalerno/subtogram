@@ -10,16 +10,6 @@ var App = function(map, styles, years) {
   var subtogram = new Subtogram(map, style);
   var timeline = new Timeline(subtogram, years);
 
-  var startingYear = years.default || years.start;
-  timeline.toYear(startingYear);
-  $('#current-year, #slider').val(startingYear);
-
-  $(".spinner-container").fadeOut();
-
-  $("#panel-toggler").show().click(function(){
-    $("#panel").toggle();
-  });
-
   $('#current-year, #slider').
     attr('min', years.start).
     attr('max', years.end).
@@ -31,10 +21,34 @@ var App = function(map, styles, years) {
     });
 
   $('#action').click(function(){
-    timeline.animateToYear(years.end, function(year){
-      $('#current-year, #slider').val(year);
-      Misc.saveParams(year, map);
-    });
+    if (years.current === years.end) return;
+
+    if (timeline.playing) {
+      $("#action span").removeClass('fa-pause').addClass('fa-play');
+      timeline.stopAnimation();
+      return;
+    }
+
+    $("#action span").removeClass('fa-play').addClass('fa-pause');
+
+    timeline.animateToYear(years.end,
+      function(year){
+        $('#current-year, #slider').val(year);
+        Misc.saveParams(year, map);
+      },
+      function(){
+        $("#action span").removeClass('fa-pause').addClass('fa-play');
+      });
+  });
+
+  var startingYear = years.default || years.start;
+  timeline.toYear(startingYear);
+  $('#current-year, #slider').val(startingYear);
+
+  $(".spinner-container").fadeOut();
+
+  $("#panel-toggler").show().click(function(){
+    $("#panel").toggle();
   });
 }
 
