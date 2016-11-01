@@ -6,17 +6,23 @@ class Section < Sequel::Model(:sections)
 
     plugin :geometry
 
+    FUTURE = 999999
+
     def city
         self.line.city
     end
 
     def feature
         h = super
+
+        closure = self.closure || FUTURE
+
         h[:properties].merge!({length: self.length,
                                line: self.line.name,
-                               opening: self.opening || 10000,
+                               opening: self.opening || FUTURE,
                                buildstart: self.buildstart,
-                               closure: self.closure || 10000 })
+                               buildstart_end: self.opening || closure,
+                               closure: closure })
         h
     end
 end

@@ -268,12 +268,10 @@ Subtogram.prototype = {
         if (layer.indexOf('hover') !== -1){
           // TODO: hide this layer
         } else if (layer.indexOf('buildstart') !== -1) {
-          // FIXME: this should consider also when there is closure
-          // and not opening
           filter = [
             "all",
             ["<=", "buildstart", year],
-            [">", "opening", year],
+            [">", "buildstart_end", year],
           ];
         } else if (layer.indexOf('opening') !== -1){
           filter = [

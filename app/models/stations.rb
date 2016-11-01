@@ -3,14 +3,17 @@ class Station < Sequel::Model(:stations)
 
     plugin :geometry
 
-
     def feature
         h = super
+
+        closure = self.closure || Section::FUTURE
+
         h[:properties].merge!({line:self.line.name,
                                name: self.name,
-                               opening: self.opening || 10000,
+                               opening: self.opening || Section::FUTURE,
                                buildstart: self.buildstart,
-                               closure: self.closure || 10000})
+                               buildstart_end: self.opening || closure,
+                               closure: closure })
         h
     end
 end
