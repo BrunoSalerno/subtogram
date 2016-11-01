@@ -11,7 +11,9 @@ var App = function(map, styles, years) {
   var subtogram = new Subtogram(map, style);
   var timeline = new Timeline(subtogram, years);
 
-  timeline.toYear(years.default || 1913);
+  var startingYear = years.default || years.start;
+  timeline.toYear(startingYear);
+  $('#current-year, #slider').val(startingYear);
 
   $(".spinner-container").fadeOut();
 
@@ -19,17 +21,21 @@ var App = function(map, styles, years) {
     $("#panel").toggle();
   });
 
-  $('#current-year').
+  $('#current-year, #slider').
     attr('min', years.start).
     attr('max', years.end).
     change(function(e){
       var year = parseInt($(this).val());
+      $('#current-year, #slider').val(year);
       if (year < years.start || year > years.end) return;
       timeline.toYear(year);
     });
 
   $('#action').click(function(){
-    timeline.animateToYear(years.end);
+    timeline.animateToYear(years.end, function(year){
+      $('#current-year, #slider').val(year);
+      Misc.saveParams(year, map);
+    });
   });
 }
 
@@ -311,7 +317,7 @@ Timeline.prototype = {
     this.years.current = year;
   },
 
-  animateToYear: function(year) {
+  animateToYear: function(year, callback) {
     var self = this;
     var difference = year - this.years.current;
     if (difference == 0) return;
@@ -324,8 +330,13 @@ Timeline.prototype = {
         clearInterval(interval);
         return;
       }
+
       y += sum;
       self.toYear(y);
+
+      if (typeof callback == 'function') {
+        callback(y);
+      }
     }, this.speed);
   }
 }

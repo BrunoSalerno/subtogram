@@ -13,7 +13,7 @@ Timeline.prototype = {
     this.years.current = year;
   },
 
-  animateToYear: function(year) {
+  animateToYear: function(year, callback) {
     var self = this;
     var difference = year - this.years.current;
     if (difference == 0) return;
@@ -26,8 +26,13 @@ Timeline.prototype = {
         clearInterval(interval);
         return;
       }
+
       y += sum;
       self.toYear(y);
+
+      if (typeof callback == 'function') {
+        callback(y);
+      }
     }, this.speed);
   }
 }
