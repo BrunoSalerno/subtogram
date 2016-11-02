@@ -18,6 +18,7 @@ var App = function(map, styles, years) {
       $('#current-year, #slider').val(year);
       if (year < years.start || year > years.end) return;
       timeline.toYear(year);
+      Misc.saveParams(year, map);
     });
 
   $('#action').click(function(){

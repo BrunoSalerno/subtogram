@@ -11,7 +11,7 @@ Timeline.prototype = {
   playing: false,
 
   toYear: function(year) {
-    this.subtogram.filterYear(year);
+    this.subtogram.setYear(year);
     this.years.current = year;
   },
 
