@@ -8,7 +8,7 @@ Subtogram.prototype = {
   map: null,
   style: null,
 
-  currentHoverId: {sections:'none', stations:'none'},
+  currentHoverId: {sections: ['none'], stations: ['none']},
   currentYear: null,
 
   layers: {
@@ -69,11 +69,14 @@ Subtogram.prototype = {
     this.filter();
   },
 
-  setHover: function(type, id) {
-    if (!id) {
-      this.currentHoverId[type] = 'none';
+  setHoverIds: function(type, ids) {
+    if ((ids && this.currentHoverId[type] == ids) ||
+        (!ids && this.currentHoverId[type] == ['none'])) return;
+
+    if (!ids) {
+      this.currentHoverId[type] = ['none'];
     } else {
-      this.currentHoverId[type] = id;
+      this.currentHoverId[type] = ids;
     }
     this.filter();
   },
@@ -90,7 +93,7 @@ Subtogram.prototype = {
         var filter;
 
         if (layer.indexOf('hover') !== -1){
-          filter = ["in", "id", hoverId[type]];
+          filter = ["in", "id"].concat(hoverId[type]);
         } else if (layer.indexOf('buildstart') !== -1) {
           filter = [
             "all",

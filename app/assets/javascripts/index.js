@@ -4,11 +4,13 @@ var mapboxgl = require('mapbox-gl');
 var $ = require('jquery');
 var Misc = require('./misc');
 var Timeline = require('./timeline');
+var MouseEvents = require('./mouse_events');
 
 var App = function(map, styles, years) {
   var style = new Style(styles);
   var subtogram = new Subtogram(map, style);
   var timeline = new Timeline(subtogram, years);
+  var mouseEvents = new MouseEvents(map, style, subtogram);
 
   $('#current-year, #slider').
     attr('min', years.start).
