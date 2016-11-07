@@ -44,6 +44,12 @@ var App = function(map, styles, years) {
       });
   });
 
+  $('.checkbox-toggle').change(function(){
+    var line = $(this)[0].id.split('_')[1];
+    var linesShown = subtogram.toggleLine(line);
+    Misc.saveParams(null,null,linesShown);
+  });
+
   var startingYear = years.default || years.start;
   timeline.toYear(startingYear);
   $('#current-year, #slider').val(startingYear);

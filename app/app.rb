@@ -122,4 +122,8 @@ class App < Sinatra::Base
       {type: "FeatureCollection",
        features: features}.to_json
     end
+
+    get '/api/lines' do
+      {lines: Line.all.map(&:name)}.to_json
+    end
 end

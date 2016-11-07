@@ -1,3 +1,5 @@
+var fetch = require('node-fetch');
+
 var Subtogram = function(map, style){
   this.map = map;
   this.style = style;
@@ -10,6 +12,7 @@ Subtogram.prototype = {
 
   currentHoverId: {sections: ['none'], stations: ['none']},
   currentYear: null,
+  linesShown: null,
 
   layers: {
     sections: {
@@ -81,6 +84,36 @@ Subtogram.prototype = {
     this.filter();
   },
 
+  lines: function(callback) {
+    var self = this;
+    if (this._lines && typeof callback === 'function') {
+      callback(this._lines);
+      return;
+    }
+    fetch('/api/lines')
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        self._lines = json.lines;
+        if (typeof callback === 'function') callback(self._lines);
+      });
+  },
+
+  toggleLine: function(line) {
+    this.lines(function(lines) {
+      this.linesShown = this.linesShown || lines;
+      var index = this.linesShown.indexOf(line);
+      if (index === -1) {
+        this.linesShown.push(line);
+      } else {
+        this.linesShown.splice(index, 1);
+      }
+      this.filter();
+      return this.linesShown;
+    });
+  },
+
   filter: function() {
     var self = this;
 
@@ -93,7 +126,8 @@ Subtogram.prototype = {
         var filter;
 
         if (layer.indexOf('hover') !== -1){
-          filter = ["in", "id"].concat(hoverId[type]);
+          var ids = ["in", "id"].concat(hoverId[type]);
+          filter = ["all", ids];
         } else if (layer.indexOf('buildstart') !== -1) {
           filter = [
             "all",
@@ -114,6 +148,10 @@ Subtogram.prototype = {
           ];
         }
 
+        if (this.linesShown) {
+          var linesShownFilter = ["in", "line", this.linesShown]
+          filter.push(linesShownFilter);
+        }
         if (filter) self.map.setFilter(layer, filter);
       }
     });
