@@ -1,4 +1,4 @@
-var fetch = require('node-fetch');
+var request = require('browser-request');
 
 var Subtogram = function(map, style){
   this.map = map;
@@ -90,27 +90,24 @@ Subtogram.prototype = {
       callback(this._lines);
       return;
     }
-    fetch('/api/lines')
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(json) {
-        self._lines = json.lines;
-        if (typeof callback === 'function') callback(self._lines);
-      });
+    request('/api/lines', function(err,res,body) {
+      self._lines = JSON.parse(body).lines;
+      if (typeof callback === 'function') callback(self._lines);
+    });
   },
 
-  toggleLine: function(line) {
+  toggleLine: function(line, callback) {
+    var self = this;
     this.lines(function(lines) {
-      this.linesShown = this.linesShown || lines;
-      var index = this.linesShown.indexOf(line);
+      self.linesShown = self.linesShown || lines;
+      var index = self.linesShown.indexOf(line);
       if (index === -1) {
-        this.linesShown.push(line);
+        self.linesShown.push(line);
       } else {
-        this.linesShown.splice(index, 1);
+        self.linesShown.splice(index, 1);
       }
-      this.filter();
-      return this.linesShown;
+      self.filter();
+      if (typeof callback === 'function') callback(self.linesShown);
     });
   },
 
@@ -148,10 +145,11 @@ Subtogram.prototype = {
           ];
         }
 
-        if (this.linesShown) {
-          var linesShownFilter = ["in", "line", this.linesShown]
+        if (self.linesShown) {
+          var linesShownFilter = ["in", "line"].concat(self.linesShown);
           filter.push(linesShownFilter);
         }
+
         if (filter) self.map.setFilter(layer, filter);
       }
     });

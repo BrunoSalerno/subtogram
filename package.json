@@ -27,9 +27,9 @@
   },
   "homepage": "https://github.com/BrunoSalerno/subtogram#readme",
   "dependencies": {
+    "browser-request": "^0.3.3",
     "browserify": "^13.1.0",
     "jquery": "^3.1.1",
-    "mapbox-gl": "^0.26.0",
-    "node-fetch": "^1.6.3"
+    "mapbox-gl": "^0.26.0"
   }
 }
