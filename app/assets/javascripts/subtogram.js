@@ -1,9 +1,11 @@
-var request = require('browser-request');
-
-var Subtogram = function(map, style){
+var Subtogram = function(map, style, lines){
   this.map = map;
   this.style = style;
   this.addLayers();
+
+  for (var line in lines) {
+    if (lines[line].show) this.linesShown.push(line);
+  };
 };
 
 Subtogram.prototype = {
@@ -12,7 +14,7 @@ Subtogram.prototype = {
 
   currentHoverId: {sections: ['none'], stations: ['none']},
   currentYear: null,
-  linesShown: null,
+  linesShown: [],
 
   layers: {
     sections: {
@@ -84,31 +86,15 @@ Subtogram.prototype = {
     this.filter();
   },
 
-  lines: function(callback) {
-    var self = this;
-    if (this._lines && typeof callback === 'function') {
-      callback(this._lines);
-      return;
-    }
-    request('/api/lines', function(err,res,body) {
-      self._lines = JSON.parse(body).lines;
-      if (typeof callback === 'function') callback(self._lines);
-    });
-  },
-
   toggleLine: function(line, callback) {
-    var self = this;
-    this.lines(function(lines) {
-      self.linesShown = self.linesShown || lines;
-      var index = self.linesShown.indexOf(line);
-      if (index === -1) {
-        self.linesShown.push(line);
-      } else {
-        self.linesShown.splice(index, 1);
-      }
-      self.filter();
-      if (typeof callback === 'function') callback(self.linesShown);
-    });
+    var index = this.linesShown.indexOf(line);
+    if (index === -1) {
+      this.linesShown.push(line);
+    } else {
+      this.linesShown.splice(index, 1);
+    }
+    this.filter();
+    return this.linesShown;
   },
 
   filter: function() {

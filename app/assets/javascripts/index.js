@@ -6,9 +6,9 @@ var Misc = require('./misc');
 var Timeline = require('./timeline');
 var MouseEvents = require('./mouse_events');
 
-var App = function(map, styles, years) {
+var App = function(map, styles, years, lines) {
   var style = new Style(styles);
-  var subtogram = new Subtogram(map, style);
+  var subtogram = new Subtogram(map, style, lines);
   var timeline = new Timeline(subtogram, years);
   var mouseEvents = new MouseEvents(map, style, subtogram);
 
@@ -46,9 +46,8 @@ var App = function(map, styles, years) {
 
   $('.checkbox-toggle').change(function(){
     var line = $(this)[0].id.split('_')[1];
-    subtogram.toggleLine(line, function(linesShown){
-      Misc.saveParams(null,null,linesShown);
-    });
+    var linesShown = subtogram.toggleLine(line);
+    Misc.saveParams(null,null,linesShown);
   });
 
   var startingYear = years.default || years.start;
