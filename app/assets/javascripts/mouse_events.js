@@ -7,7 +7,7 @@ var MouseEvents = function(map, style, subtogram){
 
   var self = this;
 
-  this.map.on("mousemove", function(e){
+  map.on("mousemove", function(e){
     var point = [e.point.x,e.point.y];
     var features = self.queryRenderedFeatures(point);
     var ids = {sections: null, stations: null};
