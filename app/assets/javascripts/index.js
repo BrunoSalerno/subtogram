@@ -12,6 +12,19 @@ var App = function(map, styles, years, lines) {
   var timeline = new Timeline(subtogram, years);
   var mouseEvents = new MouseEvents(map, style, subtogram);
 
+  $(".c-tree__item").click(function(){
+    var el = $(this);
+    if (el.hasClass("c-tree__item--expanded")) {
+      el.removeClass("c-tree__item--expanded");
+      el.addClass("c-tree__item--expandable");
+      el.children(".c-tree").hide();
+    } else if (el.hasClass("c-tree__item--expandable")) {
+      el.removeClass("c-tree__item--expandable");
+      el.addClass("c-tree__item--expanded");
+      el.children(".c-tree").show();
+    }
+  });
+
   $('#current-year, #slider').
     attr('min', years.start).
     attr('max', years.end).
