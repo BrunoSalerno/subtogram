@@ -39,6 +39,7 @@
     height: calc(100% - 220px);
     position: relative;
     overflow: auto;
+    padding-bottom: 20px;
 }
 
 
