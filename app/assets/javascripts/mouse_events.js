@@ -1,9 +1,9 @@
 var mapboxgl = require('mapbox-gl');
 
-var MouseEvents = function(map, style, subtogramLines){
+var MouseEvents = function(map, style, subtogram){
   this.map = map;
   this.style = style;
-  this.subtogramLines = subtogramLines;
+  this.subtogram = subtogram;
 
   var self = this;
 
@@ -26,7 +26,7 @@ var MouseEvents = function(map, style, subtogramLines){
     });
 
     for (var type in ids) {
-      self.subtogramLines.setHoverIds(type, ids[type]);
+      self.subtogram.setHoverIds(type, ids[type]);
     }
   });
 
@@ -49,7 +49,7 @@ var MouseEvents = function(map, style, subtogramLines){
 MouseEvents.prototype =  {
   map: null,
   style: null,
-  subtogramLines: null,
+  subtogram: null,
 
   validValue: function(value) {
     return (value !== null && value !== 999999)
@@ -57,9 +57,9 @@ MouseEvents.prototype =  {
 
   layerNames: function() {
     var layers = [];
-    for (var type in this.subtogramLines.layers) {
-      for (var layer in this.subtogramLines.layers[type]) {
-        var name = this.subtogramLines.layers[type][layer];
+    for (var type in this.subtogram.layers) {
+      for (var layer in this.subtogram.layers[type]) {
+        var name = this.subtogram.layers[type][layer];
         if (name.indexOf('hover') === -1 && name.indexOf('inner') === -1) {
           layers.push(name);
         }
