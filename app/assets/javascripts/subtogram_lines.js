@@ -24,7 +24,7 @@ SubtogramLines.prototype.layers = {
   }
 };
 
-Subtogram.prototype.filter = function() {
+SubtogramLines.prototype.filter = function() {
   var self = this;
 
   var hoverId = this.currentHoverId;

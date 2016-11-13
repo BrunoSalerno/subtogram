@@ -74,7 +74,9 @@ Subtogram.prototype = {
     }
     this.filter();
     return this.linesShown;
-  }
+  },
+
+  filter: null
 }
 
 module.exports = Subtogram;
