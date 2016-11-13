@@ -1,5 +1,5 @@
 var Style = require('./style');
-var Subtogram = require('./subtogram');
+var SubtogramLines = require('./subtogram_lines');
 var mapboxgl = require('mapbox-gl');
 var $ = require('jquery');
 var Misc = require('./misc');
@@ -8,9 +8,9 @@ var MouseEvents = require('./mouse_events');
 
 var App = function(map, styles, years, lines) {
   var style = new Style(styles);
-  var subtogram = new Subtogram(map, style, lines);
-  var timeline = new Timeline(subtogram, years);
-  var mouseEvents = new MouseEvents(map, style, subtogram);
+  var subtogramLines = new SubtogramLines({map: map, style: style, lines: lines});
+  var timeline = new Timeline(subtogramLines, years);
+  var mouseEvents = new MouseEvents(map, style, subtogramLines);
 
   $(".c-tree__item").click(function(){
     var el = $(this);
@@ -73,7 +73,7 @@ var App = function(map, styles, years, lines) {
 
   $('.checkbox-toggle').change(function(){
     var line = $(this)[0].id.split('_')[1];
-    var linesShown = subtogram.toggleLine(line);
+    var linesShown = subtogramLines.toggleLine(line);
     Misc.saveParams(null,null,linesShown);
   });
 

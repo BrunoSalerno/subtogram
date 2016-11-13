@@ -1,17 +1,17 @@
-var Timeline = function(subtogram, years){
-  this.subtogram = subtogram;
+var Timeline = function(subtogramLines, years){
+  this.subtogramLines = subtogramLines;
   this.years = years;
 };
 
 Timeline.prototype = {
-  subtogram: null,
+  subtogramLines: null,
   years: null,
   speed: 1,
   interval: null,
   playing: false,
 
   toYear: function(year) {
-    this.subtogram.setYear(year);
+    this.subtogramLines.setYear(year);
     this.years.current = year;
   },
 
