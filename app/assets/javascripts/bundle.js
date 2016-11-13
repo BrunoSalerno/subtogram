@@ -28,14 +28,26 @@ var App = function(map, styles, years, lines) {
 
   $('#current-year, #slider').
     attr('min', years.start).
-    attr('max', years.end).
-    change(function(e){
+    attr('max', years.end);
+
+  $('#slider')
+    .on('input', function(){
       var year = parseInt($(this).val());
-      $('#current-year, #slider').val(year);
-      if (year < years.start || year > years.end) return;
+      $('#current-year').val(year);
       timeline.toYear(year);
+    })
+    .change(function(e){
+      var year = parseInt($(this).val());
       Misc.saveParams(year, map);
     });
+
+  $('#current-year').change(function(){
+      var year = parseInt($(this).val());
+      if (year < years.start || year > years.end) return;
+      $('#slider').val(year);
+      timeline.toYear(year);
+      Misc.saveParams(year, map);
+  });
 
   $('#action').click(function(){
     if (years.current === years.end) return;
