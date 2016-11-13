@@ -6,7 +6,7 @@ var Timeline = function(subtogram, years){
 Timeline.prototype = {
   subtogram: null,
   years: null,
-  speed: 10,
+  speed: 1,
   interval: null,
   playing: false,
 
@@ -37,9 +37,10 @@ Timeline.prototype = {
     }, this.speed);
   },
 
-  stopAnimation: function() {
+  stopAnimation: function(callback) {
     clearInterval(this.interval);
     this.playing = false;
+    if (typeof callback === 'function') callback(this.years.current);
   }
 }
 

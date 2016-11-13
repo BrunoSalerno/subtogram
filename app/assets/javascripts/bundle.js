@@ -42,7 +42,9 @@ var App = function(map, styles, years, lines) {
 
     if (timeline.playing) {
       $("#action span").removeClass('fa-pause').addClass('fa-play');
-      timeline.stopAnimation();
+      timeline.stopAnimation(function(year){
+        Misc.saveParams(year, map);
+      });
       return;
     }
 
@@ -51,10 +53,10 @@ var App = function(map, styles, years, lines) {
     timeline.animateToYear(years.end,
       function(year){
         $('#current-year, #slider').val(year);
-        Misc.saveParams(year, map);
       },
       function(){
         $("#action span").removeClass('fa-pause').addClass('fa-play');
+        Misc.saveParams(years.end, map);
       });
   });
 
@@ -499,7 +501,7 @@ var Timeline = function(subtogram, years){
 Timeline.prototype = {
   subtogram: null,
   years: null,
-  speed: 10,
+  speed: 1,
   interval: null,
   playing: false,
 
@@ -530,9 +532,10 @@ Timeline.prototype = {
     }, this.speed);
   },
 
-  stopAnimation: function() {
+  stopAnimation: function(callback) {
     clearInterval(this.interval);
     this.playing = false;
+    if (typeof callback === 'function') callback(this.years.current);
   }
 }
 
