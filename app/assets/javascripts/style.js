@@ -12,6 +12,11 @@ Style.prototype = {
       var type = parts[0];
       var operation = parts[1];
 
+      // Plans use the lines style
+      if (operation.indexOf('plan') !== -1) {
+        operation = 'opening';
+      }
+
       if (operation === 'hover') {
         return this.hover(type);
       }

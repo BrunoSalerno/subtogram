@@ -1,5 +1,6 @@
 var Style = require('./style');
 var SubtogramLines = require('./subtogram_lines');
+var SubtogramPlans = require('./subtogram_plans');
 var mapboxgl = require('mapbox-gl');
 var $ = require('jquery');
 var Misc = require('./misc');
@@ -11,6 +12,9 @@ var App = function(map, styles, years, lines) {
   var subtogramLines = new SubtogramLines({map: map, style: style, lines: lines});
   var timeline = new Timeline(subtogramLines, years);
   var mouseEvents = new MouseEvents(map, style, subtogramLines);
+  var subtogramPlans = new SubtogramPlans({map: map, style: style, plans: {}});
+
+  subtogramPlans.toggleLine('Ley-670_F');
 
   $(".c-tree__item").click(function(){
     var el = $(this);
