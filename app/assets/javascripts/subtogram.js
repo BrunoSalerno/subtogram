@@ -23,7 +23,7 @@ Subtogram.prototype = {
 
     this.map.addSource(sourceName, {
       type: 'geojson',
-      data: '/api/source/' + type
+      data: '/api' + location.pathname + '/source/' + type
     });
 
     return sourceName;

@@ -90,8 +90,7 @@ class App < Sinatra::Base
             lines = plan.plan_lines.map {|line|
                 @lines_style[line.name] = line.style
                 {show: param_plan_lines && param_plan_lines[plan.name] && param_plan_lines[plan.name].include?(line.name),
-                 name: line.name,
-                 id: line.id}
+                 name: line.name}
             }
             @plans[plan.name]= {
                 lines: lines,
@@ -112,18 +111,18 @@ class App < Sinatra::Base
         }.to_json
     end
 
-    get '/api/source/:type' do |type|
+    get '/api/:url_name/source/:type' do |url_name, type|
+      @city = City[url_name: url_name]
+      city_lines_ids = @city.lines.map(&:id)
+      query = {line_id: city_lines_ids}
+
       features = if type == 'sections'
-                   Section.map(&:feature)
+                   Section.where(query).map(&:feature)
                  else
-                   Station.map(&:feature)
+                   Station.where(query).map(&:feature)
                  end
 
       {type: "FeatureCollection",
        features: features}.to_json
-    end
-
-    get '/api/lines' do
-      {lines: Line.all.map(&:name)}.to_json
     end
 end
