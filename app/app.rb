@@ -102,9 +102,10 @@ class App < Sinatra::Base
         erb :city    
     end
 
-    get '/api/:url_name/plan_line' do |url_name|
-        plan_line_id = params[:id].split(',')
-        @lines = PlanLine.where(id: plan_line_id)
+    get '/api/:url_name/plan/:plan_name/:line_name' do |url_name, plan_name, line_name|
+        formatted_plan_name = plan_name.gsub('-',' ')
+        @plan = Plan.join(:cities,:plans__city_id => :cities__id).where(cities__url_name: url_name, plans__name: formatted_plan_name).select(:plans__id).first
+        @lines = PlanLine.where(plan_id: @plan.id, name: line_name)
 
         @lines.map { |l|
             {line: l.feature, stations: l.plan_stations.map(&:feature)}

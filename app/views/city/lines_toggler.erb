@@ -33,10 +33,10 @@
             <ul class="c-tree" style="display: none;">
                 <% plan[:lines].each do |line| %>
                         <style>
-                          <%= ".c-toggle input#checkbox_#{name.gsub(' ','-')}_#{line[:name]}_#{line[:id]}:checked+.c-toggle__track {background-color:#{@lines_style[line[:name]]['color']};}"%>
+                          <%= ".c-toggle input#checkbox_#{name.gsub(' ','-')}_#{line[:name]}:checked+.c-toggle__track {background-color:#{@lines_style[line[:name]]['color']};}"%>
                         </style>
                         <label class="c-toggle">
-                          <input class="checkbox-toggle-plan" id="checkbox_<%=name.gsub(' ','-')%>_<%=line[:name]%>_<%=line[:id]%>" type="checkbox" <%= line[:show] ? 'checked' : '' %>/>
+                          <input class="checkbox-toggle-plan" id="checkbox_<%=name.gsub(' ','-')%>_<%=line[:name]%>" type="checkbox" <%= line[:show] ? 'checked' : '' %>/>
                             <div class="c-toggle__track">
                                 <div class="c-toggle__handle"></div>
                             </div>
