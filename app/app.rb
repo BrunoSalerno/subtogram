@@ -102,12 +102,21 @@ class App < Sinatra::Base
         erb :city    
     end
 
-    get '/api/:url_name/plan/:plan_name/:line_name' do |url_name, plan_name, line_name|
-        formatted_plan_name = plan_name.gsub('-',' ')
-        @plan = Plan.join(:cities,:plans__city_id => :cities__id).where(cities__url_name: url_name, plans__name: formatted_plan_name).select(:plans__id).first
-        @lines = PlanLine.where(plan_id: @plan.id, name: line_name)
+    get '/api/:url_name/plan/' do |url_name|
+        @city = City[url_name: url_name]
+        @lines = PlanLine.join(:plans, :plan_lines__plan_id => :plans__id).where(plans__city_id: @city.id)
 
-        @lines.map { |l|
+        query = ''
+
+        plan_lines = params[:plan_lines].split(',')
+        plan_lines.each do |plan_line|
+          plan,line = plan_line.split('_')
+          plan = plan.gsub('-',' ')
+          query << ' or ' if query && !query.empty?
+          query << %Q("plans"."name" = '#{plan}' and "plan_lines"."name" = '#{line}')
+        end
+
+        @lines.where(Sequel.lit(query)).map { |l|
             {line: l.feature, stations: l.plan_stations.map(&:feature)}
         }.to_json
     end

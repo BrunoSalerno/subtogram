@@ -2,15 +2,16 @@ var Subtogram = function(args){
   args = args || {};
   this.map = args.map;
   this.style = args.style;
+
+  this.linesShown = [];
+  this.currentHoverId = {sections: ['none'], stations: ['none']};
+
   this.addLayers();
 };
 
 Subtogram.prototype = {
   map: null,
   style: null,
-
-  currentHoverId: {sections: ['none'], stations: ['none']},
-  linesShown: [],
 
   layers: null,
 

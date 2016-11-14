@@ -15,7 +15,8 @@ SubtogramPlans.prototype.layers = {
     PLANS: 'sections_plans'
   },
   stations: {
-    PLANS: 'stations_plans'
+    PLANS: 'stations_plans',
+    INNER_LAYER: 'stations_inner_layer_plans'
   }
 };
 
@@ -53,15 +54,11 @@ SubtogramPlans.prototype.addLineToSourceIfNeeded = function(line, callback) {
 
   this.alreadyLoadedLines.push(line);
 
-  var lineParts = line.split('_');
-  var planName = lineParts[0];
-  var lineName = lineParts[1];
+  var url = '/api' + location.pathname + '/plan/?plan_lines=' + line;
 
-  var url = '/api' + location.pathname + '/plan/' + planName + '/' + lineName;
-  //FIXME: the API should allow to fetch multiple lines with the same request
   var self = this;
   $.get(url, function(response){
-    var json = JSON.parse(response); // This doesn't work because the GET returns an array
+    var json = JSON.parse(response)[0]
     self._updateSource('sections_plans_source', [json.line]);
     self._updateSource('stations_plans_source', json.stations)
     if (typeof callback === 'function') callback();
@@ -71,7 +68,7 @@ SubtogramPlans.prototype.addLineToSourceIfNeeded = function(line, callback) {
 SubtogramPlans.prototype._updateSource = function(name, feature) {
   var source = this.map.getSource(name);
   var features = (source._data.features || []).concat(feature);
-  source.setData(name, this._sourceData(features));
+  source.setData(this._sourceData(features));
 }
 
 SubtogramPlans.prototype.toggleLine = function(line, callback) {
