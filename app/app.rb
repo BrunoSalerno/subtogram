@@ -104,20 +104,16 @@ class App < Sinatra::Base
 
     get '/api/:url_name/plan/' do |url_name|
         @city = City[url_name: url_name]
-        @lines = PlanLine.join(:plans, :plan_lines__plan_id => :plans__id).where(plans__city_id: @city.id)
-
-        query = ''
 
         plan_lines = params[:plan_lines].split(',')
-        plan_lines.each do |plan_line|
-          plan,line = plan_line.split('_')
-          plan = plan.gsub('-',' ')
-          query << ' or ' if query && !query.empty?
-          query << %Q("plans"."name" = '#{plan}' and "plan_lines"."name" = '#{line}')
-        end
-
-        @lines.where(Sequel.lit(query)).map { |l|
-            {line: l.feature, stations: l.plan_stations.map(&:feature)}
+        plan_lines.map { |plan_line|
+          # FIXME: create url_name for line: in the form of plan_line. I.e: ley-670_f
+          # And it could be: PlanLine.where(:url_name => plan_lines) where plan_lines is an array of url_names
+          plan_name, line_name = plan_line.split('_')
+          plan_name = plan_name.gsub('-', ' ')
+          plan = Plan[name: plan_name]
+          line = PlanLine.where(plan_id: plan.id, name: line_name).first
+          {line: line.feature, stations: line.plan_stations.map(&:feature)}
         }.to_json
     end
 

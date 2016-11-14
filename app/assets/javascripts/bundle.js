@@ -17,10 +17,6 @@ var App = function(map, styles, years, lines) {
 
   subtogramPlans.toggleLine('Ley-670_F');
 
-  // Only to debug
-  window.slines = subtogramLines;
-  window.splans = subtogramPlans;
-
   $(".c-tree__item").click(function(){
     var el = $(this);
     if (el.hasClass("c-tree__item--expanded")) {
