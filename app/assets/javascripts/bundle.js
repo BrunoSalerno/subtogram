@@ -77,7 +77,7 @@ var App = function(map, styles, years, lines) {
   });
 
   $('.checkbox-toggle').change(function(){
-    var line = $(this)[0].id.split('_')[1];
+    var line = $(this).data("line");
     var linesShown = subtogramLines.toggleLine(line);
     Misc.saveParams(null,null,linesShown);
   });
@@ -458,7 +458,7 @@ var SubtogramLines = function(args){
   Subtogram.call(this, args);
 
   for (var line in args.lines) {
-    if (args.lines[line].show) this.linesShown.push(line);
+    if (args.lines[line].show) this.linesShown.push(args.lines[line].url_name);
   };
 };
 
@@ -513,7 +513,7 @@ SubtogramLines.prototype.filter = function() {
       }
 
       if (self.linesShown) {
-        var linesShownFilter = ["in", "line"].concat(self.linesShown);
+        var linesShownFilter = ["in", "line_url_name"].concat(self.linesShown);
         filter.push(linesShownFilter);
       }
 

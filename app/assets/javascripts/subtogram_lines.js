@@ -4,7 +4,7 @@ var SubtogramLines = function(args){
   Subtogram.call(this, args);
 
   for (var line in args.lines) {
-    if (args.lines[line].show) this.linesShown.push(line);
+    if (args.lines[line].show) this.linesShown.push(args.lines[line].url_name);
   };
 };
 
@@ -59,7 +59,7 @@ SubtogramLines.prototype.filter = function() {
       }
 
       if (self.linesShown) {
-        var linesShownFilter = ["in", "line"].concat(self.linesShown);
+        var linesShownFilter = ["in", "line_url_name"].concat(self.linesShown);
         filter.push(linesShownFilter);
       }
 

@@ -19,6 +19,7 @@ class Section < Sequel::Model(:sections)
 
         h[:properties].merge!({length: self.length,
                                line: self.line.name,
+                               line_url_name: self.line.url_name,
                                opening: self.opening || FUTURE,
                                buildstart: self.buildstart || self.opening,
                                buildstart_end: self.opening || closure,

@@ -76,7 +76,7 @@ var App = function(map, styles, years, lines) {
   });
 
   $('.checkbox-toggle').change(function(){
-    var line = $(this)[0].id.split('_')[1];
+    var line = $(this).data("line");
     var linesShown = subtogramLines.toggleLine(line);
     Misc.saveParams(null,null,linesShown);
   });

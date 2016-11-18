@@ -63,10 +63,10 @@ class App < Sinatra::Base
         end
 
         @lines = {}
-        @lines_style = {}
         @city.lines.each { |line|
-            @lines[line.name] = {show: param_lines && !param_lines.include?(line.name) ? false : true}
-            @lines_style[line.name]  = line.style
+            @lines[line.name] = {show: param_lines && !param_lines.include?(line.url_name) ? false : true,
+                                 url_name: line.url_name,
+                                 style: line.style}
         }
 
         # Plans
@@ -88,10 +88,10 @@ class App < Sinatra::Base
         .sort_by{ |plan| plan.extra["year"].to_i }
         .each { |plan|
             lines = plan.plan_lines.map {|line|
-                @lines_style[line.name] = line.style
                 {show: param_plan_lines && param_plan_lines[plan.name] && param_plan_lines[plan.name].include?(line.name),
                  parent_url_name: line.parent_url_name,
-                 name: line.name}
+                 name: line.name,
+                 style: line.style}
             }
             @plans[plan.name]= {
                 lines: lines,
