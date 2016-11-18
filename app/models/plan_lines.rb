@@ -24,4 +24,9 @@ class PlanLine < Sequel::Model(:plan_lines)
     def style
         self.plan.city.style["line"]["opening"][self.name]
     end
+
+    def generate_url_name
+      self.url_name = self.name.gsub(' ','-').downcase
+      self.parent_url_name = [self.plan.name.gsub(' ','-').downcase, self.url_name].join('-')
+    end
 end
