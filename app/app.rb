@@ -90,6 +90,7 @@ class App < Sinatra::Base
             lines = plan.plan_lines.map {|line|
                 @lines_style[line.name] = line.style
                 {show: param_plan_lines && param_plan_lines[plan.name] && param_plan_lines[plan.name].include?(line.name),
+                 parent_url_name: line.parent_url_name,
                  name: line.name}
             }
             @plans[plan.name]= {
@@ -104,15 +105,9 @@ class App < Sinatra::Base
 
     get '/api/:url_name/plan/' do |url_name|
         @city = City[url_name: url_name]
-
         plan_lines = params[:plan_lines].split(',')
-        plan_lines.map { |plan_line|
-          # FIXME: create url_name for line: in the form of plan_line. I.e: ley-670_f
-          # And it could be: PlanLine.where(:url_name => plan_lines) where plan_lines is an array of url_names
-          plan_name, line_name = plan_line.split('_')
-          plan_name = plan_name.gsub('-', ' ')
-          plan = Plan[name: plan_name]
-          line = PlanLine.where(plan_id: plan.id, name: line_name).first
+        plan_ids = Plan.where(city_id: @city.id).select_map(:id)
+        PlanLine.where(plan_id: plan_ids, parent_url_name: plan_lines).map{ |line|
           {line: line.feature, stations: line.plan_stations.map(&:feature)}
         }.to_json
     end
