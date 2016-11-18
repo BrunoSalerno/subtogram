@@ -15,7 +15,7 @@ var App = function(map, styles, years, lines) {
   var mouseEvents = new MouseEvents(map, style, subtogramLines);
   var subtogramPlans = new SubtogramPlans({map: map, style: style, plans: {}});
 
-  subtogramPlans.toggleLine('Ley-670_F');
+  subtogramPlans.toggleLine('ley-670-f');
 
   $(".c-tree__item").click(function(){
     var el = $(this);
