@@ -71,24 +71,14 @@ class App < Sinatra::Base
 
         # Plans
 
-        param_plan_lines = if params[:plans]
-            p = params[:plans].split(',')
-            plan_lines = {}
-            p.each { |pair|
-                plan,line = pair.split('.')
-                plan.gsub!('_', ' ')
-                plan_lines[plan] = [] unless plan_lines[plan]
-                plan_lines[plan].push(line)
-            }
-            plan_lines
-        end
+        param_plan_lines = params[:plans] ? params[:plans].split(',') : []
 
         @plans = {}
         @city.plans
         .sort_by{ |plan| plan.extra["year"].to_i }
         .each { |plan|
             lines = plan.plan_lines.map {|line|
-                {show: param_plan_lines && param_plan_lines[plan.name] && param_plan_lines[plan.name].include?(line.name),
+                {show: param_plan_lines.include?(line.parent_url_name),
                  parent_url_name: line.parent_url_name,
                  name: line.name,
                  style: line.style}

@@ -36,7 +36,7 @@
                           <%= ".c-toggle input#checkbox_#{line[:parent_url_name]}:checked+.c-toggle__track {background-color:#{line[:style]['color']};}"%>
                         </style>
                         <label class="c-toggle">
-                          <input class="checkbox-toggle-plan" id="checkbox_<%=line[:parent_url_name]%>" type="checkbox" <%= line[:show] ? 'checked' : '' %>/>
+                          <input class="checkbox-toggle-plan" id="checkbox_<%=line[:parent_url_name]%>" data-line="<%= line[:parent_url_name] %>" type="checkbox" <%= line[:show] ? 'checked' : '' %>/>
                             <div class="c-toggle__track">
                                 <div class="c-toggle__handle"></div>
                             </div>
