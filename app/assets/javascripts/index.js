@@ -7,14 +7,12 @@ var Misc = require('./misc');
 var Timeline = require('./timeline');
 var MouseEvents = require('./mouse_events');
 
-var App = function(map, styles, years, lines) {
+var App = function(map, styles, years, lines, plans) {
   var style = new Style(styles);
   var subtogramLines = new SubtogramLines({map: map, style: style, lines: lines});
   var timeline = new Timeline(subtogramLines, years);
   var mouseEvents = new MouseEvents(map, style, subtogramLines);
-  var subtogramPlans = new SubtogramPlans({map: map, style: style, plans: {}});
-
-  subtogramPlans.toggleLine('ley-670-f');
+  var subtogramPlans = new SubtogramPlans({map: map, style: style, plans: plans});
 
   $(".c-tree__item").click(function(){
     var el = $(this);

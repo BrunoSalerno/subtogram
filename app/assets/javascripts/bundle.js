@@ -8,14 +8,12 @@ var Misc = require('./misc');
 var Timeline = require('./timeline');
 var MouseEvents = require('./mouse_events');
 
-var App = function(map, styles, years, lines) {
+var App = function(map, styles, years, lines, plans) {
   var style = new Style(styles);
   var subtogramLines = new SubtogramLines({map: map, style: style, lines: lines});
   var timeline = new Timeline(subtogramLines, years);
   var mouseEvents = new MouseEvents(map, style, subtogramLines);
-  var subtogramPlans = new SubtogramPlans({map: map, style: style, plans: {}});
-
-  subtogramPlans.toggleLine('ley-670-f');
+  var subtogramPlans = new SubtogramPlans({map: map, style: style, plans: plans});
 
   $(".c-tree__item").click(function(){
     var el = $(this);
@@ -539,7 +537,15 @@ var SubtogramPlans = function(args) {
   // Super
   Subtogram.call(this, args);
 
-  // TODO: load args.plans
+  var self = this;
+
+  for (var plan in args.plans) {
+    args.plans[plan].lines.forEach(function(line){
+      if (line.show) self.linesShown.push(line.parent_url_name);
+    });
+  }
+
+  this.addLinesToSource(this.linesShown);
 };
 
 SubtogramPlans.prototype = Object.create(Subtogram.prototype);
@@ -580,21 +586,42 @@ SubtogramPlans.prototype._sourceData = function(features) {
     }
 }
 
+/*
+ * @param {string[]} lines
+ * @callback callback
+ */
+SubtogramPlans.prototype.addLinesToSource =  function(lines, callback) {
+  this.alreadyLoadedLines = this.alreadyLoadedLines.concat(lines);
+
+  var url = '/api' + location.pathname + '/plan/?plan_lines=' + lines.join(',');
+
+  var self = this;
+  $.get(url, function(response){
+    var json = JSON.parse(response)
+    var lineFeatures = [];
+    var stationFeatures = [];
+
+    json.forEach(function(o){
+      lineFeatures.push(o.line);
+      stationFeatures = stationFeatures.concat(o.stations);
+    });
+
+    self._updateSource('sections_plans_source', lineFeatures);
+    self._updateSource('stations_plans_source', stationFeatures)
+    if (typeof callback === 'function') callback();
+  });
+}
+
+/*
+ * @param {string} line
+ * @callback callback
+ */
 SubtogramPlans.prototype.addLineToSourceIfNeeded = function(line, callback) {
   if (this.alreadyLoadedLines.indexOf(line) !== -1) {
     if (typeof callback === 'function') callback();
     return;
   }
-
-  this.alreadyLoadedLines.push(line);
-
-  var url = '/api' + location.pathname + '/plan/?plan_lines=' + line;
-
-  var self = this;
-  $.get(url, function(response){
-    var json = JSON.parse(response)[0]
-    self._updateSource('sections_plans_source', [json.line]);
-    self._updateSource('stations_plans_source', json.stations)
+  this.addLinesToSource([line], function(){
     if (typeof callback === 'function') callback();
   });
 }
