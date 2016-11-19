@@ -86,6 +86,16 @@ var App = function(map, styles, years, lines, plans) {
     });
   });
 
+  $(window).resize(function(){
+    var panelHeaderHeight = $('.panel-header').outerHeight();
+    var linesTogglerContainer = $('.lines-toggler-container')
+    var parentHeight = linesTogglerContainer.parent().innerHeight();
+    var bottomPadding = 20;
+    linesTogglerContainer.height(parentHeight - panelHeaderHeight - bottomPadding);
+  });
+
+  $(window).resize();
+
   var startingYear = years.default || years.start;
   timeline.toYear(startingYear);
   $('#current-year, #slider').val(startingYear);
