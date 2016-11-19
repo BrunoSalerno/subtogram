@@ -106,4 +106,12 @@ Taken from http://stephanwagner.me/only-css-loading-spinner
     z-index:100000;
 }
 
-
+.popup-line-indicator {
+  display:inline-block;
+  min-width:21px;
+  text-align:center;
+  border-radius:3px;
+  height:20px;
+  line-height:13px;
+  vertical-align:top;
+}

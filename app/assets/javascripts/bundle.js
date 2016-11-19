@@ -424,7 +424,7 @@ MouseEvents.prototype =  {
   lineLabel: function (line) {
     var color = this.style.lineLabelFontColor(line) ? this.style.lineLabelFontColor(line) : 'white';
     var s ='margin-left:5px; color:' + color + ';background-color:'+ this.style.lineColor(line) + ';';
-    return '<span class="c-text--highlight" style="' + s + '">'+ line +'</span>';
+    return '<span class="c-text--highlight popup-line-indicator" style="' + s + '">'+ line +'</span>';
   },
 
   featureInfo: function (f){
