@@ -14,17 +14,20 @@ var PlansMapper = function(args) {
   }
 
   this.addLinesToSource(this.linesShown);
+  this.filter();
 };
 
 PlansMapper.prototype = Object.create(Mapper.prototype);
 
 PlansMapper.prototype.layers = {
   sections: {
-    PLANS: 'sections_plans'
+    PLANS: 'sections_plans',
+    HOVER: 'sections_hover_plans_'
   },
   stations: {
     PLANS: 'stations_plans',
-    INNER_LAYER: 'stations_inner_layer_plans'
+    INNER_LAYER: 'stations_inner_layer_plans',
+    HOVER: 'stations_hover_plans'
   }
 };
 
@@ -112,12 +115,17 @@ PlansMapper.prototype.toggleLine = function(line, callback) {
 PlansMapper.prototype.filter = function() {
   var self = this;
 
-  // var hoverId = this.currentHoverId;
+  var hoverId = this.currentHoverId;
 
   ['sections', 'stations'].forEach(function(type){
     for (var k in self.layers[type]) {
       var layer = self.layers[type][k];
       var filter;
+
+      if (layer.indexOf('hover') !== -1){
+        var ids = ["in", "id"].concat(hoverId[type]);
+        filter = ["all", ids];
+      }
 
       if (self.linesShown) {
         filter = filter || ["all"];

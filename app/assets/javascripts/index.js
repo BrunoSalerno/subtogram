@@ -10,9 +10,9 @@ var MouseEvents = require('./mouse_events');
 var App = function(map, styles, years, lines, plans) {
   var style = new Style(styles);
   var linesMapper = new LinesMapper({map: map, style: style, lines: lines});
-  var timeline = new Timeline(linesMapper, years);
-  var mouseEvents = new MouseEvents(map, style, linesMapper);
   var plansMapper = new PlansMapper({map: map, style: style, plans: plans});
+  var timeline = new Timeline(linesMapper, years);
+  var mouseEvents = new MouseEvents(map, style, {lines: linesMapper, plans: plansMapper});
 
   $(".c-tree__item").click(function(){
     var el = $(this);
