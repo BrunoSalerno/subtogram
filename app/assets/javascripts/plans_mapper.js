@@ -1,9 +1,9 @@
 var $ = require('jquery');
-var Subtogram = require('./subtogram');
+var Mapper = require('./mapper');
 
-var SubtogramPlans = function(args) {
+var PlansMapper = function(args) {
   // Super
-  Subtogram.call(this, args);
+  Mapper.call(this, args);
 
   var self = this;
 
@@ -16,9 +16,9 @@ var SubtogramPlans = function(args) {
   this.addLinesToSource(this.linesShown);
 };
 
-SubtogramPlans.prototype = Object.create(Subtogram.prototype);
+PlansMapper.prototype = Object.create(Mapper.prototype);
 
-SubtogramPlans.prototype.layers = {
+PlansMapper.prototype.layers = {
   sections: {
     PLANS: 'sections_plans'
   },
@@ -28,10 +28,10 @@ SubtogramPlans.prototype.layers = {
   }
 };
 
-SubtogramPlans.prototype.alreadyLoadedLines = [];
+PlansMapper.prototype.alreadyLoadedLines = [];
 
 // We override this method
-SubtogramPlans.prototype._addSource = function(type) {
+PlansMapper.prototype._addSource = function(type) {
   var sourceName = type + '_plans_source';
 
   if (this.map.getSource(sourceName)) {
@@ -46,7 +46,7 @@ SubtogramPlans.prototype._addSource = function(type) {
   return sourceName;
 };
 
-SubtogramPlans.prototype._sourceData = function(features) {
+PlansMapper.prototype._sourceData = function(features) {
   features = features || [];
   return {
       type: "FeatureCollection",
@@ -58,7 +58,7 @@ SubtogramPlans.prototype._sourceData = function(features) {
  * @param {string[]} lines
  * @callback callback
  */
-SubtogramPlans.prototype.addLinesToSource =  function(lines, callback) {
+PlansMapper.prototype.addLinesToSource =  function(lines, callback) {
   this.alreadyLoadedLines = this.alreadyLoadedLines.concat(lines);
 
   var url = '/api' + location.pathname + '/plan/?plan_lines=' + lines.join(',');
@@ -84,7 +84,7 @@ SubtogramPlans.prototype.addLinesToSource =  function(lines, callback) {
  * @param {string} line
  * @callback callback
  */
-SubtogramPlans.prototype.addLineToSourceIfNeeded = function(line, callback) {
+PlansMapper.prototype.addLineToSourceIfNeeded = function(line, callback) {
   if (this.alreadyLoadedLines.indexOf(line) !== -1) {
     if (typeof callback === 'function') callback();
     return;
@@ -94,22 +94,22 @@ SubtogramPlans.prototype.addLineToSourceIfNeeded = function(line, callback) {
   });
 }
 
-SubtogramPlans.prototype._updateSource = function(name, feature) {
+PlansMapper.prototype._updateSource = function(name, feature) {
   var source = this.map.getSource(name);
   var features = (source._data.features || []).concat(feature);
   source.setData(this._sourceData(features));
 }
 
-SubtogramPlans.prototype.toggleLine = function(line, callback) {
+PlansMapper.prototype.toggleLine = function(line, callback) {
   var self = this;
   this.addLineToSourceIfNeeded(line, function(){
     // Super
-    var linesShown = Subtogram.prototype.toggleLine.apply(self, [line, callback]);
+    var linesShown = Mapper.prototype.toggleLine.apply(self, [line, callback]);
     if (typeof callback === 'function') callback(linesShown);
   });
 }
 
-SubtogramPlans.prototype.filter = function() {
+PlansMapper.prototype.filter = function() {
   var self = this;
 
   // var hoverId = this.currentHoverId;
@@ -130,4 +130,4 @@ SubtogramPlans.prototype.filter = function() {
   });
 }
 
-module.exports = SubtogramPlans;
+module.exports = PlansMapper;

@@ -1,4 +1,4 @@
-var Subtogram = function(args){
+var Mapper = function(args){
   args = args || {};
   this.map = args.map;
   this.style = args.style;
@@ -9,7 +9,7 @@ var Subtogram = function(args){
   this.addLayers();
 };
 
-Subtogram.prototype = {
+Mapper.prototype = {
   map: null,
   style: null,
 
@@ -80,4 +80,4 @@ Subtogram.prototype = {
   filter: null
 }
 
-module.exports = Subtogram;
+module.exports = Mapper;

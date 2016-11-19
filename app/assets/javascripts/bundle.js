@@ -1,7 +1,7 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var Style = require('./style');
-var SubtogramLines = require('./subtogram_lines');
-var SubtogramPlans = require('./subtogram_plans');
+var LinesMapper = require('./lines_mapper');
+var PlansMapper = require('./plans_mapper');
 var mapboxgl = require('mapbox-gl');
 var $ = require('jquery');
 var Misc = require('./misc');
@@ -10,10 +10,10 @@ var MouseEvents = require('./mouse_events');
 
 var App = function(map, styles, years, lines, plans) {
   var style = new Style(styles);
-  var subtogramLines = new SubtogramLines({map: map, style: style, lines: lines});
-  var timeline = new Timeline(subtogramLines, years);
-  var mouseEvents = new MouseEvents(map, style, subtogramLines);
-  var subtogramPlans = new SubtogramPlans({map: map, style: style, plans: plans});
+  var linesMapper = new LinesMapper({map: map, style: style, lines: lines});
+  var timeline = new Timeline(linesMapper, years);
+  var mouseEvents = new MouseEvents(map, style, linesMapper);
+  var plansMapper = new PlansMapper({map: map, style: style, plans: plans});
 
   $(".c-tree__item").click(function(){
     var el = $(this);
@@ -76,13 +76,13 @@ var App = function(map, styles, years, lines, plans) {
 
   $('.checkbox-toggle').change(function(){
     var line = $(this).data("line");
-    var linesShown = subtogramLines.toggleLine(line);
+    var linesShown = linesMapper.toggleLine(line);
     Misc.saveParams(null,null,linesShown);
   });
 
   $('.checkbox-toggle-plan').change(function(){
     var line = $(this).data("line");
-    subtogramPlans.toggleLine(line, function(linesShown){
+    plansMapper.toggleLine(line, function(linesShown){
       Misc.saveParams(null,null,null,linesShown);
     });
   });
@@ -120,7 +120,172 @@ window.loadApp = function(lines, plans, styles, config, mapboxAccessToken, mapbo
   });
 }
 
-},{"./misc":2,"./mouse_events":3,"./style":4,"./subtogram_lines":6,"./subtogram_plans":7,"./timeline":8,"jquery":9,"mapbox-gl":27}],2:[function(require,module,exports){
+},{"./lines_mapper":2,"./misc":4,"./mouse_events":5,"./plans_mapper":6,"./style":7,"./timeline":8,"jquery":9,"mapbox-gl":27}],2:[function(require,module,exports){
+var Mapper = require('./mapper');
+
+var LinesMapper = function(args){
+  Mapper.call(this, args);
+
+  for (var line in args.lines) {
+    if (args.lines[line].show) this.linesShown.push(args.lines[line].url_name);
+  };
+};
+
+LinesMapper.prototype = Object.create(Mapper.prototype);
+
+LinesMapper.prototype.layers = {
+  sections: {
+    BUILDSTART: 'sections_buildstart',
+    OPENGING: 'sections_opening',
+    HOVER: 'sections_hover'
+  },
+  stations: {
+    BUILDSTART: 'stations_buildstart',
+    OPENGING: 'stations_opening',
+    HOVER: 'stations_hover',
+    INNER_LAYER: 'stations_inner_layer'
+  }
+};
+
+LinesMapper.prototype.filter = function() {
+  var self = this;
+
+  var hoverId = this.currentHoverId;
+  var year = this.currentYear;
+
+  ['sections', 'stations'].forEach(function(type){
+    for (var k in self.layers[type]) {
+      var layer = self.layers[type][k];
+      var filter;
+
+      if (layer.indexOf('hover') !== -1){
+        var ids = ["in", "id"].concat(hoverId[type]);
+        filter = ["all", ids];
+      } else if (layer.indexOf('buildstart') !== -1) {
+        filter = [
+          "all",
+          ["<=", "buildstart", year],
+          [">", "buildstart_end", year],
+        ];
+      } else if (layer.indexOf('opening') !== -1){
+        filter = [
+          "all",
+          ["<=", "opening", year],
+          [">", "closure", year],
+        ];
+      } else if (layer.indexOf('inner') !== -1){
+        filter = [
+          "all",
+          ["<=", "buildstart", year],
+          [">", "closure", year],
+        ];
+      }
+
+      if (self.linesShown) {
+        var linesShownFilter = ["in", "line_url_name"].concat(self.linesShown);
+        filter.push(linesShownFilter);
+      }
+
+      if (filter) self.map.setFilter(layer, filter);
+    }
+  });
+}
+
+LinesMapper.prototype.currentYear = null;
+
+LinesMapper.prototype.setYear = function(year) {
+  this.currentYear = year;
+  this.filter();
+};
+
+module.exports = LinesMapper;
+
+},{"./mapper":3}],3:[function(require,module,exports){
+var Mapper = function(args){
+  args = args || {};
+  this.map = args.map;
+  this.style = args.style;
+
+  this.linesShown = [];
+  this.currentHoverId = {sections: ['none'], stations: ['none']};
+
+  this.addLayers();
+};
+
+Mapper.prototype = {
+  map: null,
+  style: null,
+
+  layers: null,
+
+  _addSource: function(type) {
+    var sourceName = type + '_source';
+
+    if (this.map.getSource(sourceName)) {
+      return sourceName;
+    }
+
+    this.map.addSource(sourceName, {
+      type: 'geojson',
+      data: '/api' + location.pathname + '/source/' + type
+    });
+
+    return sourceName;
+  },
+
+  addLayers: function() {
+    var self = this;
+    ['sections', 'stations'].forEach(function(type){
+      for (var k in self.layers[type]) {
+        var sourceName = self._addSource(type);
+        var featureType = type === 'sections' ? 'line' : 'circle';
+        var layer = self.layers[type][k];
+        self._addLayer(sourceName, layer, featureType);
+      }
+    });
+  },
+
+  _addLayer: function(sourceName, layerName, featureType) {
+    var layer = {
+      id: layerName,
+      source: sourceName,
+      type: featureType,
+      interactive: true,
+      paint: this.style.get(layerName)
+    };
+
+    this.map.addLayer(layer);
+  },
+
+  setHoverIds: function(type, ids) {
+    if ((ids && this.currentHoverId[type] == ids) ||
+        (!ids && this.currentHoverId[type] == ['none'])) return;
+
+    if (!ids) {
+      this.currentHoverId[type] = ['none'];
+    } else {
+      this.currentHoverId[type] = ids;
+    }
+    this.filter();
+  },
+
+  toggleLine: function(line, callback) {
+    var index = this.linesShown.indexOf(line);
+    if (index === -1) {
+      this.linesShown.push(line);
+    } else {
+      this.linesShown.splice(index, 1);
+    }
+    this.filter();
+    return this.linesShown;
+  },
+
+  filter: null
+}
+
+module.exports = Mapper;
+
+},{}],4:[function(require,module,exports){
 /*
  Taken from http://stackoverflow.com/questions/5448545/how-to-retrieve-get-parameters-from-javascript
  weltraumpirat answer
@@ -177,13 +342,13 @@ var Misc = {
 
 module.exports = Misc;
 
-},{}],3:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var mapboxgl = require('mapbox-gl');
 
-var MouseEvents = function(map, style, subtogram){
+var MouseEvents = function(map, style, mapper){
   this.map = map;
   this.style = style;
-  this.subtogram = subtogram;
+  this.mapper = mapper;
 
   var self = this;
 
@@ -206,7 +371,7 @@ var MouseEvents = function(map, style, subtogram){
     });
 
     for (var type in ids) {
-      self.subtogram.setHoverIds(type, ids[type]);
+      self.mapper.setHoverIds(type, ids[type]);
     }
   });
 
@@ -229,7 +394,7 @@ var MouseEvents = function(map, style, subtogram){
 MouseEvents.prototype =  {
   map: null,
   style: null,
-  subtogram: null,
+  mapper: null,
 
   validValue: function(value) {
     return (value !== null && value !== 999999)
@@ -237,9 +402,9 @@ MouseEvents.prototype =  {
 
   layerNames: function() {
     var layers = [];
-    for (var type in this.subtogram.layers) {
-      for (var layer in this.subtogram.layers[type]) {
-        var name = this.subtogram.layers[type][layer];
+    for (var type in this.mapper.layers) {
+      for (var layer in this.mapper.layers[type]) {
+        var name = this.mapper.layers[type][layer];
         if (name.indexOf('hover') === -1 && name.indexOf('inner') === -1) {
           layers.push(name);
         }
@@ -284,7 +449,142 @@ MouseEvents.prototype =  {
 
 module.exports = MouseEvents;
 
-},{"mapbox-gl":27}],4:[function(require,module,exports){
+},{"mapbox-gl":27}],6:[function(require,module,exports){
+var $ = require('jquery');
+var Mapper = require('./mapper');
+
+var PlansMapper = function(args) {
+  // Super
+  Mapper.call(this, args);
+
+  var self = this;
+
+  for (var plan in args.plans) {
+    args.plans[plan].lines.forEach(function(line){
+      if (line.show) self.linesShown.push(line.parent_url_name);
+    });
+  }
+
+  this.addLinesToSource(this.linesShown);
+};
+
+PlansMapper.prototype = Object.create(Mapper.prototype);
+
+PlansMapper.prototype.layers = {
+  sections: {
+    PLANS: 'sections_plans'
+  },
+  stations: {
+    PLANS: 'stations_plans',
+    INNER_LAYER: 'stations_inner_layer_plans'
+  }
+};
+
+PlansMapper.prototype.alreadyLoadedLines = [];
+
+// We override this method
+PlansMapper.prototype._addSource = function(type) {
+  var sourceName = type + '_plans_source';
+
+  if (this.map.getSource(sourceName)) {
+    return sourceName;
+  }
+
+  this.map.addSource(sourceName, {
+    type: 'geojson',
+    data:  this._sourceData()
+  });
+
+  return sourceName;
+};
+
+PlansMapper.prototype._sourceData = function(features) {
+  features = features || [];
+  return {
+      type: "FeatureCollection",
+      features: features
+    }
+}
+
+/*
+ * @param {string[]} lines
+ * @callback callback
+ */
+PlansMapper.prototype.addLinesToSource =  function(lines, callback) {
+  this.alreadyLoadedLines = this.alreadyLoadedLines.concat(lines);
+
+  var url = '/api' + location.pathname + '/plan/?plan_lines=' + lines.join(',');
+
+  var self = this;
+  $.get(url, function(response){
+    var json = JSON.parse(response)
+    var lineFeatures = [];
+    var stationFeatures = [];
+
+    json.forEach(function(o){
+      lineFeatures.push(o.line);
+      stationFeatures = stationFeatures.concat(o.stations);
+    });
+
+    self._updateSource('sections_plans_source', lineFeatures);
+    self._updateSource('stations_plans_source', stationFeatures)
+    if (typeof callback === 'function') callback();
+  });
+}
+
+/*
+ * @param {string} line
+ * @callback callback
+ */
+PlansMapper.prototype.addLineToSourceIfNeeded = function(line, callback) {
+  if (this.alreadyLoadedLines.indexOf(line) !== -1) {
+    if (typeof callback === 'function') callback();
+    return;
+  }
+  this.addLinesToSource([line], function(){
+    if (typeof callback === 'function') callback();
+  });
+}
+
+PlansMapper.prototype._updateSource = function(name, feature) {
+  var source = this.map.getSource(name);
+  var features = (source._data.features || []).concat(feature);
+  source.setData(this._sourceData(features));
+}
+
+PlansMapper.prototype.toggleLine = function(line, callback) {
+  var self = this;
+  this.addLineToSourceIfNeeded(line, function(){
+    // Super
+    var linesShown = Mapper.prototype.toggleLine.apply(self, [line, callback]);
+    if (typeof callback === 'function') callback(linesShown);
+  });
+}
+
+PlansMapper.prototype.filter = function() {
+  var self = this;
+
+  // var hoverId = this.currentHoverId;
+
+  ['sections', 'stations'].forEach(function(type){
+    for (var k in self.layers[type]) {
+      var layer = self.layers[type][k];
+      var filter;
+
+      if (self.linesShown) {
+        filter = filter || ["all"];
+        var linesShownFilter = ["in", "line_parent_url_name"].concat(self.linesShown);
+        filter.push(linesShownFilter);
+      }
+
+      if (filter) self.map.setFilter(layer, filter);
+    }
+  });
+}
+
+module.exports = PlansMapper;
+
+},{"./mapper":3,"jquery":9}],7:[function(require,module,exports){
 var $ = require('jquery');
 
 var Style = function(styles){
@@ -371,307 +671,7 @@ Style.prototype = {
 
 module.exports = Style;
 
-},{"jquery":9}],5:[function(require,module,exports){
-var Subtogram = function(args){
-  args = args || {};
-  this.map = args.map;
-  this.style = args.style;
-
-  this.linesShown = [];
-  this.currentHoverId = {sections: ['none'], stations: ['none']};
-
-  this.addLayers();
-};
-
-Subtogram.prototype = {
-  map: null,
-  style: null,
-
-  layers: null,
-
-  _addSource: function(type) {
-    var sourceName = type + '_source';
-
-    if (this.map.getSource(sourceName)) {
-      return sourceName;
-    }
-
-    this.map.addSource(sourceName, {
-      type: 'geojson',
-      data: '/api' + location.pathname + '/source/' + type
-    });
-
-    return sourceName;
-  },
-
-  addLayers: function() {
-    var self = this;
-    ['sections', 'stations'].forEach(function(type){
-      for (var k in self.layers[type]) {
-        var sourceName = self._addSource(type);
-        var featureType = type === 'sections' ? 'line' : 'circle';
-        var layer = self.layers[type][k];
-        self._addLayer(sourceName, layer, featureType);
-      }
-    });
-  },
-
-  _addLayer: function(sourceName, layerName, featureType) {
-    var layer = {
-      id: layerName,
-      source: sourceName,
-      type: featureType,
-      interactive: true,
-      paint: this.style.get(layerName)
-    };
-
-    this.map.addLayer(layer);
-  },
-
-  setHoverIds: function(type, ids) {
-    if ((ids && this.currentHoverId[type] == ids) ||
-        (!ids && this.currentHoverId[type] == ['none'])) return;
-
-    if (!ids) {
-      this.currentHoverId[type] = ['none'];
-    } else {
-      this.currentHoverId[type] = ids;
-    }
-    this.filter();
-  },
-
-  toggleLine: function(line, callback) {
-    var index = this.linesShown.indexOf(line);
-    if (index === -1) {
-      this.linesShown.push(line);
-    } else {
-      this.linesShown.splice(index, 1);
-    }
-    this.filter();
-    return this.linesShown;
-  },
-
-  filter: null
-}
-
-module.exports = Subtogram;
-
-},{}],6:[function(require,module,exports){
-var Subtogram = require('./subtogram');
-
-var SubtogramLines = function(args){
-  Subtogram.call(this, args);
-
-  for (var line in args.lines) {
-    if (args.lines[line].show) this.linesShown.push(args.lines[line].url_name);
-  };
-};
-
-SubtogramLines.prototype = Object.create(Subtogram.prototype);
-
-SubtogramLines.prototype.layers = {
-  sections: {
-    BUILDSTART: 'sections_buildstart',
-    OPENGING: 'sections_opening',
-    HOVER: 'sections_hover'
-  },
-  stations: {
-    BUILDSTART: 'stations_buildstart',
-    OPENGING: 'stations_opening',
-    HOVER: 'stations_hover',
-    INNER_LAYER: 'stations_inner_layer'
-  }
-};
-
-SubtogramLines.prototype.filter = function() {
-  var self = this;
-
-  var hoverId = this.currentHoverId;
-  var year = this.currentYear;
-
-  ['sections', 'stations'].forEach(function(type){
-    for (var k in self.layers[type]) {
-      var layer = self.layers[type][k];
-      var filter;
-
-      if (layer.indexOf('hover') !== -1){
-        var ids = ["in", "id"].concat(hoverId[type]);
-        filter = ["all", ids];
-      } else if (layer.indexOf('buildstart') !== -1) {
-        filter = [
-          "all",
-          ["<=", "buildstart", year],
-          [">", "buildstart_end", year],
-        ];
-      } else if (layer.indexOf('opening') !== -1){
-        filter = [
-          "all",
-          ["<=", "opening", year],
-          [">", "closure", year],
-        ];
-      } else if (layer.indexOf('inner') !== -1){
-        filter = [
-          "all",
-          ["<=", "buildstart", year],
-          [">", "closure", year],
-        ];
-      }
-
-      if (self.linesShown) {
-        var linesShownFilter = ["in", "line_url_name"].concat(self.linesShown);
-        filter.push(linesShownFilter);
-      }
-
-      if (filter) self.map.setFilter(layer, filter);
-    }
-  });
-}
-
-SubtogramLines.prototype.currentYear = null;
-
-SubtogramLines.prototype.setYear = function(year) {
-  this.currentYear = year;
-  this.filter();
-};
-
-module.exports = SubtogramLines;
-
-},{"./subtogram":5}],7:[function(require,module,exports){
-var $ = require('jquery');
-var Subtogram = require('./subtogram');
-
-var SubtogramPlans = function(args) {
-  // Super
-  Subtogram.call(this, args);
-
-  var self = this;
-
-  for (var plan in args.plans) {
-    args.plans[plan].lines.forEach(function(line){
-      if (line.show) self.linesShown.push(line.parent_url_name);
-    });
-  }
-
-  this.addLinesToSource(this.linesShown);
-};
-
-SubtogramPlans.prototype = Object.create(Subtogram.prototype);
-
-SubtogramPlans.prototype.layers = {
-  sections: {
-    PLANS: 'sections_plans'
-  },
-  stations: {
-    PLANS: 'stations_plans',
-    INNER_LAYER: 'stations_inner_layer_plans'
-  }
-};
-
-SubtogramPlans.prototype.alreadyLoadedLines = [];
-
-// We override this method
-SubtogramPlans.prototype._addSource = function(type) {
-  var sourceName = type + '_plans_source';
-
-  if (this.map.getSource(sourceName)) {
-    return sourceName;
-  }
-
-  this.map.addSource(sourceName, {
-    type: 'geojson',
-    data:  this._sourceData()
-  });
-
-  return sourceName;
-};
-
-SubtogramPlans.prototype._sourceData = function(features) {
-  features = features || [];
-  return {
-      type: "FeatureCollection",
-      features: features
-    }
-}
-
-/*
- * @param {string[]} lines
- * @callback callback
- */
-SubtogramPlans.prototype.addLinesToSource =  function(lines, callback) {
-  this.alreadyLoadedLines = this.alreadyLoadedLines.concat(lines);
-
-  var url = '/api' + location.pathname + '/plan/?plan_lines=' + lines.join(',');
-
-  var self = this;
-  $.get(url, function(response){
-    var json = JSON.parse(response)
-    var lineFeatures = [];
-    var stationFeatures = [];
-
-    json.forEach(function(o){
-      lineFeatures.push(o.line);
-      stationFeatures = stationFeatures.concat(o.stations);
-    });
-
-    self._updateSource('sections_plans_source', lineFeatures);
-    self._updateSource('stations_plans_source', stationFeatures)
-    if (typeof callback === 'function') callback();
-  });
-}
-
-/*
- * @param {string} line
- * @callback callback
- */
-SubtogramPlans.prototype.addLineToSourceIfNeeded = function(line, callback) {
-  if (this.alreadyLoadedLines.indexOf(line) !== -1) {
-    if (typeof callback === 'function') callback();
-    return;
-  }
-  this.addLinesToSource([line], function(){
-    if (typeof callback === 'function') callback();
-  });
-}
-
-SubtogramPlans.prototype._updateSource = function(name, feature) {
-  var source = this.map.getSource(name);
-  var features = (source._data.features || []).concat(feature);
-  source.setData(this._sourceData(features));
-}
-
-SubtogramPlans.prototype.toggleLine = function(line, callback) {
-  var self = this;
-  this.addLineToSourceIfNeeded(line, function(){
-    // Super
-    var linesShown = Subtogram.prototype.toggleLine.apply(self, [line, callback]);
-    if (typeof callback === 'function') callback(linesShown);
-  });
-}
-
-SubtogramPlans.prototype.filter = function() {
-  var self = this;
-
-  // var hoverId = this.currentHoverId;
-
-  ['sections', 'stations'].forEach(function(type){
-    for (var k in self.layers[type]) {
-      var layer = self.layers[type][k];
-      var filter;
-
-      if (self.linesShown) {
-        filter = filter || ["all"];
-        var linesShownFilter = ["in", "line_parent_url_name"].concat(self.linesShown);
-        filter.push(linesShownFilter);
-      }
-
-      if (filter) self.map.setFilter(layer, filter);
-    }
-  });
-}
-
-module.exports = SubtogramPlans;
-
-},{"./subtogram":5,"jquery":9}],8:[function(require,module,exports){
+},{"jquery":9}],8:[function(require,module,exports){
 var Timeline = function(subtogramLines, years){
   this.subtogramLines = subtogramLines;
   this.years = years;

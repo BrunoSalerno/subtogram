@@ -1,16 +1,16 @@
-var Subtogram = require('./subtogram');
+var Mapper = require('./mapper');
 
-var SubtogramLines = function(args){
-  Subtogram.call(this, args);
+var LinesMapper = function(args){
+  Mapper.call(this, args);
 
   for (var line in args.lines) {
     if (args.lines[line].show) this.linesShown.push(args.lines[line].url_name);
   };
 };
 
-SubtogramLines.prototype = Object.create(Subtogram.prototype);
+LinesMapper.prototype = Object.create(Mapper.prototype);
 
-SubtogramLines.prototype.layers = {
+LinesMapper.prototype.layers = {
   sections: {
     BUILDSTART: 'sections_buildstart',
     OPENGING: 'sections_opening',
@@ -24,7 +24,7 @@ SubtogramLines.prototype.layers = {
   }
 };
 
-SubtogramLines.prototype.filter = function() {
+LinesMapper.prototype.filter = function() {
   var self = this;
 
   var hoverId = this.currentHoverId;
@@ -68,11 +68,11 @@ SubtogramLines.prototype.filter = function() {
   });
 }
 
-SubtogramLines.prototype.currentYear = null;
+LinesMapper.prototype.currentYear = null;
 
-SubtogramLines.prototype.setYear = function(year) {
+LinesMapper.prototype.setYear = function(year) {
   this.currentYear = year;
   this.filter();
 };
 
-module.exports = SubtogramLines;
+module.exports = LinesMapper;

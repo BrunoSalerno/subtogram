@@ -1,6 +1,6 @@
 var Style = require('./style');
-var SubtogramLines = require('./subtogram_lines');
-var SubtogramPlans = require('./subtogram_plans');
+var LinesMapper = require('./lines_mapper');
+var PlansMapper = require('./plans_mapper');
 var mapboxgl = require('mapbox-gl');
 var $ = require('jquery');
 var Misc = require('./misc');
@@ -9,10 +9,10 @@ var MouseEvents = require('./mouse_events');
 
 var App = function(map, styles, years, lines, plans) {
   var style = new Style(styles);
-  var subtogramLines = new SubtogramLines({map: map, style: style, lines: lines});
-  var timeline = new Timeline(subtogramLines, years);
-  var mouseEvents = new MouseEvents(map, style, subtogramLines);
-  var subtogramPlans = new SubtogramPlans({map: map, style: style, plans: plans});
+  var linesMapper = new LinesMapper({map: map, style: style, lines: lines});
+  var timeline = new Timeline(linesMapper, years);
+  var mouseEvents = new MouseEvents(map, style, linesMapper);
+  var plansMapper = new PlansMapper({map: map, style: style, plans: plans});
 
   $(".c-tree__item").click(function(){
     var el = $(this);
@@ -75,13 +75,13 @@ var App = function(map, styles, years, lines, plans) {
 
   $('.checkbox-toggle').change(function(){
     var line = $(this).data("line");
-    var linesShown = subtogramLines.toggleLine(line);
+    var linesShown = linesMapper.toggleLine(line);
     Misc.saveParams(null,null,linesShown);
   });
 
   $('.checkbox-toggle-plan').change(function(){
     var line = $(this).data("line");
-    subtogramPlans.toggleLine(line, function(linesShown){
+    plansMapper.toggleLine(line, function(linesShown){
       Misc.saveParams(null,null,null,linesShown);
     });
   });
