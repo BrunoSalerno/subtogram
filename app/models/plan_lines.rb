@@ -14,6 +14,7 @@ class PlanLine < Sequel::Model(:plan_lines)
     def feature
         h = super
         h[:properties].merge!({line: self.name,
+                               line_parent_url_name: self.parent_url_name,
                                plan: self.plan.name,
                                url: self.plan.extra["url"],
                                year: self.plan.extra["year"],

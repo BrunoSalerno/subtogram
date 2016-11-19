@@ -80,6 +80,13 @@ var App = function(map, styles, years, lines, plans) {
     Misc.saveParams(null,null,linesShown);
   });
 
+  $('.checkbox-toggle-plan').change(function(){
+    var line = $(this).data("line");
+    subtogramPlans.toggleLine(line, function(linesShown){
+      Misc.saveParams(null,null,null,linesShown);
+    });
+  });
+
   var startingYear = years.default || years.start;
   timeline.toYear(startingYear);
   $('#current-year, #slider').val(startingYear);
@@ -636,12 +643,30 @@ SubtogramPlans.prototype.toggleLine = function(line, callback) {
   var self = this;
   this.addLineToSourceIfNeeded(line, function(){
     // Super
-    Subtogram.prototype.toggleLine.apply(self, [line, callback]);
+    var linesShown = Subtogram.prototype.toggleLine.apply(self, [line, callback]);
+    if (typeof callback === 'function') callback(linesShown);
   });
 }
 
 SubtogramPlans.prototype.filter = function() {
-  //TODO
+  var self = this;
+
+  // var hoverId = this.currentHoverId;
+
+  ['sections', 'stations'].forEach(function(type){
+    for (var k in self.layers[type]) {
+      var layer = self.layers[type][k];
+      var filter;
+
+      if (self.linesShown) {
+        filter = filter || ["all"];
+        var linesShownFilter = ["in", "line_parent_url_name"].concat(self.linesShown);
+        filter.push(linesShownFilter);
+      }
+
+      if (filter) self.map.setFilter(layer, filter);
+    }
+  });
 }
 
 module.exports = SubtogramPlans;

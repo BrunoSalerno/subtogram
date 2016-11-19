@@ -79,6 +79,13 @@ var App = function(map, styles, years, lines, plans) {
     Misc.saveParams(null,null,linesShown);
   });
 
+  $('.checkbox-toggle-plan').change(function(){
+    var line = $(this).data("line");
+    subtogramPlans.toggleLine(line, function(linesShown){
+      Misc.saveParams(null,null,null,linesShown);
+    });
+  });
+
   var startingYear = years.default || years.start;
   timeline.toYear(startingYear);
   $('#current-year, #slider').val(startingYear);
