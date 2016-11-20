@@ -7,6 +7,8 @@ require './app/config/mapbox.rb'
 
 require './app/lib/sequel/geometry'
 
+require './app/helpers/city_helpers'
+
 Dir['./app/models/*.rb'].each {|file| require file}
 
 DEFAULT_ZOOM = 12
@@ -24,6 +26,8 @@ class App < Sinatra::Base
     end
  
     register Sinatra::AssetPipeline
+
+    helpers CityHelpers
 
     get '/' do
         erb :index
@@ -56,59 +60,38 @@ class App < Sinatra::Base
            @config[:pitch] = geo[4]
         end
 
-        # Lines
+        @lines = city_lines(@city, params)
+        @plans = city_plans(@city, params)
 
-        param_lines = if params[:lines]
-            params[:lines].split(',')
-        end
-
-        @lines = {}
-        @lines_style = {}
-        @city.lines.each { |line|
-            @lines[line.name] = {show: param_lines && !param_lines.include?(line.name) ? false : true}
-            @lines_style[line.name]  = line.style
+        @lengths = {
+          lines: lines_length_by_year(@city),
+          plans: plans_length(@city)
         }
 
-        # Plans
-
-        param_plan_lines = if params[:plans]
-            p = params[:plans].split(',')
-            plan_lines = {}
-            p.each { |pair|
-                plan,line = pair.split('.')
-                plan.gsub!('_', ' ')
-                plan_lines[plan] = [] unless plan_lines[plan]
-                plan_lines[plan].push(line)
-            }
-            plan_lines
-        end
-
-        @plans = {}
-        @city.plans
-        .sort_by{ |plan| plan.extra["year"].to_i }
-        .each { |plan|
-            lines = plan.plan_lines.map {|line|
-                @lines_style[line.name] = line.style
-                {show: param_plan_lines && param_plan_lines[plan.name] && param_plan_lines[plan.name].include?(line.name),
-                 name: line.name,
-                 id: line.id}
-            }
-            @plans[plan.name]= {
-                lines: lines,
-                year: plan.extra["year"],
-                url: plan.extra["url"]
-            }
-        }
-
-        erb :city    
+        erb :city
     end
 
-    get '/api/:url_name/plan_line' do |url_name|
-        plan_line_id = params[:id].split(',')
-        @lines = PlanLine.where(id: plan_line_id)
-
-        @lines.map { |l|
-            {line: l.feature, stations: l.plan_stations.map(&:feature)}
+    get '/api/:url_name/plan/' do |url_name|
+        @city = City[url_name: url_name]
+        plan_lines = params[:plan_lines].split(',')
+        plan_ids = Plan.where(city_id: @city.id).select_map(:id)
+        PlanLine.where(plan_id: plan_ids, parent_url_name: plan_lines).map{ |line|
+          {line: line.feature, stations: line.plan_stations.map(&:feature)}
         }.to_json
+    end
+
+    get '/api/:url_name/source/:type' do |url_name, type|
+      @city = City[url_name: url_name]
+      city_lines_ids = @city.lines.map(&:id)
+      query = {line_id: city_lines_ids}
+
+      features = if type == 'sections'
+                   Section.where(query).map(&:feature)
+                 else
+                   Station.where(query).map(&:feature)
+                 end
+
+      {type: "FeatureCollection",
+       features: features}.to_json
     end
 end

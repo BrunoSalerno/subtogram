@@ -5,12 +5,12 @@
         <li class="c-tree__item c-tree__item--expanded">
             <span class="c-link">Líneas</span>
             <ul class="c-tree">
-                <% @lines.each_pair do |name, v| %>
+                <% @lines.each_pair do |name, line| %>
                         <style>
-                            <%= ".c-toggle input#checkbox_#{name}:checked+.c-toggle__track {background-color:#{@lines_style[name]['color']};}"%>
+                          <%= ".c-toggle input#checkbox_#{line[:url_name]}:checked+.c-toggle__track {background-color:#{line[:style]['color']};}"%>
                         </style>
                         <label class="c-toggle" >
-                            <input class="checkbox-toggle" id="checkbox_<%=name%>" type="checkbox" <%= v[:show] ? 'checked' : '' %>>
+                          <input class="checkbox-toggle" id="checkbox_<%=line[:url_name]%>" data-line="<%=line[:url_name] %>" type="checkbox" <%= line[:show] ? 'checked' : '' %>>
                             <div class="c-toggle__track">
                                 <div class="c-toggle__handle"></div>
                             </div>
@@ -33,10 +33,10 @@
             <ul class="c-tree" style="display: none;">
                 <% plan[:lines].each do |line| %>
                         <style>
-                          <%= ".c-toggle input#checkbox_#{name.gsub(' ','-')}_#{line[:name]}_#{line[:id]}:checked+.c-toggle__track {background-color:#{@lines_style[line[:name]]['color']};}"%>
+                          <%= ".c-toggle input#checkbox_#{line[:parent_url_name]}:checked+.c-toggle__track {background-color:#{line[:style]['color']};}"%>
                         </style>
                         <label class="c-toggle">
-                          <input class="checkbox-toggle-plan" id="checkbox_<%=name.gsub(' ','-')%>_<%=line[:name]%>_<%=line[:id]%>" type="checkbox" <%= line[:show] ? 'checked' : '' %>/>
+                          <input class="checkbox-toggle-plan" id="checkbox_<%=line[:parent_url_name]%>" data-line="<%= line[:parent_url_name] %>" type="checkbox" <%= line[:show] ? 'checked' : '' %>/>
                             <div class="c-toggle__track">
                                 <div class="c-toggle__handle"></div>
                             </div>

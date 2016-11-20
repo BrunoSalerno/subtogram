@@ -22,22 +22,4 @@ class City < Sequel::Model(:cities)
     def url
         "/#{self.url_name}"
     end
-
-    def line_features_by_year
-        hash = {}
-        self.lines.map{|line|
-            [:sections, :stations].map {|category|
-                line.send(category).map {|feature|
-                    [:buildstart, :opening, :closure].each do |k|
-                        year = feature[k]
-                        hash[year] = {} unless hash[year]
-                        hash[year][category] = {} unless hash[year][category]
-                        hash[year][category][k] = [] unless hash[year][category][k]
-                        hash[year][category][k].push(feature.feature)
-                    end
-                }
-            }
-        }
-        hash
-    end
 end

@@ -32,13 +32,13 @@
 }
 
 .panel-header {
-    height:220px;
+  padding-bottom:20px;
 }
 
 .lines-toggler-container {
-    height: calc(100% - 220px);
     position: relative;
     overflow: auto;
+    padding-bottom: 20px;
 }
 
 
@@ -105,4 +105,12 @@ Taken from http://stephanwagner.me/only-css-loading-spinner
     z-index:100000;
 }
 
-
+.popup-line-indicator {
+  display:inline-block;
+  min-width:21px;
+  text-align:center;
+  border-radius:2px;
+  height:20px;
+  line-height:12px;
+  vertical-align:top;
+}

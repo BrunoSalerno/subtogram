@@ -6,4 +6,8 @@ class Line < Sequel::Model(:lines)
     def style
         self.city.style["line"]["opening"][self.name]
     end
+
+    def generate_url_name
+        self.url_name = self.name.gsub(' ','-').downcase
+    end
 end
