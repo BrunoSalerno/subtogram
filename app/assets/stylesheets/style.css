@@ -114,3 +114,11 @@ Taken from http://stephanwagner.me/only-css-loading-spinner
   line-height:12px;
   vertical-align:top;
 }
+
+.edit-city-link {
+  margin-left:10px;
+}
+
+.edit-city-link span{
+  vertical-align:middle;
+}
