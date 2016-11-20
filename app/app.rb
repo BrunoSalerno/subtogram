@@ -71,6 +71,21 @@ class App < Sinatra::Base
         erb :city
     end
 
+    get '/:url_name/edit' do |url_name|
+        @city = City[url_name: url_name]
+        @title =  "#{@city.name} editor - #{settings.title}"
+
+        @config = {
+            coords: @city.geojson_coords,
+            zoom: DEFAULT_ZOOM,
+            bearing: DEFAULT_BEARING,
+            pitch: DEFAULT_PITCH,
+            speed: DEFAULT_SPEED
+        }
+
+        erb :editor
+    end
+
     get '/api/:url_name/plan/' do |url_name|
         @city = City[url_name: url_name]
         plan_lines = params[:plan_lines].split(',')

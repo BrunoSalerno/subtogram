@@ -2,7 +2,7 @@
 <div class="spinner-container spinner"></div>
 <div id="panel">
         <div class="panel-header o-grid__cell o-grid__cell--width-95"> 
-            <h3 class="c-heading"><%= @city.name %> <a class="c-link edit-city-link" href=""><span class="fa fa-edit"></span></a></h3>
+            <h3 class="c-heading"><%= @city.name %> <a class="c-link edit-city-link" href="/<%= @city.url_name %>/edit"><span class="fa fa-edit"></span></a></h3>
             <div class="c-input-group c-input-group--right">
               <div class="o-field">
                 <input id="current-year" class="c-field" type="number" /> 
@@ -19,7 +19,7 @@
         </div>
 </div>
 <main class="o-grid__cell o-grid__cell--width-100 o-panel-container">
-<div id="map"></div>
+  <div id="map"></div>
 </main>
 
 <script>

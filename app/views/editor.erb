@@ -1,0 +1,15 @@
+<script src="<%= javascript_path('bundle.js') %>"></script>
+<div class="spinner-container spinner"></div>
+<main class="o-grid__cell o-grid__cell--width-100 o-panel-container">
+  <div id="map"></div>
+</main>
+
+<script>
+  window.onload = function() {
+    var config = <%= @config.to_json %>;
+    var mapboxAccessToken = <%= MAPBOX_ACCESS_TOKEN.to_json %>;
+    var mapboxStyle = <%= MAPBOX_STYLE.to_json %>;
+
+    loadEditor(config, mapboxAccessToken, mapboxStyle);
+  }
+</script>
