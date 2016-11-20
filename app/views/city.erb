@@ -10,9 +10,9 @@
               <button id="action" class="c-button c-button--ghost"> <span class="fa fa-play"></span> </button>
             </div>
             <input id="slider" type="range" class="c-range" />
-            <span id="km-total" class="c-badge c-badge--primary" style="display:none;"></span>
-            <span id="km-operating" class="c-badge c-badge--success" style="display:none;"></span>
-            <span id="km-under-construction" class="c-badge" style="display:none;"></span>
+            <span id="km-operative" class="c-badge c-badge--success" style="display:none;"></span>
+            <span id="km-under-construction" class="c-badge c-badge--brand" style="display:none;"></span>
+            <span id="km-plans" class="c-badge c-badge--warning" style="display:none;"></span>
         </div>
         <div class="lines-toggler-container">
             <%= erb :"city/lines_toggler" %>
@@ -30,10 +30,11 @@ window.onload = function() {
   var lines = <%= @lines.to_json %>;
   var plans = <%= @plans.to_json %>;
   var style = <%= @city.style.to_json %>;
+  var lengths = <%= @lengths.to_json %>;
 
   var mapboxAccessToken = <%= MAPBOX_ACCESS_TOKEN.to_json %>;
   var mapboxStyle = <%= MAPBOX_STYLE.to_json %>;
 
-  loadApp(lines, plans, style, config, mapboxAccessToken, mapboxStyle);
+  loadApp(lines, plans, lengths, style, config, mapboxAccessToken, mapboxStyle);
 }
 </script>

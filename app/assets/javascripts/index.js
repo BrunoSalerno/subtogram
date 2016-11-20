@@ -6,13 +6,20 @@ var $ = require('jquery');
 var Misc = require('./misc');
 var Timeline = require('./timeline');
 var MouseEvents = require('./mouse_events');
+var Info = require('./info');
 
-var App = function(map, styles, years, lines, plans) {
+var App = function(map, styles, years, lines, plans, lengths) {
   var style = new Style(styles);
   var linesMapper = new LinesMapper({map: map, style: style, lines: lines});
   var plansMapper = new PlansMapper({map: map, style: style, plans: plans});
   var timeline = new Timeline(linesMapper, years);
   var mouseEvents = new MouseEvents(map, style, {lines: linesMapper, plans: plansMapper});
+  var info = new Info({
+    lengths: lengths,
+    updateCallback: function() {
+      $(window).resize();
+    }
+  });
 
   $(".c-tree__item").click(function(){
     var el = $(this);
@@ -39,6 +46,7 @@ var App = function(map, styles, years, lines, plans) {
     })
     .change(function(e){
       var year = parseInt($(this).val());
+      info.update({year: year});
       Misc.saveParams(year, map);
     });
 
@@ -47,6 +55,7 @@ var App = function(map, styles, years, lines, plans) {
       if (year < years.start || year > years.end) return;
       $('#slider').val(year);
       timeline.toYear(year);
+      info.update({year: year});
       Misc.saveParams(year, map);
   });
 
@@ -56,6 +65,7 @@ var App = function(map, styles, years, lines, plans) {
     if (timeline.playing) {
       $("#action span").removeClass('fa-pause').addClass('fa-play');
       timeline.stopAnimation(function(year){
+        info.update({year: years.end});
         Misc.saveParams(year, map);
       });
       return;
@@ -69,6 +79,7 @@ var App = function(map, styles, years, lines, plans) {
       },
       function(){
         $("#action span").removeClass('fa-pause').addClass('fa-play');
+        info.update({year: years.end});
         Misc.saveParams(years.end, map);
       });
   });
@@ -76,12 +87,14 @@ var App = function(map, styles, years, lines, plans) {
   $('.checkbox-toggle').change(function(){
     var line = $(this).data("line");
     var linesShown = linesMapper.toggleLine(line);
+    info.update({lines: linesShown});
     Misc.saveParams(null,null,linesShown);
   });
 
   $('.checkbox-toggle-plan').change(function(){
     var line = $(this).data("line");
     plansMapper.toggleLine(line, function(linesShown){
+      info.update({plans: linesShown});
       Misc.saveParams(null,null,null,linesShown);
     });
   });
@@ -94,10 +107,18 @@ var App = function(map, styles, years, lines, plans) {
     linesTogglerContainer.height(parentHeight - panelHeaderHeight - bottomPadding);
   });
 
-  $(window).resize();
-
+  // Init
   var startingYear = years.default || years.start;
   timeline.toYear(startingYear);
+
+  info.update({
+    year: startingYear,
+    lines: linesMapper.linesShown,
+    plans: plansMapper.linesShown
+  });
+
+  $(window).resize();
+
   $('#current-year, #slider').val(startingYear);
 
   $(".spinner-container").fadeOut();
@@ -107,7 +128,7 @@ var App = function(map, styles, years, lines, plans) {
   });
 }
 
-window.loadApp = function(lines, plans, styles, config, mapboxAccessToken, mapboxStyle) {
+window.loadApp = function(lines, plans, lengths, styles, config, mapboxAccessToken, mapboxStyle) {
   mapboxgl.accessToken = mapboxAccessToken;
   var map = new mapboxgl.Map({
     container: 'map',
@@ -121,7 +142,7 @@ window.loadApp = function(lines, plans, styles, config, mapboxAccessToken, mapbo
   map.addControl(new mapboxgl.NavigationControl());
 
   map.on('load',function(){
-    new App(map, styles, config.years, lines, plans);
+    new App(map, styles, config.years, lines, plans, lengths);
   });
 
   map.on('moveend',function(){

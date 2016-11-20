@@ -63,6 +63,11 @@ class App < Sinatra::Base
         @lines = city_lines(@city, params)
         @plans = city_plans(@city, params)
 
+        @lengths = {
+          lines: lines_length_by_year(@city),
+          plans: plans_length(@city)
+        }
+
         erb :city
     end
 
