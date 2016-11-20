@@ -47,7 +47,6 @@ Mapper.prototype = {
       id: layerName,
       source: sourceName,
       type: featureType,
-      interactive: true,
       paint: this.style.get(layerName)
     };
 
