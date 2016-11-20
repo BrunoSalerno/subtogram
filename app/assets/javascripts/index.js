@@ -34,6 +34,6 @@ window.loadEditor = function(config, mapboxAccessToken, mapboxStyle) {
   map.addControl(new mapboxgl.NavigationControl());
 
   map.on('load',function(){
-    new Editor();
+    new Editor(map);
   });
 }
