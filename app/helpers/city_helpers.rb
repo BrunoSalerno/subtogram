@@ -66,4 +66,18 @@ module CityHelpers
     end
     lengths
   end
+
+  def lines_features_collection(city, type)
+    city_lines_ids = city.lines.map(&:id)
+    query = {line_id: city_lines_ids}
+
+    features = if type == 'sections'
+                 Section.where(query).map(&:feature)
+               else
+                 Station.where(query).map(&:feature)
+               end
+
+    {type: "FeatureCollection",
+     features: features}
+  end
 end

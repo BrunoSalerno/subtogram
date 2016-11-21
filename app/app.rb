@@ -73,7 +73,7 @@ class App < Sinatra::Base
 
     get '/:url_name/edit' do |url_name|
         @city = City[url_name: url_name]
-        @title =  "#{@city.name} editor - #{settings.title}"
+        @title =  "#{@city.name} - Editor #{settings.title}"
 
         @config = {
             coords: @city.geojson_coords,
@@ -97,16 +97,6 @@ class App < Sinatra::Base
 
     get '/api/:url_name/source/:type' do |url_name, type|
       @city = City[url_name: url_name]
-      city_lines_ids = @city.lines.map(&:id)
-      query = {line_id: city_lines_ids}
-
-      features = if type == 'sections'
-                   Section.where(query).map(&:feature)
-                 else
-                   Station.where(query).map(&:feature)
-                 end
-
-      {type: "FeatureCollection",
-       features: features}.to_json
+      lines_features_collection(@city, type).to_json
     end
 end

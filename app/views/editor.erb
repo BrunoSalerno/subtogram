@@ -11,6 +11,9 @@
     var mapboxAccessToken = <%= MAPBOX_ACCESS_TOKEN.to_json %>;
     var mapboxStyle = <%= MAPBOX_STYLE.to_json %>;
 
-    loadEditor(config, mapboxAccessToken, mapboxStyle);
+    var sections = <%= lines_features_collection(@city, 'sections').to_json %>;
+    var stations = <%= lines_features_collection(@city, 'stations').to_json %>;
+
+    loadEditor(sections, stations, config, mapboxAccessToken, mapboxStyle);
   }
 </script>

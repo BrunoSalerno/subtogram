@@ -138,7 +138,9 @@ module.exports = App;
 var $ = require('jquery');
 var MapboxDraw = require('mapbox-gl-draw');
 
-var Editor = function(map) {
+var Editor = function(map, sections, stations) {
+  this.map = map;
+
   var options = {
     displayControlsDefault: false,
     controls: {
@@ -147,10 +149,25 @@ var Editor = function(map) {
       trash: true
     }
   }
-  var Draw = new MapboxDraw(options);
-  map.addControl(Draw)
+
+  this.draw = new MapboxDraw(options);
+  this.map.addControl(this.draw)
+
+  var self = this;
+  [sections, stations].forEach(function(features) {
+    self.addFeatures(features);
+  });
 
   $(".spinner-container").fadeOut();
+}
+
+Editor.prototype = {
+  map: null,
+  draw: null,
+
+  addFeatures: function(features) {
+    this.draw.add(features);
+  }
 }
 
 module.exports = Editor;
@@ -178,7 +195,7 @@ window.loadApp = function(lines, plans, lengths, styles, config, mapboxAccessTok
   });
 }
 
-window.loadEditor = function(config, mapboxAccessToken, mapboxStyle) {
+window.loadEditor = function(sections, stations, config, mapboxAccessToken, mapboxStyle) {
   mapboxgl.accessToken = mapboxAccessToken;
   var map = new mapboxgl.Map({
     container: 'map',
@@ -192,7 +209,7 @@ window.loadEditor = function(config, mapboxAccessToken, mapboxStyle) {
   map.addControl(new mapboxgl.NavigationControl());
 
   map.on('load',function(){
-    new Editor(map);
+    new Editor(map, sections, stations);
   });
 }
 
