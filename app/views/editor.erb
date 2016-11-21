@@ -1,6 +1,19 @@
 <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-draw/v0.14.0/mapbox-gl-draw.css' type='text/css' />
 <script src="<%= javascript_path('bundle.js') %>"></script>
 <div class="spinner-container spinner"></div>
+<div id="panel">
+  <div class="panel-header o-grid__cell o-grid__cell--width-100">
+    <h3 class="c-heading"><a class="c-link" style="margin-right:10px" href="/<%= @city.url_name %>"><span class="fa fa-arrow-left"></span></a><%= @city.name %></h3>
+    <div class="c-card">
+      <div class="c-card__item">
+        <b><p id="feature-header" class="c-paragraph">Ningún elemento seleccionado</p></b>
+        <p class="c-paragraph">
+        <textarea id="feature-properties" class="c-field"></textarea>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 <main class="o-grid__cell o-grid__cell--width-100 o-panel-container">
   <div id="map"></div>
 </main>
