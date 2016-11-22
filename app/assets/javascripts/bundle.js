@@ -160,17 +160,22 @@ var Editor = function(map, sections, stations) {
   });
 
   this.map.on('draw.selectionchange', function(selection) {
-    console.log(selection);
     if (!selection.features.length) {
       $("#feature-header").html('Ningún elemento seleccionado');
       $("#feature-properties").html('');
       return;
     }
-    // FIXME: don't allow to select multiple features
     var feature = selection.features[0];
     var header = feature.properties.klass + ' ' + feature.properties.id;
     $("#feature-header").html(header);
-    self.showFeatureProperties(feature.properties);
+    self.setFeatureForm(feature);
+  });
+
+  this.map.on('draw.update', function(update) {
+    update.features.forEach(function(feature) {
+      self.modifiedFeaturesGeometries[feature.id] = feature;
+    });
+    console.log('modified geometries', self.modifiedFeaturesGeometries);
   });
 
   $("#panel-toggler").show().click(function(){
@@ -184,22 +189,39 @@ Editor.prototype = {
   map: null,
   draw: null,
 
+  modifiedFeaturesProperties: {},
+  modifiedFeaturesGeometries: {},
+  addedFeatures: {},
+  deletedFeatures: {},
+
   addFeatures: function(features) {
     this.draw.add(features);
   },
 
-  showFeatureProperties: function(properties) {
+  setFeatureForm: function(feature) {
+    var properties = feature.properties;
     var fields = [];
+    var self = this;
+
     for (var prop in properties) {
       var disabled = (['id', 'length', 'klass', 'buildstart_end', 'line_url_name'].indexOf(prop) !== -1) ? 'disabled' : '';
-      // FIXME: replace line with dropdown
-      var str = '<div class="o-form-element">';
-      str += '<label class="c-label" for="nickname">' + prop + '</label>';
-      str += '<input id="' + prop + '" value="' + properties[prop] + '" class="c-field u-small" ' + disabled + ' >';
+
+      // FIXME: replace 'line' attribute with dropdown
+      var str = '<div id="feature-properties-form" class="o-form-element">';
+      str += '<label class="c-label" for="' + prop + '">' + prop + '</label>';
+      str += '<input id="' + prop + '" value="' + properties[prop] + '" class="c-field u-small" data-property="' + prop + '" ' + disabled + ' >';
       str += '</div>';
       fields.push(str);
     }
+
     $("#feature-properties").html(fields.join(''));
+
+    $("#feature-properties-form input").change(function(){
+      var prop = $(this).data('property');
+      self.draw.setFeatureProperty(feature.id, prop, $(this).val());
+      self.modifiedFeaturesProperties[feature.id] = feature;
+      console.log('modified properties', self.modifiedFeaturesProperties);
+    });
   }
 }
 
