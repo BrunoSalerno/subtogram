@@ -5,6 +5,7 @@ var Editor = function(map, sections, stations) {
   this.map = map;
 
   var options = {
+    boxSelect: false,
     displayControlsDefault: false,
     controls: {
       point: true,
@@ -28,7 +29,6 @@ var Editor = function(map, sections, stations) {
       $("#feature-properties").html('');
       return;
     }
-    // FIXME: don't allow to select multiple features
     var feature = selection.features[0];
     var header = feature.properties.klass + ' ' + feature.properties.id;
     $("#feature-header").html(header);

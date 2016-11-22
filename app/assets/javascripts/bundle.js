@@ -142,6 +142,7 @@ var Editor = function(map, sections, stations) {
   this.map = map;
 
   var options = {
+    boxSelect: false,
     displayControlsDefault: false,
     controls: {
       point: true,
