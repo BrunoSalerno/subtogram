@@ -162,14 +162,14 @@ var Editor = function(map, sections, stations) {
     console.log(selection);
     if (!selection.features.length) {
       $("#feature-header").html('Ningún elemento seleccionado');
-      $("#feature-properties").val('');
+      $("#feature-properties").html('');
       return;
     }
     // FIXME: don't allow to select multiple features
     var feature = selection.features[0];
     var header = feature.properties.klass + ' ' + feature.properties.id;
     $("#feature-header").html(header);
-    $("#feature-properties").val(JSON.stringify(feature.properties, null, 2));
+    self.showFeatureProperties(feature.properties);
   });
 
   $("#panel-toggler").show().click(function(){
@@ -185,6 +185,20 @@ Editor.prototype = {
 
   addFeatures: function(features) {
     this.draw.add(features);
+  },
+
+  showFeatureProperties: function(properties) {
+    var fields = [];
+    for (var prop in properties) {
+      var disabled = (['id', 'length', 'klass', 'buildstart_end', 'line_url_name'].indexOf(prop) !== -1) ? 'disabled' : '';
+      // FIXME: replace line with dropdown
+      var str = '<div class="o-form-element">';
+      str += '<label class="c-label" for="nickname">' + prop + '</label>';
+      str += '<input id="' + prop + '" value="' + properties[prop] + '" class="c-field u-small" ' + disabled + ' >';
+      str += '</div>';
+      fields.push(str);
+    }
+    $("#feature-properties").html(fields.join(''));
   }
 }
 
