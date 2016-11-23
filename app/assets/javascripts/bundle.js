@@ -222,7 +222,9 @@ Editor.prototype = {
 
     $("#feature-properties-form input").change(function(){
       var prop = $(this).data('property');
-      self.draw.setFeatureProperty(feature.id, prop, $(this).val());
+      var value = $(this).val();
+      properties[prop] = value;
+      self.draw.setFeatureProperty(feature.id, prop, value);
       self.modifiedFeaturesProperties[feature.id] = feature;
       console.log('modified properties', self.modifiedFeaturesProperties);
     });
