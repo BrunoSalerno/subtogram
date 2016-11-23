@@ -35,12 +35,15 @@
   padding-bottom:20px;
 }
 
-.lines-toggler-container {
+.panel-body {
     position: relative;
     overflow: auto;
     padding-bottom: 20px;
 }
 
+.editor-cards-container {
+  padding:10px;
+}
 
 .mapboxgl-popup-content {
     font-size:14px;
@@ -119,6 +122,15 @@ Taken from http://stephanwagner.me/only-css-loading-spinner
   margin-left:10px;
 }
 
+.back-edit-city-link {
+  margin-left:15px;
+}
+
 .edit-city-link span{
   vertical-align:middle;
+}
+
+.back-edit-city-link span {
+  vertical-align:middle;
+  line-height:12px;
 }

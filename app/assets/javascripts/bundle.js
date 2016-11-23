@@ -105,10 +105,10 @@ var App = function(map, styles, years, lines, plans, lengths) {
 
   $(window).resize(function(){
     var panelHeaderHeight = $('.panel-header').outerHeight();
-    var linesTogglerContainer = $('.lines-toggler-container')
-    var parentHeight = linesTogglerContainer.parent().innerHeight();
+    var panelBody = $('.panel-body')
+    var parentHeight = panelBody.parent().innerHeight();
     var bottomPadding = 20;
-    linesTogglerContainer.height(parentHeight - panelHeaderHeight - bottomPadding);
+    panelBody.height(parentHeight - panelHeaderHeight - bottomPadding);
   });
 
   // Init
@@ -178,6 +178,10 @@ var Editor = function(map, sections, stations) {
     console.log('modified geometries', self.modifiedFeaturesGeometries);
   });
 
+  $(window).resize(function(){
+    self.updateLayout();
+  });
+
   $("#panel-toggler").show().click(function(){
     $("#panel").toggle();
   });
@@ -222,6 +226,16 @@ Editor.prototype = {
       self.modifiedFeaturesProperties[feature.id] = feature;
       console.log('modified properties', self.modifiedFeaturesProperties);
     });
+
+    this.updateLayout();
+  },
+
+  updateLayout: function() {
+    var panelHeaderHeight = $('.panel-header').outerHeight();
+    var panelBody = $('.panel-body')
+    var parentHeight = panelBody.parent().innerHeight();
+    var bottomPadding = 20;
+    panelBody.height(parentHeight - panelHeaderHeight - bottomPadding);
   }
 }
 

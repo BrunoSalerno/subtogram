@@ -104,10 +104,10 @@ var App = function(map, styles, years, lines, plans, lengths) {
 
   $(window).resize(function(){
     var panelHeaderHeight = $('.panel-header').outerHeight();
-    var linesTogglerContainer = $('.lines-toggler-container')
-    var parentHeight = linesTogglerContainer.parent().innerHeight();
+    var panelBody = $('.panel-body')
+    var parentHeight = panelBody.parent().innerHeight();
     var bottomPadding = 20;
-    linesTogglerContainer.height(parentHeight - panelHeaderHeight - bottomPadding);
+    panelBody.height(parentHeight - panelHeaderHeight - bottomPadding);
   });
 
   // Init
