@@ -29,7 +29,7 @@ var Editor = function(map, sections, stations) {
       return;
     }
     var feature = selection.features[0];
-    var header = feature.properties.klass + ' ' + feature.properties.id;
+    var header = feature.properties.klass + ' ID: ' + feature.properties.id;
     $("#feature-header").html(header);
     self.setFeatureForm(feature);
   });
@@ -71,7 +71,9 @@ Editor.prototype = {
     var self = this;
 
     for (var prop in properties) {
-      var disabled = (['id', 'length', 'klass', 'buildstart_end', 'line_url_name'].indexOf(prop) !== -1) ? 'disabled' : '';
+      if (['id', 'klass', 'buildstart_end'].indexOf(prop) !== -1) continue;
+
+      var disabled = (['length', 'line_url_name'].indexOf(prop) !== -1) ? 'disabled' : '';
 
       // FIXME: replace 'line' attribute with dropdown
       var str = '<div id="feature-properties-form" class="o-form-element">';
