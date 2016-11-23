@@ -36,7 +36,8 @@ var Editor = function(map, sections, stations) {
 
   this.map.on('draw.update', function(update) {
     update.features.forEach(function(feature) {
-      self.modifiedFeaturesGeometries[feature.id] = feature;
+      if (self.modifiedFeaturesGeometries.indexOf(feature.id) === -1) self.modifiedFeaturesGeometries.push(feature.id);
+      self.setModifications();
     });
     console.log('modified geometries', self.modifiedFeaturesGeometries);
   });
@@ -56,10 +57,10 @@ Editor.prototype = {
   map: null,
   draw: null,
 
-  modifiedFeaturesProperties: {},
-  modifiedFeaturesGeometries: {},
-  addedFeatures: {},
-  deletedFeatures: {},
+  modifiedFeaturesProperties: [],
+  modifiedFeaturesGeometries: [],
+  addedFeatures: [],
+  deletedFeatures: [],
 
   addFeatures: function(features) {
     this.draw.add(features);
@@ -90,11 +91,47 @@ Editor.prototype = {
       var value = $(this).val();
       properties[prop] = value;
       self.draw.setFeatureProperty(feature.id, prop, value);
-      self.modifiedFeaturesProperties[feature.id] = feature;
+      if (self.modifiedFeaturesProperties.indexOf(feature.id) === -1) self.modifiedFeaturesProperties.push(feature.id);
+      self.setModifications();
       console.log('modified properties', self.modifiedFeaturesProperties);
     });
 
     this.updateLayout();
+  },
+
+  setModifications: function() {
+    var modifications = {};
+    var self = this;
+    this.modifiedFeaturesGeometries.forEach(function(id) {
+      var type;
+      if (self.modifiedFeaturesProperties.indexOf(id) !== -1) {
+        type = "Geometría y Propiedades";
+      } else {
+        type = "Geometría";
+      }
+      var feature = self.draw.get(id);
+      modifications[id] = "[" + type +"] " + feature.properties.klass + ' ID: ' + feature.properties.id;
+    });
+
+    this.modifiedFeaturesProperties.forEach(function(id) {
+      if (!modifications[id]) {
+        var feature = self.draw.get(id);
+        modifications[id] = "[Propiedades] " + feature.properties.klass + ' ID: ' + feature.properties.id;
+      }
+    })
+
+    var modificationsArray = [];
+    for (var k in modifications) {
+      modificationsArray.push('<p class="c-paragraph">' + modifications[k] + '</p>');
+    }
+
+    if (!modificationsArray.length) {
+      $("#modifications-header").html("Ningún elemento modificado");
+      $("#modifications").html("");
+      return;
+    };
+    $("#modifications-header").html(modificationsArray.length + ' elementos modificados');
+    $("#modifications").html(modificationsArray.join(''));
   },
 
   updateLayout: function() {
