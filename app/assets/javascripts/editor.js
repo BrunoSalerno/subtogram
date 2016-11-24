@@ -43,7 +43,9 @@ var Editor = function(map, sections, stations) {
 
   this.map.on('draw.update', function(update) {
     update.features.forEach(function(feature) {
-      if (self.modifiedFeaturesGeometries.indexOf(feature.id) === -1) self.modifiedFeaturesGeometries.push(feature.id);
+      if (self.modifiedFeaturesGeometries.indexOf(feature.id) === -1 && self.newFeatures.indexOf(feature.id) === -1) {
+        self.modifiedFeaturesGeometries.push(feature.id);
+      }
       self.setModifications();
     });
     console.log('modified geometries', self.modifiedFeaturesGeometries);
@@ -120,9 +122,10 @@ Editor.prototype = {
     $("#feature-properties-form input").change(function(){
       var prop = $(this).data('property');
       var value = $(this).val();
-      properties[prop] = value;
       self.draw.setFeatureProperty(feature.id, prop, value);
-      if (self.modifiedFeaturesProperties.indexOf(feature.id) === -1) self.modifiedFeaturesProperties.push(feature.id);
+      if (self.modifiedFeaturesProperties.indexOf(feature.id) === -1 && self.newFeatures.indexOf(feature.id) === -1) {
+        self.modifiedFeaturesProperties.push(feature.id);
+      }
       self.setModifications();
       console.log('modified properties', self.modifiedFeaturesProperties);
     });

@@ -180,7 +180,9 @@ var Editor = function(map, sections, stations) {
 
   this.map.on('draw.update', function(update) {
     update.features.forEach(function(feature) {
-      if (self.modifiedFeaturesGeometries.indexOf(feature.id) === -1) self.modifiedFeaturesGeometries.push(feature.id);
+      if (self.modifiedFeaturesGeometries.indexOf(feature.id) === -1 && self.newFeatures.indexOf(feature.id) === -1) {
+        self.modifiedFeaturesGeometries.push(feature.id);
+      }
       self.setModifications();
     });
     console.log('modified geometries', self.modifiedFeaturesGeometries);
@@ -202,6 +204,12 @@ var Editor = function(map, sections, stations) {
       self.newFeatures.push(feature.id);
       self.setModifications();
     })
+  });
+
+  this.map.on('draw.delete', function(data) {
+    // 0- Check in the 3 other arrays of modified objects if the removed feature is there and, if so,
+    // remove it from there.
+    // 1- Add the feature to deletedFeature only if it hasn't been removed (in step 0) from the newFeatures array.
   });
 
   $(window).resize(function(){
@@ -251,9 +259,10 @@ Editor.prototype = {
     $("#feature-properties-form input").change(function(){
       var prop = $(this).data('property');
       var value = $(this).val();
-      properties[prop] = value;
       self.draw.setFeatureProperty(feature.id, prop, value);
-      if (self.modifiedFeaturesProperties.indexOf(feature.id) === -1) self.modifiedFeaturesProperties.push(feature.id);
+      if (self.modifiedFeaturesProperties.indexOf(feature.id) === -1 && self.newFeatures.indexOf(feature.id) === -1) {
+        self.modifiedFeaturesProperties.push(feature.id);
+      }
       self.setModifications();
       console.log('modified properties', self.modifiedFeaturesProperties);
     });
