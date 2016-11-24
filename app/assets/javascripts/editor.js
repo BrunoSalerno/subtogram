@@ -28,8 +28,15 @@ var Editor = function(map, sections, stations) {
       $("#feature-properties").html('');
       return;
     }
+
     var feature = selection.features[0];
-    var header = feature.properties.klass + ' ID: ' + feature.properties.id;
+    var header = feature.properties.klass;
+    if (feature.properties.id) {
+      header += ' ID: ' + feature.properties.id;
+    } else {
+      header = 'Nueva ' + header;
+    }
+
     $("#feature-header").html(header);
     self.setFeatureForm(feature);
   });
@@ -40,6 +47,30 @@ var Editor = function(map, sections, stations) {
       self.setModifications();
     });
     console.log('modified geometries', self.modifiedFeaturesGeometries);
+  });
+
+  this.map.on('draw.create', function(data){
+    data.features.forEach(function(feature){
+      var klass = feature.geometry.type === 'Point' ? 'Station' : 'Section';
+
+      self.draw.setFeatureProperty(feature.id, 'klass', klass);
+      // FIXME: set line_url_name and line
+      if (klass === 'Station') {
+        self.draw.setFeatureProperty(feature.id, 'name', 'Nueva ' + klass);
+      }
+      self.draw.setFeatureProperty(feature.id, 'buildstart', null);
+      self.draw.setFeatureProperty(feature.id, 'opening', null);
+      self.draw.setFeatureProperty(feature.id, 'closure', 999999);
+
+      self.newFeatures.push(feature.id);
+      self.setModifications();
+    })
+  });
+
+  this.map.on('draw.delete', function(data) {
+    // 0- Check in the 3 other arrays of modified objects if the removed feature is there and, if so,
+    // remove it from there.
+    // 1- Add the feature to deletedFeature only if it hasn't been removed (in step 0) from the newFeatures array.
   });
 
   $(window).resize(function(){
@@ -59,7 +90,7 @@ Editor.prototype = {
 
   modifiedFeaturesProperties: [],
   modifiedFeaturesGeometries: [],
-  addedFeatures: [],
+  newFeatures: [],
   deletedFeatures: [],
 
   addFeatures: function(features) {
@@ -119,6 +150,11 @@ Editor.prototype = {
         modifications[id] = "[Propiedades] " + feature.properties.klass + ' ID: ' + feature.properties.id;
       }
     })
+
+    this.newFeatures.forEach(function(id) {
+      var feature = self.draw.get(id);
+      modifications[id] = "[Nuevo] " + feature.properties.klass;
+    });
 
     var modificationsArray = [];
     for (var k in modifications) {
