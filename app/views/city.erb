@@ -1,22 +1,27 @@
 <script src="<%= javascript_path('bundle.js') %>"></script>
 <div class="spinner-container spinner"></div>
 <div id="panel">
-        <div class="panel-header o-grid__cell o-grid__cell--width-100">
-            <h3 class="c-heading"><%= @city.name %> <a class="c-link edit-city-link" href="/<%= @city.url_name %>/edit"><span class="fa fa-edit"></span></a></h3>
-            <div class="c-input-group c-input-group--right">
-              <div class="o-field">
-                <input id="current-year" class="c-field" type="number" /> 
-              </div>
-              <button id="action" class="c-button c-button--ghost"> <span class="fa fa-play"></span> </button>
-            </div>
-            <input id="slider" type="range" class="c-range" />
-            <span id="km-operative" class="c-badge c-badge--success" style="display:none;"></span>
-            <span id="km-under-construction" class="c-badge c-badge--brand" style="display:none;"></span>
-            <span id="km-plans" class="c-badge c-badge--warning" style="display:none;"></span>
-        </div>
-        <div class="panel-body">
-            <%= erb :"city/lines_toggler" %>
-        </div>
+  <div class="panel-header o-grid__cell o-grid__cell--width-100">
+    <h3 class="c-heading">
+      <ol class="c-breadcrumbs">
+        <li class="c-breadcrumbs__crumb"><%= @city.name %></li>
+        <li class="c-breadcrumbs__crumb"><a class="c-link" href="/<%= @city.url_name %>/edit">Editar</a></li>
+      </ol>
+    </h3>
+    <div class="c-input-group c-input-group--right">
+      <div class="o-field">
+        <input id="current-year" class="c-field" type="number" />
+      </div>
+      <button id="action" class="c-button c-button--ghost"> <span class="fa fa-play"></span> </button>
+    </div>
+    <input id="slider" type="range" class="c-range" />
+    <span id="km-operative" class="c-badge c-badge--success" style="display:none;"></span>
+    <span id="km-under-construction" class="c-badge c-badge--brand" style="display:none;"></span>
+    <span id="km-plans" class="c-badge c-badge--warning" style="display:none;"></span>
+  </div>
+  <div class="panel-body">
+    <%= erb :"city/lines_toggler" %>
+  </div>
 </div>
 <main class="o-grid__cell o-grid__cell--width-100 o-panel-container">
   <div id="map"></div>

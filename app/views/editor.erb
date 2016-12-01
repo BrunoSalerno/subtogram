@@ -3,7 +3,12 @@
 <div class="spinner-container spinner"></div>
 <div id="panel">
   <div class="panel-header o-grid__cell o-grid__cell--width-100">
-    <h3 class="c-heading"><%= @city.name %><a class="c-link back-edit-city-link" href="/<%= @city.url_name %>"><span class="fa fa-arrow-circle-o-left"></span></a></h3>
+    <h3 class="c-heading">
+      <ol class="c-breadcrumbs">
+        <li class="c-breadcrumbs__crumb"><a class="c-link" href="/<%= @city.url_name %>"> <%= @city.name %></a></li>
+        <li class="c-breadcrumbs__crumb">Editar</li>
+      </ol>
+    </h3>
   </div>
   <div class="panel-body">
     <div class="editor-cards-container">
