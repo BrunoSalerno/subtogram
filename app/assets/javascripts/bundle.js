@@ -161,8 +161,7 @@ var Editor = function(map, sections, stations) {
 
   this.map.on('draw.selectionchange', function(selection) {
     if (!selection.features.length) {
-      $("#feature-header").html('Ningún elemento seleccionado');
-      $("#feature-properties").html('');
+      self.unselectAll();
       return;
     }
 
@@ -228,6 +227,7 @@ var Editor = function(map, sections, stations) {
 
       if (addToList) self.deletedFeatures[feature.id] = feature;
       self.setModifications();
+      self.unselectAll();
     });
   });
 
@@ -290,7 +290,7 @@ Editor.prototype = {
   },
 
   setModifications: function() {
-    var modifications = {};
+    var modifications = [];
     var self = this;
     this.modifiedFeaturesGeometries.forEach(function(id) {
       var type;
@@ -300,40 +300,43 @@ Editor.prototype = {
         type = "Geometría";
       }
       var feature = self.draw.get(id);
-      modifications[id] = "[" + type +"] " + feature.properties.klass + ' ID: ' + feature.properties.id;
+      modifications.push("[" + type +"] " + feature.properties.klass + ' ID: ' + feature.properties.id);
     });
 
     this.modifiedFeaturesProperties.forEach(function(id) {
-      if (!modifications[id]) {
+      if (self.modifiedFeaturesGeometries.indexOf(id) === -1) {
         var feature = self.draw.get(id);
-        modifications[id] = "[Propiedades] " + feature.properties.klass + ' ID: ' + feature.properties.id;
+        modifications.push("[Propiedades] " + feature.properties.klass + ' ID: ' + feature.properties.id);
       }
-    })
+    });
 
     this.newFeatures.forEach(function(id) {
       var feature = self.draw.get(id);
-      modifications[id] = "[Nuevo] " + feature.properties.klass;
+      modifications.push("[<span style='color:green'>Nuevo</span>] " + feature.properties.klass);
     });
 
     for (var id in this.deletedFeatures) {
       var deletedFeature = this.deletedFeatures[id];
-      modifications[id] = "[<span style='color:red'>Eliminado</span>] " + deletedFeature.properties.klass;
+      modifications.push("[<span style='color:red'>Eliminado</span>] " + deletedFeature.properties.klass + " ID: " + deletedFeature.properties.id);
     };
 
-    var modificationsArray = [];
-    for (var k in modifications) {
-      modificationsArray.push('<p class="c-paragraph">' + modifications[k] + '</p>');
-    }
+    modifications.forEach(function(modif,i) {
+      modifications[i] = '<p class="c-paragraph">' + modif + '</p>';
+    })
 
-    if (!modificationsArray.length) {
+    if (!modifications.length) {
       $("#modifications-header").html("Ningún elemento modificado");
       $("#modifications").html("");
       return;
     };
-    $("#modifications-header").html(modificationsArray.length + ' elementos modificados');
-    $("#modifications").html(modificationsArray.join(''));
+    $("#modifications-header").html(modifications.length + ' elementos modificados');
+    $("#modifications").html(modifications.join(''));
   },
 
+  unselectAll: function() {
+    $("#feature-header").html('Ningún elemento seleccionado');
+    $("#feature-properties").html('');
+  },
   updateLayout: function() {
     var panelHeaderHeight = $('.panel-header').outerHeight();
     var panelBody = $('.panel-body')
