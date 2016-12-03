@@ -156,31 +156,29 @@ Editor.prototype = {
     var modifications = [];
     var self = this;
     this.modifiedFeaturesGeometries.forEach(function(id) {
-      var type;
+      var type = '<span class="c-badge">Geometría</span>';
       if (self.modifiedFeaturesProperties.indexOf(id) !== -1) {
-        type = "Geometría y Propiedades";
-      } else {
-        type = "Geometría";
+        type += ' <span class="c-badge">Propiedades</span>';
       }
       var feature = self.draw.get(id);
-      modifications.push("[" + type +"] " + feature.properties.klass + ' ID: ' + feature.properties.id);
+      modifications.push(feature.properties.klass + ' ID: ' + feature.properties.id + ' ' + type);
     });
 
     this.modifiedFeaturesProperties.forEach(function(id) {
       if (self.modifiedFeaturesGeometries.indexOf(id) === -1) {
         var feature = self.draw.get(id);
-        modifications.push("[Propiedades] " + feature.properties.klass + ' ID: ' + feature.properties.id);
+        modifications.push(feature.properties.klass + ' ID: ' + feature.properties.id + ' <span class="c-badge">Propiedades</span>');
       }
     });
 
     this.newFeatures.forEach(function(id) {
       var feature = self.draw.get(id);
-      modifications.push("[<span style='color:green'>Nuevo</span>] " + feature.properties.klass);
+      modifications.push(feature.properties.klass + ' <span class="c-badge c-badge--success">Nuevo</span>');
     });
 
     for (var id in this.deletedFeatures) {
       var deletedFeature = this.deletedFeatures[id];
-      modifications.push("[<span style='color:red'>Eliminado</span>] " + deletedFeature.properties.klass + " ID: " + deletedFeature.properties.id);
+      modifications.push(deletedFeature.properties.klass + " ID: " + deletedFeature.properties.id + ' <span class="c-badge c-badge--error">Eliminado</span>');
     };
 
     modifications.forEach(function(modif,i) {
