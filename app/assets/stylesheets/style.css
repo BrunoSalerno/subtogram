@@ -35,6 +35,18 @@
   padding-bottom:20px;
 }
 
+.panel-header-title {
+  padding:20px 0;
+}
+
+.panel-header-title h3.c-heading {
+  display:inline;
+}
+
+.panel-header-title a.c-link {
+  margin-left:10px;
+}
+
 .panel-body {
     position: relative;
     overflow: auto;

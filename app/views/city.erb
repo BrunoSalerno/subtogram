@@ -2,12 +2,12 @@
 <div class="spinner-container spinner"></div>
 <div id="panel">
   <div class="panel-header o-grid__cell o-grid__cell--width-100">
-    <h3 class="c-heading">
-      <ol class="c-breadcrumbs">
-        <li class="c-breadcrumbs__crumb"><%= @city.name %></li>
-        <li class="c-breadcrumbs__crumb"><a class="c-link" href="/<%= @city.url_name %>/edit">Editar</a></li>
-      </ol>
-    </h3>
+    <div class="panel-header-title">
+      <h3 class="c-heading">
+        <%= @city.name %>
+      </h3>
+      <a class="c-link" href="/<%= @city.url_name %>/edit">Editar</a>
+    </div>
     <div class="c-input-group c-input-group--right">
       <div class="o-field">
         <input id="current-year" class="c-field" type="number" />
