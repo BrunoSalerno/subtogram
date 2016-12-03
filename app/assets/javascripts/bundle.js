@@ -207,9 +207,28 @@ var Editor = function(map, sections, stations) {
   });
 
   this.map.on('draw.delete', function(data) {
-    // 0- Check in the 3 other arrays of modified objects if the removed feature is there and, if so,
-    // remove it from there.
-    // 1- Add the feature to deletedFeature only if it hasn't been removed (in step 0) from the newFeatures array.
+    data.features.forEach(function(feature) {
+      var addToList = true;
+
+      var newFeatureIndex = self.newFeatures.indexOf(feature.id);
+      if (newFeatureIndex !== -1) {
+        self.newFeatures.splice(newFeatureIndex,1);
+        addToList = false;
+      }
+
+      var modifiedPropertiesIndex = self.modifiedFeaturesProperties.indexOf(feature.id);
+      if (modifiedPropertiesIndex !== -1) {
+        self.modifiedFeaturesProperties.splice(modifiedPropertiesIndex, 1);
+      }
+
+      var modifiedGeometryIndex = self.modifiedFeaturesGeometries.indexOf(feature.id);
+      if (modifiedGeometryIndex !== -1) {
+        self.modifiedFeaturesGeometries.splice(modifiedGeometryIndex, 1);
+      }
+
+      if (addToList) self.deletedFeatures[feature.id] = feature;
+      self.setModifications();
+    });
   });
 
   $(window).resize(function(){
@@ -230,7 +249,7 @@ Editor.prototype = {
   modifiedFeaturesProperties: [],
   modifiedFeaturesGeometries: [],
   newFeatures: [],
-  deletedFeatures: [],
+  deletedFeatures: {},
 
   addFeatures: function(features) {
     this.draw.add(features);
@@ -295,6 +314,11 @@ Editor.prototype = {
       var feature = self.draw.get(id);
       modifications[id] = "[Nuevo] " + feature.properties.klass;
     });
+
+    for (var id in this.deletedFeatures) {
+      var deletedFeature = this.deletedFeatures[id];
+      modifications[id] = "[<span style='color:red'>Eliminado</span>] " + deletedFeature.properties.klass;
+    };
 
     var modificationsArray = [];
     for (var k in modifications) {
