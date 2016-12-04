@@ -33,12 +33,13 @@ class App < Sinatra::Base
       bearing: DEFAULT_BEARING,
       pitch: DEFAULT_PITCH,
       speed: DEFAULT_SPEED,
-      years: { start: @city.start_year,
-               end: Date.today.year,
-               current: nil,
-               previous: nil,
-               default: params[:year] ? params[:year].to_i : nil
-    }
+      years: {
+        start: @city.start_year,
+        end: Date.today.year,
+        current: nil,
+        previous: nil,
+        default: params[:year] ? params[:year].to_i : nil
+      }
     }
 
     if params[:geo]
