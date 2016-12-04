@@ -168,7 +168,7 @@ var Editor = function(map, sections, stations) {
     var feature = selection.features[0];
     var header = feature.properties.klass;
     if (feature.properties.id) {
-      header += ' ID: ' + feature.properties.id;
+      header += ' <code class="c-code">Id: ' + feature.properties.id + '</code>';
     } else {
       header = 'Nueva ' + header;
     }
@@ -298,13 +298,13 @@ Editor.prototype = {
         type += ' <span class="c-badge">Propiedades</span>';
       }
       var feature = self.draw.get(id);
-      modifications.push(feature.properties.klass + ' ID: ' + feature.properties.id + ' ' + type);
+      modifications.push(feature.properties.klass + ' <code class="c-code">Id: ' + feature.properties.id + '</code> ' + type);
     });
 
     this.modifiedFeaturesProperties.forEach(function(id) {
       if (self.modifiedFeaturesGeometries.indexOf(id) === -1) {
         var feature = self.draw.get(id);
-        modifications.push(feature.properties.klass + ' ID: ' + feature.properties.id + ' <span class="c-badge">Propiedades</span>');
+        modifications.push(feature.properties.klass + ' <code class="c-code">Id: ' + feature.properties.id + '</code> <span class="c-badge">Propiedades</span>');
       }
     });
 
@@ -315,7 +315,7 @@ Editor.prototype = {
 
     for (var id in this.deletedFeatures) {
       var deletedFeature = this.deletedFeatures[id];
-      modifications.push(deletedFeature.properties.klass + " ID: " + deletedFeature.properties.id + ' <span class="c-badge c-badge--error">Eliminado</span>');
+      modifications.push(deletedFeature.properties.klass + ' <code class="c-code">Id: ' + deletedFeature.properties.id + '</code> <span class="c-badge c-badge--error">Eliminado</span>');
     };
 
     modifications.forEach(function(modif,i) {
