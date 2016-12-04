@@ -1,4 +1,4 @@
-require "./app/lib/length"
+require "./lib/length"
 include Length
 
 class PlanLine < Sequel::Model(:plan_lines)

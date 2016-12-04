@@ -1,4 +1,4 @@
-require "./app/lib/length"
+require "./lib/length"
 include Length
 
 class Section < Sequel::Model(:sections)

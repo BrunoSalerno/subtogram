@@ -3,7 +3,7 @@ require 'yaml'
 config = {}
 
 begin
-    config = YAML::load_file('app/config/database.yml')
+    config = YAML::load_file('config/database.yml')
 rescue
     config['username'] = ENV['DB_USERNAME'];
     config['password'] = ENV['DB_PASSWORD'];
