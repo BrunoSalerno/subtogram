@@ -27,6 +27,10 @@
     }
 }
 
+.panel-full-width {
+  width:100% !important;
+}
+
 .popup-feature-info {
     margin-top:5px;
 }
@@ -55,6 +59,10 @@
 
 .editor-cards-container {
   padding:10px;
+}
+
+#edit-lines-card {
+  display:none;
 }
 
 .mapboxgl-popup-content {

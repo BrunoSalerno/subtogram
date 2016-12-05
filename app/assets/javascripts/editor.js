@@ -94,6 +94,24 @@ var Editor = function(map, sections, stations) {
     });
   });
 
+  $("#edit-elements").click(function(){
+    $("#edit-lines").removeClass("c-button--active");
+    $(this).addClass("c-button--active");
+    $("#panel").removeClass("panel-full-width");
+    $(".editor-cards-container .c-card[id!='edit-lines-card']").show();
+    $(".editor-cards-container .c-card#edit-lines-card").hide();
+    self.updateLayout();
+  });
+
+  $("#edit-lines").click(function(){
+    $("#edit-elements").removeClass("c-button--active");
+    $(this).addClass("c-button--active");
+    $("#panel").addClass("panel-full-width");
+    $(".editor-cards-container .c-card[id!='edit-lines-card']").hide();
+    $(".editor-cards-container .c-card#edit-lines-card").show();
+    self.updateLayout();
+  });
+
   $(window).resize(function(){
     self.updateLayout();
   });

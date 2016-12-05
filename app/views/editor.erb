@@ -10,8 +10,8 @@
       <a class="c-link" href="/<%= @city.url_name %>">Volver</a>
     </div>
     <span class="c-input-group">
-      <button class="c-button c-button--active c-button--info" type="button">Editar elementos</button>
-          <button class="c-button c-button--info" type="button">Editar líneas</button>
+      <button id="edit-elements" class="c-button c-button--active c-button--info" type="button">Editar elementos</button>
+      <button id="edit-lines" class="c-button c-button--info" type="button">Editar líneas</button>
     </span>
   </div>
   <div class="panel-body">
@@ -26,6 +26,11 @@
         <div class="c-card__item">
           <b><p id="modifications-header" class="c-paragraph">Ningún elemento modificado</p></b>
           <p id="modifications" class="c-paragraph"></p>
+        </div>
+      </div>
+      <div id="edit-lines-card" class="c-card">
+        <div class="c-card__item">
+          <p class="c-paragraph">...</p>
         </div>
       </div>
     </div>
