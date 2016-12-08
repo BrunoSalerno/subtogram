@@ -231,9 +231,16 @@ Editor.prototype = {
   linesForm: function() {
     var els = '<div class="o-fieldset">';
     var self = this;
+
+    els += '<div class="o-form-element">';
+    els += '<label class="c-label">Default</label>';
+    var lineStyle = JSON.stringify(self.style.line.opening.default, undefined, 2);
+    els += '<div class="c-field line-code" contentEditable>' + lineStyle + '</div>';
+    els += '</div>';
+
     this.lines.forEach(function(line) {
       els += '<div class="o-form-element">';
-      els += '<label class="c-label">' + line.name + '</label>';
+      els += '<label class="c-label">Línea ' + line.name + '</label>';
       var lineStyle = JSON.stringify(self.style.line.opening[line.url_name], undefined, 2);
       els += '<div class="c-field line-code" contentEditable>' + lineStyle + '</div>';
       els += '</div>';
