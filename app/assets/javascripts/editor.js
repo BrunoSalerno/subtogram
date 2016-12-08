@@ -229,7 +229,7 @@ Editor.prototype = {
   },
 
   linesForm: function() {
-    var els = '<div class="o-fieldset">';
+    var els = '';
     var self = this;
 
     els += '<div class="o-form-element">';
@@ -245,7 +245,6 @@ Editor.prototype = {
       els += '<div class="c-field line-code" contentEditable>' + lineStyle + '</div>';
       els += '</div>';
     });
-    els += '</fieldset>';
     return els;
   }
 }
