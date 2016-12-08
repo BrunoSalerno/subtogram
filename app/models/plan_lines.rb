@@ -14,6 +14,7 @@ class PlanLine < Sequel::Model(:plan_lines)
     def feature
         h = super
         h[:properties].merge!({line: self.name,
+                               line_url_name: self.url_name,
                                line_parent_url_name: self.parent_url_name,
                                plan: self.plan.name,
                                url: self.plan.extra["url"],
@@ -23,7 +24,7 @@ class PlanLine < Sequel::Model(:plan_lines)
     end
 
     def style
-        self.plan.city.style["line"]["opening"][self.name]
+        self.plan.city.style["line"]["opening"][self.url_name]
     end
 
     def generate_url_name

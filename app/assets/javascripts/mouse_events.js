@@ -76,18 +76,18 @@ MouseEvents.prototype =  {
     return layers;
   },
 
-  lineLabel: function (line) {
-    var color = this.style.lineLabelFontColor(line) ? this.style.lineLabelFontColor(line) : 'white';
-    var s ='margin-left:5px; color:' + color + ';background-color:'+ this.style.lineColor(line) + ';';
+  lineLabel: function (line, line_url_name) {
+    var color = this.style.lineLabelFontColor(line_url_name) ? this.style.lineLabelFontColor(line_url_name) : 'white';
+    var s ='margin-left:5px; color:' + color + ';background-color:'+ this.style.lineColor(line_url_name) + ';';
     return '<span class="c-text--highlight popup-line-indicator" style="' + s + '">'+ line +'</span>';
   },
 
   featureInfo: function (f){
     str = '<div class="c-text popup-feature-info"><ul class="c-list c-list--unstyled">';
     if (f.name) {
-      str += '<li class="c-list__item"><strong> Estación ' + f.name + '</strong>' + this.lineLabel(f.line) + '</li>';
+      str += '<li class="c-list__item"><strong> Estación ' + f.name + '</strong>' + this.lineLabel(f.line, f.line_url_name) + '</li>';
     } else {
-      str += '<li class="c-list__item"><strong>' + ((!f.plan)? 'Tramo de la línea': 'Línea') + '</strong>' + this.lineLabel(f.line) +'</li>'
+      str += '<li class="c-list__item"><strong>' + ((!f.plan)? 'Tramo de la línea': 'Línea') + '</strong>' + this.lineLabel(f.line, f.line_url_name) +'</li>'
     }
 
     // We have to parse null values because Mapbox GL stringifies them.

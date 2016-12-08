@@ -47,7 +47,7 @@ Style.prototype = {
 
           style[colorCategory] = {
             type: "categorical",
-            property : "line",
+            property : "line_url_name",
             stops : stops
           }
         } else if (operation === 'buildstart'){
@@ -73,11 +73,11 @@ Style.prototype = {
         var str_type = (type == 'stations')? 'station' : 'line';
         return this._styles[str_type]["hover"];
     },
-    lineColor: function(line){
-        return this._styles.line.opening[line].color;
+    lineColor: function(line_url_name){
+        return this._styles.line.opening[line_url_name].color;
     },
-    lineLabelFontColor: function(line){
-        return this._styles.line.opening[line].labelFontColor;
+    lineLabelFontColor: function(line_url_name){
+        return this._styles.line.opening[line_url_name].labelFontColor;
     }
 
 }
