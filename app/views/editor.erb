@@ -48,7 +48,8 @@
 
     var sections = <%= lines_features_collection(@city, 'sections').to_json %>;
     var stations = <%= lines_features_collection(@city, 'stations').to_json %>;
-
-    loadEditor(sections, stations, config, mapboxAccessToken, mapboxStyle);
+    var lines = <%= @lines.to_json %>;
+    var style = <%= @city.style.to_json %>;
+    loadEditor(style, lines, sections, stations, config, mapboxAccessToken, mapboxStyle);
   }
 </script>

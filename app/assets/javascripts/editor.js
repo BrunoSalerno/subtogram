@@ -1,8 +1,10 @@
 var $ = require('jquery');
 var MapboxDraw = require('mapbox-gl-draw');
 
-var Editor = function(map, sections, stations) {
+var Editor = function(map, sections, stations, lines, style) {
   this.map = map;
+  this.lines = lines;
+  this.style = style;
 
   var options = {
     boxSelect: false,
@@ -109,6 +111,7 @@ var Editor = function(map, sections, stations) {
     $("#panel").addClass("panel-full-width");
     $(".editor-cards-container .c-card[id!='edit-lines-card']").hide();
     $(".editor-cards-container .c-card#edit-lines-card").show();
+    $(".editor-cards-container .c-card#edit-lines-card .c-paragraph").html(self.linesForm());
     self.updateLayout();
   });
 
@@ -223,6 +226,20 @@ Editor.prototype = {
     var parentHeight = panelBody.parent().innerHeight();
     var bottomPadding = 20;
     panelBody.height(parentHeight - panelHeaderHeight - bottomPadding);
+  },
+
+  linesForm: function() {
+    var els = '<div class="o-fieldset">';
+    var self = this;
+    this.lines.forEach(function(line) {
+      els += '<div class="o-form-element">';
+      els += '<label class="c-label">' + line.name + '</label>';
+      var lineStyle = JSON.stringify(self.style.line.opening[line.url_name], undefined, 2);
+      els += '<div class="c-field line-code" contentEditable>' + lineStyle + '</div>';
+      els += '</div>';
+    });
+    els += '</fieldset>';
+    return els;
   }
 }
 

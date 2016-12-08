@@ -73,6 +73,10 @@ class App < Sinatra::Base
       speed: DEFAULT_SPEED
     }
 
+    @lines = @city.lines.map {|line|
+      {name: line.name, url_name: line.url_name}
+    }
+
     erb :editor
   end
 

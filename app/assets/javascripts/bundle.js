@@ -138,8 +138,10 @@ module.exports = App;
 var $ = require('jquery');
 var MapboxDraw = require('mapbox-gl-draw');
 
-var Editor = function(map, sections, stations) {
+var Editor = function(map, sections, stations, lines, style) {
   this.map = map;
+  this.lines = lines;
+  this.style = style;
 
   var options = {
     boxSelect: false,
@@ -246,6 +248,7 @@ var Editor = function(map, sections, stations) {
     $("#panel").addClass("panel-full-width");
     $(".editor-cards-container .c-card[id!='edit-lines-card']").hide();
     $(".editor-cards-container .c-card#edit-lines-card").show();
+    $(".editor-cards-container .c-card#edit-lines-card .c-paragraph").html(self.linesForm());
     self.updateLayout();
   });
 
@@ -360,6 +363,21 @@ Editor.prototype = {
     var parentHeight = panelBody.parent().innerHeight();
     var bottomPadding = 20;
     panelBody.height(parentHeight - panelHeaderHeight - bottomPadding);
+  },
+
+  linesForm: function() {
+    var els = '<div class="o-fieldset">';
+    var self = this;
+    this.lines.forEach(function(line) {
+      els += '<div class="o-form-element">';
+      els += '<label class="c-label">' + line.name + '</label>';
+      var lineStyle = JSON.stringify(self.style.line.opening[line.url_name], undefined, 2);
+      els += '<div class="c-field line-code" contentEditable>' + lineStyle + '</div>';
+      els += '</div>';
+      // OR label + textarea ?
+    });
+    els += '</fieldset>';
+    return els;
   }
 }
 
@@ -388,7 +406,7 @@ window.loadApp = function(lines, plans, lengths, styles, config, mapboxAccessTok
   });
 }
 
-window.loadEditor = function(sections, stations, config, mapboxAccessToken, mapboxStyle) {
+window.loadEditor = function(style, lines, sections, stations, config, mapboxAccessToken, mapboxStyle) {
   mapboxgl.accessToken = mapboxAccessToken;
   var map = new mapboxgl.Map({
     container: 'map',
@@ -402,7 +420,7 @@ window.loadEditor = function(sections, stations, config, mapboxAccessToken, mapb
   map.addControl(new mapboxgl.NavigationControl());
 
   map.on('load',function(){
-    new Editor(map, sections, stations);
+    new Editor(map, sections, stations, lines, style);
   });
 }
 
@@ -787,18 +805,18 @@ MouseEvents.prototype =  {
     return layers;
   },
 
-  lineLabel: function (line) {
-    var color = this.style.lineLabelFontColor(line) ? this.style.lineLabelFontColor(line) : 'white';
-    var s ='margin-left:5px; color:' + color + ';background-color:'+ this.style.lineColor(line) + ';';
+  lineLabel: function (line, line_url_name) {
+    var color = this.style.lineLabelFontColor(line_url_name) ? this.style.lineLabelFontColor(line_url_name) : 'white';
+    var s ='margin-left:5px; color:' + color + ';background-color:'+ this.style.lineColor(line_url_name) + ';';
     return '<span class="c-text--highlight popup-line-indicator" style="' + s + '">'+ line +'</span>';
   },
 
   featureInfo: function (f){
     str = '<div class="c-text popup-feature-info"><ul class="c-list c-list--unstyled">';
     if (f.name) {
-      str += '<li class="c-list__item"><strong> Estación ' + f.name + '</strong>' + this.lineLabel(f.line) + '</li>';
+      str += '<li class="c-list__item"><strong> Estación ' + f.name + '</strong>' + this.lineLabel(f.line, f.line_url_name) + '</li>';
     } else {
-      str += '<li class="c-list__item"><strong>' + ((!f.plan)? 'Tramo de la línea': 'Línea') + '</strong>' + this.lineLabel(f.line) +'</li>'
+      str += '<li class="c-list__item"><strong>' + ((!f.plan)? 'Tramo de la línea': 'Línea') + '</strong>' + this.lineLabel(f.line, f.line_url_name) +'</li>'
     }
 
     // We have to parse null values because Mapbox GL stringifies them.
@@ -1016,7 +1034,7 @@ Style.prototype = {
 
           style[colorCategory] = {
             type: "categorical",
-            property : "line",
+            property : "line_url_name",
             stops : stops
           }
         } else if (operation === 'buildstart'){
@@ -1042,11 +1060,11 @@ Style.prototype = {
         var str_type = (type == 'stations')? 'station' : 'line';
         return this._styles[str_type]["hover"];
     },
-    lineColor: function(line){
-        return this._styles.line.opening[line].color;
+    lineColor: function(line_url_name){
+        return this._styles.line.opening[line_url_name].color;
     },
-    lineLabelFontColor: function(line){
-        return this._styles.line.opening[line].labelFontColor;
+    lineLabelFontColor: function(line_url_name){
+        return this._styles.line.opening[line_url_name].labelFontColor;
     }
 
 }

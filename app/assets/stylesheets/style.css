@@ -63,6 +63,8 @@
 
 #edit-lines-card {
   display:none;
+  box-shadow:none;
+  margin:0;
 }
 
 .mapboxgl-popup-content {
@@ -153,4 +155,12 @@ Taken from http://stephanwagner.me/only-css-loading-spinner
 .back-edit-city-link span {
   vertical-align:middle;
   line-height:12px;
+}
+
+.line-code {
+  background-color: #e5eaec;
+  color: #111;
+  font-family: Consolas, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter, DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Monaco, Courier New, Courier, monospace;
+  font-weight: 400;
+  height: auto;
 }
