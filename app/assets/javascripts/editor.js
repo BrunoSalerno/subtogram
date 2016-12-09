@@ -113,6 +113,17 @@ var Editor = function(map, sections, stations, lines, styles) {
     $(".editor-cards-container .c-card[id!='edit-lines-card']").hide();
     $(".editor-cards-container .c-card#edit-lines-card").show();
     $(".editor-cards-container .c-card#edit-lines-card .c-paragraph").html(self.linesForm());
+    $(".line-code").
+      each(function(){
+        self.formatColors($(this));
+      }).
+      keydown(function(){
+        $(this).data("prev", $(this).text())
+      }).
+      keyup(function(){
+        if ($(this).text() === $(this).data("prev")) return;
+        self.formatColors($(this));
+      });
     self.updateLayout();
   });
 
@@ -247,6 +258,13 @@ Editor.prototype = {
       els += '</div>';
     });
     return els;
+  },
+
+  formatColors: function(el) {
+    var str = el.text();
+    var regex = /\#(?:[0-9a-fA-F]{3}){1,2}/g;
+    str = str.replace(regex, function(color){return "<span style=\"background-color:" + color +";\">" + color + "</span>" });
+    el.html(str);
   }
 }
 
