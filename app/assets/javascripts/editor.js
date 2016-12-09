@@ -1,10 +1,11 @@
 var $ = require('jquery');
 var MapboxDraw = require('mapbox-gl-draw');
+var Style = require('./style');
 
-var Editor = function(map, sections, stations, lines, style) {
+var Editor = function(map, sections, stations, lines, styles) {
   this.map = map;
   this.lines = lines;
-  this.style = style;
+  this.style = new Style(styles);
 
   var options = {
     boxSelect: false,
@@ -234,14 +235,14 @@ Editor.prototype = {
 
     els += '<div class="o-form-element">';
     els += '<label class="c-label">Default</label>';
-    var lineStyle = JSON.stringify(self.style.line.opening.default, undefined, 2);
+    var lineStyle = JSON.stringify(self.style.lineDefaultStyle(), undefined, 2);
     els += '<div class="c-field line-code" contentEditable>' + lineStyle + '</div>';
     els += '</div>';
 
     this.lines.forEach(function(line) {
       els += '<div class="o-form-element">';
       els += '<label class="c-label">Línea ' + line.name + '</label>';
-      var lineStyle = JSON.stringify(self.style.line.opening[line.url_name], undefined, 2);
+      var lineStyle = JSON.stringify(self.style.lineStyle(line.url_name), undefined, 2);
       els += '<div class="c-field line-code" contentEditable>' + lineStyle + '</div>';
       els += '</div>';
     });

@@ -129,7 +129,7 @@ Taken from http://stephanwagner.me/only-css-loading-spinner
     z-index:100000;
 }
 
-.popup-line-indicator {
+.line-label {
   display:inline-block;
   min-width:21px;
   text-align:center;

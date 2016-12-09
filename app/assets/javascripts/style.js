@@ -74,12 +74,17 @@ Style.prototype = {
         return this._styles[str_type]["hover"];
     },
     lineColor: function(line_url_name){
-        return this._styles.line.opening[line_url_name].color;
+      return this.lineStyle(line_url_name).color;
     },
     lineLabelFontColor: function(line_url_name){
-        return this._styles.line.opening[line_url_name].labelFontColor;
+      return this.lineStyle(line_url_name).labelFontColor;
+    },
+    lineStyle: function(line_url_name){
+      return this._styles.line.opening[line_url_name];
+    },
+    lineDefaultStyle: function() {
+      return this._styles.line.opening.default;
     }
-
 }
 
 module.exports = Style;

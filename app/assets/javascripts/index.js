@@ -20,7 +20,7 @@ window.loadApp = function(lines, plans, lengths, styles, config, mapboxAccessTok
   });
 }
 
-window.loadEditor = function(style, lines, sections, stations, config, mapboxAccessToken, mapboxStyle) {
+window.loadEditor = function(styles, lines, sections, stations, config, mapboxAccessToken, mapboxStyle) {
   mapboxgl.accessToken = mapboxAccessToken;
   var map = new mapboxgl.Map({
     container: 'map',
@@ -34,6 +34,6 @@ window.loadEditor = function(style, lines, sections, stations, config, mapboxAcc
   map.addControl(new mapboxgl.NavigationControl());
 
   map.on('load',function(){
-    new Editor(map, sections, stations, lines, style);
+    new Editor(map, sections, stations, lines, styles);
   });
 }

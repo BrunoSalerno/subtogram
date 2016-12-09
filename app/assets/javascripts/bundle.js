@@ -137,11 +137,12 @@ module.exports = App;
 },{"./info":4,"./lines_mapper":5,"./misc":7,"./mouse_events":8,"./plans_mapper":9,"./style":10,"./timeline":11,"jquery":51}],2:[function(require,module,exports){
 var $ = require('jquery');
 var MapboxDraw = require('mapbox-gl-draw');
+var Style = require('./style');
 
-var Editor = function(map, sections, stations, lines, style) {
+var Editor = function(map, sections, stations, lines, styles) {
   this.map = map;
   this.lines = lines;
-  this.style = style;
+  this.style = new Style(styles);
 
   var options = {
     boxSelect: false,
@@ -371,14 +372,14 @@ Editor.prototype = {
 
     els += '<div class="o-form-element">';
     els += '<label class="c-label">Default</label>';
-    var lineStyle = JSON.stringify(self.style.line.opening.default, undefined, 2);
+    var lineStyle = JSON.stringify(self.style.lineDefaultStyle(), undefined, 2);
     els += '<div class="c-field line-code" contentEditable>' + lineStyle + '</div>';
     els += '</div>';
 
     this.lines.forEach(function(line) {
       els += '<div class="o-form-element">';
       els += '<label class="c-label">Línea ' + line.name + '</label>';
-      var lineStyle = JSON.stringify(self.style.line.opening[line.url_name], undefined, 2);
+      var lineStyle = JSON.stringify(self.style.lineStyle(line.url_name), undefined, 2);
       els += '<div class="c-field line-code" contentEditable>' + lineStyle + '</div>';
       els += '</div>';
     });
@@ -388,7 +389,7 @@ Editor.prototype = {
 
 module.exports = Editor;
 
-},{"jquery":51,"mapbox-gl-draw":56}],3:[function(require,module,exports){
+},{"./style":10,"jquery":51,"mapbox-gl-draw":56}],3:[function(require,module,exports){
 var mapboxgl = require('mapbox-gl');
 var App = require('./app');
 var Editor = require('./editor');
@@ -411,7 +412,7 @@ window.loadApp = function(lines, plans, lengths, styles, config, mapboxAccessTok
   });
 }
 
-window.loadEditor = function(style, lines, sections, stations, config, mapboxAccessToken, mapboxStyle) {
+window.loadEditor = function(styles, lines, sections, stations, config, mapboxAccessToken, mapboxStyle) {
   mapboxgl.accessToken = mapboxAccessToken;
   var map = new mapboxgl.Map({
     container: 'map',
@@ -425,7 +426,7 @@ window.loadEditor = function(style, lines, sections, stations, config, mapboxAcc
   map.addControl(new mapboxgl.NavigationControl());
 
   map.on('load',function(){
-    new Editor(map, sections, stations, lines, style);
+    new Editor(map, sections, stations, lines, styles);
   });
 }
 
@@ -813,7 +814,7 @@ MouseEvents.prototype =  {
   lineLabel: function (line, line_url_name) {
     var color = this.style.lineLabelFontColor(line_url_name) ? this.style.lineLabelFontColor(line_url_name) : 'white';
     var s ='margin-left:5px; color:' + color + ';background-color:'+ this.style.lineColor(line_url_name) + ';';
-    return '<span class="c-text--highlight popup-line-indicator" style="' + s + '">'+ line +'</span>';
+    return '<span class="c-text--highlight line-label" style="' + s + '">'+ line +'</span>';
   },
 
   featureInfo: function (f){
@@ -1066,12 +1067,17 @@ Style.prototype = {
         return this._styles[str_type]["hover"];
     },
     lineColor: function(line_url_name){
-        return this._styles.line.opening[line_url_name].color;
+      return this.lineStyle(line_url_name).color;
     },
     lineLabelFontColor: function(line_url_name){
-        return this._styles.line.opening[line_url_name].labelFontColor;
+      return this.lineStyle(line_url_name).labelFontColor;
+    },
+    lineStyle: function(line_url_name){
+      return this._styles.line.opening[line_url_name];
+    },
+    lineDefaultStyle: function() {
+      return this._styles.line.opening.default;
     }
-
 }
 
 module.exports = Style;
