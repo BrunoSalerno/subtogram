@@ -163,3 +163,7 @@ Taken from http://stephanwagner.me/only-css-loading-spinner
   font-weight: 400;
   height: auto;
 }
+
+.alert {
+  background-color: #F5A9A9;
+}

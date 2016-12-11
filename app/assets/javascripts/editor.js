@@ -119,7 +119,11 @@ var Editor = function(map, sections, stations, lines, styles) {
       }).
       blur(function(){
         self.formatColors($(this));
-        // TODO: validate JSON
+        if (self.validJSON($(this).text())) {
+          $(this).removeClass("alert");
+        } else {
+          $(this).addClass("alert");
+        }
       });
     self.updateLayout();
   });
@@ -262,6 +266,14 @@ Editor.prototype = {
     var regex = /\#(?:[0-9a-fA-F]{3}){1,2}/g;
     str = str.replace(regex, function(color){return "<span style=\"background-color:" + color +";\">" + color + "</span>" });
     el.html(str);
+  },
+
+  validJSON: function(jsonString) {
+    try {
+      return $.parseJSON(jsonString);
+    } catch(error) {
+      return false;
+    }
   }
 }
 

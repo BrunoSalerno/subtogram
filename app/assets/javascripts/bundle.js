@@ -250,16 +250,17 @@ var Editor = function(map, sections, stations, lines, styles) {
     $(".editor-cards-container .c-card[id!='edit-lines-card']").hide();
     $(".editor-cards-container .c-card#edit-lines-card").show();
     $(".editor-cards-container .c-card#edit-lines-card .c-paragraph").html(self.linesForm());
-    $(".line-code").
+    $(".line-code").unbind().
       each(function(){
         self.formatColors($(this));
       }).
-      keydown(function(){
-        $(this).data("prev", $(this).text())
-      }).
-      keyup(function(){
-        if ($(this).text() === $(this).data("prev")) return;
+      blur(function(){
         self.formatColors($(this));
+        if (self.validJSON($(this).text())) {
+          $(this).removeClass("alert");
+        } else {
+          $(this).addClass("alert");
+        }
       });
     self.updateLayout();
   });
@@ -402,6 +403,14 @@ Editor.prototype = {
     var regex = /\#(?:[0-9a-fA-F]{3}){1,2}/g;
     str = str.replace(regex, function(color){return "<span style=\"background-color:" + color +";\">" + color + "</span>" });
     el.html(str);
+  },
+
+  validJSON: function(jsonString) {
+    try {
+      return $.parseJSON(jsonString);
+    } catch(error) {
+      return false;
+    }
   }
 }
 
