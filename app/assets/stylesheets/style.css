@@ -27,6 +27,10 @@
     }
 }
 
+.panel-full-width {
+  width:100% !important;
+}
+
 .popup-feature-info {
     margin-top:5px;
 }
@@ -35,12 +39,32 @@
   padding-bottom:20px;
 }
 
-.lines-toggler-container {
+.panel-header-title {
+  padding:20px 0;
+}
+
+.panel-header-title h3.c-heading {
+  display:inline;
+}
+
+.panel-header-title a.c-link {
+  margin-left:10px;
+}
+
+.panel-body {
     position: relative;
     overflow: auto;
     padding-bottom: 20px;
 }
 
+.editor-cards-container {
+  padding:10px;
+}
+
+#edit-lines-card {
+  display:none;
+  margin:0;
+}
 
 .mapboxgl-popup-content {
     font-size:14px;
@@ -105,7 +129,7 @@ Taken from http://stephanwagner.me/only-css-loading-spinner
     z-index:100000;
 }
 
-.popup-line-indicator {
+.line-label {
   display:inline-block;
   min-width:21px;
   text-align:center;
@@ -113,4 +137,33 @@ Taken from http://stephanwagner.me/only-css-loading-spinner
   height:20px;
   line-height:12px;
   vertical-align:top;
+}
+
+.edit-city-link {
+  margin-left:10px;
+}
+
+.back-edit-city-link {
+  margin-left:15px;
+}
+
+.edit-city-link span{
+  vertical-align:middle;
+}
+
+.back-edit-city-link span {
+  vertical-align:middle;
+  line-height:12px;
+}
+
+.line-code {
+  background-color: #e5eaec;
+  color: #111;
+  font-family: Consolas, Andale Mono WT, Andale Mono, Lucida Console, Lucida Sans Typewriter, DejaVu Sans Mono, Bitstream Vera Sans Mono, Liberation Mono, Nimbus Mono L, Monaco, Courier New, Courier, monospace;
+  font-weight: 400;
+  height: auto;
+}
+
+.alert {
+  background-color: #F5A9A9;
 }

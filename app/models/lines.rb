@@ -4,7 +4,7 @@ class Line < Sequel::Model(:lines)
     one_to_many :stations
 
     def style
-        self.city.style["line"]["opening"][self.name]
+        self.city.style["line"]["opening"][self.url_name]
     end
 
     def generate_url_name
