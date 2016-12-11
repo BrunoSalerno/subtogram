@@ -113,16 +113,13 @@ var Editor = function(map, sections, stations, lines, styles) {
     $(".editor-cards-container .c-card[id!='edit-lines-card']").hide();
     $(".editor-cards-container .c-card#edit-lines-card").show();
     $(".editor-cards-container .c-card#edit-lines-card .c-paragraph").html(self.linesForm());
-    $(".line-code").
+    $(".line-code").unbind().
       each(function(){
         self.formatColors($(this));
       }).
-      keydown(function(){
-        $(this).data("prev", $(this).text())
-      }).
-      keyup(function(){
-        if ($(this).text() === $(this).data("prev")) return;
+      blur(function(){
         self.formatColors($(this));
+        // TODO: validate JSON
       });
     self.updateLayout();
   });
